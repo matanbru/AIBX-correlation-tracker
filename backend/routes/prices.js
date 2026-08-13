@@ -9,15 +9,7 @@ const findCompanyBySymbol = (db, symbol) => {
   return getAllCompanies(db).find(company => company.symbol.toUpperCase() === normalizedSymbol);
 };
 
-// Generate random price updates
-function generateRandomPrice(basePrice) {
-  const change = (Math.random() - 0.5) * 10;
-  return {
-    price: parseFloat((basePrice + change).toFixed(2)),
-    change: parseFloat(change.toFixed(2)),
-    timestamp: new Date()
-  };
-}
+const observationTimestamp = (company) => company.priceHistory?.at(-1)?.timestamp || null;
 
 // Get current prices for all companies
 router.get('/current', (req, res) => {
@@ -31,7 +23,9 @@ router.get('/current', (req, res) => {
         symbol: company.symbol,
         price: company.price,
         changePercent: company.change,
-        timestamp: new Date()
+        timestamp: observationTimestamp(company),
+        dataStatus: company.marketData?.dataStatus || 'unavailable',
+        lastUpdate: company.marketData?.lastUpdate || null
       };
       return priceData;
     });
@@ -53,25 +47,13 @@ router.get('/:symbol/history', (req, res) => {
       return res.status(404).json({ error: 'Company not found' });
     }
 
-    const prices = [];
-    const basePrice = company.price;
-    const today = new Date();
-
-    for (let i = days - 1; i >= 0; i--) {
-      const date = new Date(today);
-      date.setDate(date.getDate() - i);
-      const variance = (Math.random() - 0.5) * (basePrice * 0.12);
-      const drift = ((days - i) / days) * (company.change || 0) * 0.8;
-      const value = basePrice + variance + drift;
-
-      prices.push({
-        symbol,
-        price: parseFloat(value.toFixed(2)),
-        high: parseFloat((value + 4.5).toFixed(2)),
-        low: parseFloat((value - 4.5).toFixed(2)),
-        timestamp: date
-      });
-    }
+    const prices = (company.priceHistory || []).slice(-days).map(point => ({
+      symbol,
+      price: point.adjustedClose,
+      timestamp: point.timestamp,
+      date: point.date,
+      volume: point.volume
+    }));
 
     res.json(prices);
   } catch (error) {
@@ -90,26 +72,13 @@ router.get('/:symbol/peers', (req, res) => {
     const sectorPeers = allCompanies.slice(0, 5);
 
     const peerSeries = sectorPeers.map(peer => {
-      const peerBase = peer.price;
-      const dayCount = 30;
-      const points = [];
-      const today = new Date();
-
-      for (let i = dayCount - 1; i >= 0; i--) {
-        const date = new Date(today);
-        date.setDate(date.getDate() - i);
-        const variance = (Math.random() - 0.5) * (peerBase * 0.1);
-        const drift = (dayCount - i) / dayCount * (peer.change || 0) * 0.5;
-        points.push({
-          date,
-          price: parseFloat((peerBase + variance + drift).toFixed(2))
-        });
-      }
-
       return {
         symbol: peer.symbol,
         name: peer.name,
-        series: points
+        series: (peer.priceHistory || []).slice(-30).map(point => ({
+          date: point.date,
+          price: point.adjustedClose
+        }))
       };
     });
 
@@ -136,7 +105,9 @@ router.get('/:symbol/latest', (req, res) => {
       symbol,
       price: company.price,
       changePercent: company.change,
-      timestamp: new Date()
+      timestamp: company.priceHistory?.at(-1)?.timestamp || null,
+      dataStatus: company.marketData?.dataStatus || 'unavailable',
+      lastUpdate: company.marketData?.lastUpdate || null
     };
 
     res.json(price);
@@ -145,33 +116,9 @@ router.get('/:symbol/latest', (req, res) => {
   }
 });
 
-// Add/update price (simulate real-time update)
+// Manual price writes are disabled; Twelve Data owns market prices.
 router.post('/', (req, res) => {
-  try {
-    const { symbol, price, changePercent } = req.body;
-
-    const company = findCompanyBySymbol(req.db, symbol);
-    if (!company) return res.status(404).json({ error: 'Company not found' });
-
-    const priceData = {
-      symbol,
-      price: price || company.price,
-      changePercent: changePercent || company.change,
-      timestamp: new Date()
-    };
-
-    req.db.prices.push(priceData);
-
-    // Emit real-time update via WebSocket
-    const io = res.app.locals.io;
-    if (io) {
-      io.emit('price-update', priceData);
-    }
-
-    res.status(201).json(priceData);
-  } catch (error) {
-    res.status(400).json({ error: error.message });
-  }
+  res.status(409).json({ error: 'Manual price updates are disabled. Prices are loaded from Twelve Data.' });
 });
 
 // Get top gainers
@@ -180,13 +127,16 @@ router.get('/gainers/top', (req, res) => {
     const limit = parseInt(req.query.limit) || 10;
 
     const prices = getAllCompanies(req.db)
+      .filter(company => Number.isFinite(company.change) && Number.isFinite(company.price))
       .sort((a, b) => b.change - a.change)
       .slice(0, limit)
       .map(c => ({
         symbol: c.symbol,
         price: c.price,
         changePercent: c.change,
-        timestamp: new Date()
+        timestamp: observationTimestamp(c),
+        dataStatus: c.marketData?.dataStatus || 'unavailable',
+        lastUpdate: c.marketData?.lastUpdate || null
       }));
 
     res.json(prices);
@@ -201,13 +151,16 @@ router.get('/losers/top', (req, res) => {
     const limit = parseInt(req.query.limit) || 10;
 
     const prices = getAllCompanies(req.db)
+      .filter(company => Number.isFinite(company.change) && Number.isFinite(company.price))
       .sort((a, b) => a.change - b.change)
       .slice(0, limit)
       .map(c => ({
         symbol: c.symbol,
         price: c.price,
         changePercent: c.change,
-        timestamp: new Date()
+        timestamp: observationTimestamp(c),
+        dataStatus: c.marketData?.dataStatus || 'unavailable',
+        lastUpdate: c.marketData?.lastUpdate || null
       }));
 
     res.json(prices);

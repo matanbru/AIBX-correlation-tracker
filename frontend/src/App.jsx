@@ -5,17 +5,78 @@ import CompanyTable from './components/CompanyTable';
 import SearchBar from './components/SearchBar';
 import PriceChart from './components/PriceChart';
 import TopMovers from './components/TopMovers';
+import AIBXChart from './components/AIBXChart';
+import AIBXLChart from './components/AIBXLChart';
 import './App.css';
 
 const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
 const SOCKET_URL = import.meta.env.VITE_SOCKET_URL || 'http://localhost:5000';
+
+const clamp = (value, min, max) => Math.min(Math.max(value, min), max);
+
+const formatBillions = (value) => `$${Number(value || 0).toFixed(2)}B`;
+
+const patternFormula = {
+  base: 50,
+  revenueGrowth: 0.45,
+  grossMargin: 0.24,
+  operatingMargin: 0.17,
+  freeCashFlow: 0.11,
+  aiDemand: 0.18,
+  rateSensitivity: -0.1,
+  debtToEquity: -0.08,
+  peRatio: -0.09,
+  currentRatio: 0.06,
+  marketCap: 0.04
+};
+
+const calculatePatternScore = (company) => {
+  if (!company) return 0;
+
+  const metrics = company.metrics || {};
+  const macro = company.macroContext || {};
+
+  const revenueGrowth = Number(metrics.revenueGrowth || 0);
+  const grossMargin = Number(metrics.grossMargin || 0);
+  const operatingMargin = Number(metrics.operatingMargin || 0);
+  const freeCashFlow = Number(metrics.freeCashFlow || 0);
+  const debtToEquity = Number(metrics.debtToEquity || 0);
+  const peRatio = Number(metrics.peRatio || 0);
+  const currentRatio = Number(metrics.currentRatio || 0);
+  const marketCap = Number(metrics.marketCap || 0);
+  const aiDemand = String(macro.aiDemand || '').toLowerCase();
+  const rateSensitivity = String(macro.interestRateSensitivity || '').toLowerCase();
+
+  const revenueScore = clamp((revenueGrowth / 2) * patternFormula.revenueGrowth, 0, 18);
+  const grossMarginScore = clamp((grossMargin / 2) * patternFormula.grossMargin, 0, 12);
+  const operatingMarginScore = clamp((operatingMargin / 2) * patternFormula.operatingMargin, 0, 9);
+  const cashFlowScore = clamp((freeCashFlow / 2) * patternFormula.freeCashFlow, 0, 6);
+  const marketCapScore = clamp((marketCap / 10) * patternFormula.marketCap, 0, 4);
+  const liquidityScore = clamp((currentRatio / 2) * patternFormula.currentRatio, 0, 4);
+
+  const aiDemandScore = aiDemand.includes('very high') ? 12 : aiDemand.includes('high') ? 8 : 4;
+  const rateRisk = rateSensitivity.includes('high') ? 8 : rateSensitivity.includes('moderate') ? 4 : 0;
+  const leveragePenalty = debtToEquity > 1 ? 10 : debtToEquity > 0.5 ? 6 : 2;
+  const valuationPenalty = peRatio > 60 ? 11 : peRatio > 45 ? 7 : 2;
+
+  let score = patternFormula.base + revenueScore + grossMarginScore + operatingMarginScore + cashFlowScore + marketCapScore + liquidityScore + aiDemandScore;
+  score -= rateRisk + leveragePenalty + valuationPenalty;
+  score = clamp(Math.round(score), 0, 100);
+
+  return score;
+};
 
 const buildCompanyCommentary = (company) => {
   if (!company) {
     return {
       summary: 'No company profile available.',
       range: 'Not enough information for a forward view.',
-      insights: []
+      insights: [],
+      score: 0,
+      direction: 'N/A',
+      catalysts: [],
+      risks: [],
+      simplePatterns: []
     };
   }
 
@@ -27,38 +88,88 @@ const buildCompanyCommentary = (company) => {
   const freeCashFlow = Number(metrics.freeCashFlow || 0);
   const debtToEquity = Number(metrics.debtToEquity || 0);
   const peRatio = Number(metrics.peRatio || 0);
+  const currentRatio = Number(metrics.currentRatio || 0);
+  const marketCap = Number(metrics.marketCap || 0);
   const aiDemand = String(macro.aiDemand || '').toLowerCase();
   const rateSensitivity = String(macro.interestRateSensitivity || '').toLowerCase();
+  const demandCycle = String(macro.demandCycle || '').toLowerCase();
 
-  let baseRangeLow = 8;
-  let baseRangeHigh = 18;
+  const score = calculatePatternScore(company);
 
-  if (revenueGrowth > 20) baseRangeLow += 6;
-  if (revenueGrowth > 30) baseRangeHigh += 8;
-  if (grossMargin > 70) baseRangeLow += 4;
-  if (operatingMargin > 20) baseRangeLow += 3;
-  if (freeCashFlow > 5) baseRangeLow += 2;
-  if (debtToEquity > 1) baseRangeHigh -= 5;
-  if (peRatio > 50) baseRangeHigh -= 4;
-  if (aiDemand.includes('very high')) baseRangeHigh += 6;
-  if (rateSensitivity.includes('high')) baseRangeHigh -= 4;
+  const direction = score >= 75 ? 'Bullish' : score >= 60 ? 'Constructive' : score >= 45 ? 'Neutral' : 'Cautious';
 
-  const rangeLow = Math.max(5, Math.min(baseRangeLow, 26));
-  const rangeHigh = Math.max(rangeLow + 4, Math.min(baseRangeHigh, 38));
+  const simplePatterns = [
+    revenueGrowth > 20
+      ? 'Revenue acceleration has historically been a precursor to stronger share-price momentum when the company maintains high gross margin.'
+      : 'Growth is moderate, so the stock is more dependent on operating leverage and execution than on a broad revenue surprise.',
+    grossMargin > 70
+      ? 'High gross margin suggests the company is monetising AI demand efficiently, which often supports premium valuation and better price resilience.'
+      : 'Margin quality is useful but not yet powerful enough to fully offset heavier operating costs or a weaker pricing environment.',
+    aiDemand.includes('very high')
+      ? 'AI demand is unusually strong, which tends to widen the earnings runway when infrastructure and enterprise adoption expand.'
+      : 'The company remains exposed to normal enterprise adoption curves, so price moves may be more dependent on execution and capital allocation.'
+  ];
 
-  const summary = `Based on ${company.name}'s revenue profile, margin structure, and AI-demand backdrop, the most plausible medium-term pattern is a continued expansion phase as enterprise AI spending broadens, provided operating discipline remains intact.`;
+  const catalysts = [];
+  if (revenueGrowth > 20) catalysts.push('Revenue acceleration pattern: premium software and infrastructure names often rally when growth remains above 20% and AI demand continues to broaden.');
+  if (grossMargin > 70) catalysts.push('Margin expansion cycle: companies with high software-like margins can sustain valuation uplift as AI monetisation scales.');
+  if (demandCycle.includes('enterprise') || demandCycle.includes('cloud') || demandCycle.includes('infrastructure')) catalysts.push('Enterprise AI conversion pattern: as projects move from pilot testing to deployment, proven infrastructure providers often see stronger follow-through pricing.');
+  if (aiDemand.includes('very high')) catalysts.push('Demand-led pricing cycle: the strongest AI names usually benefit from a compound effect where demand growth, usage intensity, and capital expenditure all move together.');
+  if (!catalysts.length) catalysts.push('The company is more dependent on execution and timing than a clean AI demand surge, so price momentum may be less persistent.');
+
+  const risks = [];
+  if (rateSensitivity.includes('high')) risks.push('Higher-rate sensitivity can compress valuation multiples even when revenue growth remains healthy, especially in capital-intensive AI plays.');
+  if (debtToEquity > 1) risks.push('Leverage creates more vulnerability if AI spending slows or if the company needs to fund continued expansion internally.');
+  if (peRatio > 50) risks.push('A premium valuation can limit upside unless revenue and margin expansion materially exceed expectations.');
+  if (currentRatio < 1.5) risks.push('Weaker liquidity can make pricing more fragile when operating costs or capital requirements rise unexpectedly.');
+  if (!risks.length) risks.push('The profile is relatively balanced, but valuation and execution still matter because AI leadership can shift quickly in crowded sectors.');
+
+  const expectedReturn = Math.max(8, Math.min(32, Math.round(score / 3.2)));
+
+  const rangeLow = Math.max(6, Math.min(Math.round(expectedReturn * 0.7), 22));
+  const rangeHigh = Math.max(rangeLow + 4, Math.min(Math.round(expectedReturn * 1.15), 36));
+
+  const summary = `The pattern recognition model suggests ${company.name} is currently ${direction.toLowerCase()} because the company combines ${revenueGrowth}% revenue growth, ${grossMargin}% gross margin, and ${aiDemand.includes('very high') ? 'very strong' : 'meaningful'} AI demand with ${debtToEquity <= 0.5 ? 'a relatively healthy balance sheet' : 'a more levered capital structure'}. In similar AI cycles, names with this mix have often seen price strength when enterprise deployment follows early experimentation.`;
 
   const insights = [
-    `${company.name} is positioned most favourably when AI adoption moves from pilot programmes to production workloads, which historically supports higher valuation multiples in companies with strong gross margin and recurring demand.`,
-    `The current mix of ${revenueGrowth}% revenue growth, ${grossMargin}% gross margin, and ${operatingMargin}% operating margin suggests the company is benefiting from operating leverage rather than pure cost-cutting alone.`,
-    `The balance sheet and liquidity profile indicate ${debtToEquity <= 0.5 ? 'a relatively healthy capital structure' : 'a more levered profile'}, which matters because AI infrastructure cycles often reward firms that can fund expansion without damaging margins when rates are elevated.`,
-    `In similar technology cycles, firms with ${aiDemand.includes('very high') ? 'very strong' : 'solid'} AI demand and durable enterprise relevance tend to hold a stronger forward price pattern even when short-term volatility is elevated.`
+    `${company.name} shows the classic revenue-to-price pattern: when growth stays above 20% and margins remain elevated, the market typically rewards sustained customer adoption before earnings fully catch up.`,
+    `The balance of ${operatingMargin}% operating margin and ${freeCashFlow}B free cash flow suggests the firm is more likely to convert AI demand into cash generation rather than simply expanding cost structure.`,
+    `The most advanced pattern in this sector is not just strong revenue; it is the combination of AI demand, margin quality, and rate sensitivity. Companies that can grow without sacrificing operating leverage often outperform during the next phase of AI infrastructure expansion.`,
+    `The key risk is valuation discipline: a company can be fundamentally attractive but still struggle if its price is priced for perfection before the next revenue milestone arrives.`
+  ];
+
+  const currentPrice = Number.isFinite(Number(company.price)) ? Number(company.price) : null;
+  const scenarios = [
+    {
+      label: 'Bull case',
+      returnPct: Math.max(12, Math.min(40, Math.round(score / 2.3))),
+      description: 'Demand broadens quickly, enterprise adoption accelerates, and AI monetisation compounds faster than expected.',
+      price: currentPrice === null ? null : (currentPrice * (1 + Math.max(12, Math.min(40, Math.round(score / 2.3))) / 100)).toFixed(2)
+    },
+    {
+      label: 'Base case',
+      returnPct: Math.max(6, Math.min(22, Math.round(score / 4))),
+      description: 'Revenue momentum remains healthy while the company executes on AI projects without major disruption.',
+      price: currentPrice === null ? null : (currentPrice * (1 + Math.max(6, Math.min(22, Math.round(score / 4))) / 100)).toFixed(2)
+    },
+    {
+      label: 'Bear case',
+      returnPct: Math.max(-18, Math.min(-4, -Math.round(score / 7))),
+      description: 'AI demand stays uneven, valuations compress, or enterprise deployment slows before revenue converts to cash.',
+      price: currentPrice === null ? null : (currentPrice * (1 + Math.max(-18, Math.min(-4, -Math.round(score / 7))) / 100)).toFixed(2)
+    }
   ];
 
   return {
     summary,
-    range: `${rangeLow}% to ${rangeHigh}% over the next 12 months, depending on adoption speed and rate conditions`,
-    insights
+    range: `${rangeLow}% to ${rangeHigh}% over the next 12 months, with the range widening if AI demand remains strong and funding conditions stay stable`,
+    insights,
+    score,
+    direction,
+    catalysts,
+    risks,
+    simplePatterns,
+    scenarios
   };
 };
 
@@ -70,6 +181,11 @@ function App() {
   const [selectedCompany, setSelectedCompany] = useState(null);
   const [currentTab, setCurrentTab] = useState('overview');
   const [socket, setSocket] = useState(null);
+
+  const openCompanyProfile = (company) => {
+    setSelectedCompany(company);
+    setCurrentTab('overview');
+  };
 
   useEffect(() => {
     // Connect to WebSocket for live updates
@@ -118,6 +234,25 @@ function App() {
     }
   };
 
+  const sectorUniverse = [...companies, ...opportunityCompanies];
+  const sectorSnapshot = sectorUniverse.length
+    ? {
+        avgRevenueGrowth: sectorUniverse.reduce((sum, company) => sum + Number(company.metrics?.revenueGrowth || 0), 0) / sectorUniverse.length,
+        avgGrossMargin: sectorUniverse.reduce((sum, company) => sum + Number(company.metrics?.grossMargin || 0), 0) / sectorUniverse.length,
+        avgOperatingMargin: sectorUniverse.reduce((sum, company) => sum + Number(company.metrics?.operatingMargin || 0), 0) / sectorUniverse.length,
+        avgPeRatio: sectorUniverse.reduce((sum, company) => sum + Number(company.metrics?.peRatio || 0), 0) / sectorUniverse.length,
+        avgPriceChange: sectorUniverse.reduce((sum, company) => sum + Number(company.change || 0), 0) / sectorUniverse.length,
+        avgMarketCap: sectorUniverse.reduce((sum, company) => sum + Number(company.metrics?.marketCap || 0), 0) / sectorUniverse.length,
+      }
+    : {
+        avgRevenueGrowth: 0,
+        avgGrossMargin: 0,
+        avgOperatingMargin: 0,
+        avgPeRatio: 0,
+        avgPriceChange: 0,
+        avgMarketCap: 0,
+      };
+
   return (
     <div className="App">
       <header className="header">
@@ -137,6 +272,12 @@ function App() {
           onClick={() => setCurrentTab('gainers')}
         >
           Top Gainers
+        </button>
+        <button
+          className={`tab ${currentTab === 'aibx' ? 'active' : ''}`}
+          onClick={() => setCurrentTab('aibx')}
+        >
+          AIBX
         </button>
         <button
           className={`tab ${currentTab === 'watchlist' ? 'active' : ''}`}
@@ -178,12 +319,15 @@ function App() {
                   </div>
                   <div className="detail-item">
                     <label>Price:</label>
-                    <span>${selectedCompany.price.toFixed(2)}</span>
+                    <span>
+                      {selectedCompany.price == null ? 'Unavailable' : `$${selectedCompany.price.toFixed(2)}`}
+                      {selectedCompany.marketData?.dataStatus === 'stale' && <span className="stale-badge">Stale</span>}
+                    </span>
                   </div>
                   <div className="detail-item">
                     <label>Change:</label>
                     <span style={{ color: selectedCompany.change >= 0 ? '#28a745' : '#dc3545' }}>
-                      {selectedCompany.change >= 0 ? '+' : ''}{selectedCompany.change.toFixed(2)}%
+                      {selectedCompany.change == null ? 'N/A' : `${selectedCompany.change >= 0 ? '+' : ''}${selectedCompany.change.toFixed(2)}%`}
                     </span>
                   </div>
                 </div>
@@ -201,6 +345,71 @@ function App() {
                     <div className="metric-card"><span>Current ratio</span><strong>{selectedCompany.metrics?.currentRatio ?? 0}</strong></div>
                     <div className="metric-card"><span>P/E ratio</span><strong>{selectedCompany.metrics?.peRatio ?? 0}</strong></div>
                     <div className="metric-card"><span>Cash balance</span><strong>${selectedCompany.metrics?.cashBalance ?? 0}B</strong></div>
+                  </div>
+                </div>
+
+                <div className="accounting-section">
+                  <h3>Quarterly accounting data</h3>
+                  <div className="accounting-grid">
+                    <div className="statement-panel">
+                      <h4>Statement of profit and loss</h4>
+                      <div className="table-wrap">
+                        <table className="statement-table">
+                          <thead>
+                            <tr>
+                              <th>Quarter</th>
+                              <th>Revenue</th>
+                              <th>Gross profit</th>
+                              <th>Operating income</th>
+                              <th>Net income</th>
+                              <th>EBITDA</th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            {(selectedCompany.accounting?.incomeStatement || []).map((row) => (
+                              <tr key={row.quarter}>
+                                <td>{row.quarter}</td>
+                                <td>{formatBillions(row.revenue)}</td>
+                                <td>{formatBillions(row.grossProfit)}</td>
+                                <td>{formatBillions(row.operatingIncome)}</td>
+                                <td>{formatBillions(row.netIncome)}</td>
+                                <td>{formatBillions(row.ebitda)}</td>
+                              </tr>
+                            ))}
+                          </tbody>
+                        </table>
+                      </div>
+                    </div>
+
+                    <div className="statement-panel">
+                      <h4>Balance sheet</h4>
+                      <div className="table-wrap">
+                        <table className="statement-table">
+                          <thead>
+                            <tr>
+                              <th>Quarter</th>
+                              <th>Cash</th>
+                              <th>Current assets</th>
+                              <th>Current liabilities</th>
+                              <th>Debt</th>
+                              <th>Shareholders' equity</th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            {(selectedCompany.accounting?.balanceSheet || []).map((row) => (
+                              <tr key={row.quarter}>
+                                <td>{row.quarter}</td>
+                                <td>{formatBillions(row.cash)}</td>
+                                <td>{formatBillions(row.currentAssets)}</td>
+                                <td>{formatBillions(row.currentLiabilities)}</td>
+                                <td>{formatBillions(row.longTermDebt)}</td>
+                                <td>{formatBillions(row.shareholdersEquity)}</td>
+                              </tr>
+                            ))}
+                          </tbody>
+                        </table>
+                      </div>
+                    </div>
                   </div>
                 </div>
 
@@ -230,35 +439,11 @@ function App() {
                   </div>
                 </div>
 
-                <div className="context-section">
-                  <h3>Pattern references and historical context</h3>
-                  <ul className="pattern-list">
-                    {(selectedCompany.patternSignals || []).map((signal, index) => (
-                      <li key={index}>
-                        <strong>{signal.label}:</strong> {signal.description}
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-
-                <div className="context-section">
-                  <h3>Analyst commentary and forward price outlook</h3>
-                  <div className="outlook-box">
-                    <p className="outlook-summary">
-                      {buildCompanyCommentary(selectedCompany).summary}
-                    </p>
-                    <p className="outlook-range">
-                      <strong>Pattern-based outlook:</strong> {buildCompanyCommentary(selectedCompany).range}
-                    </p>
-                    <ul className="pattern-list">
-                      {(buildCompanyCommentary(selectedCompany).insights || []).map((insight, index) => (
-                        <li key={index}>{insight}</li>
-                      ))}
-                    </ul>
-                  </div>
-                </div>
-
                 <PriceChart symbol={selectedCompany.symbol} />
+                <AIBXLChart companies={companies} onSelectCompany={openCompanyProfile} />
+                {opportunityCompanies.some((company) => company.symbol === selectedCompany.symbol) && (
+                  <AIBXChart company={selectedCompany} companies={companies} />
+                )}
               </div>
             ) : (
               <>
@@ -286,6 +471,7 @@ function App() {
                         />
                       </div>
                     )}
+
                   </>
                 )}
               </>
@@ -295,6 +481,43 @@ function App() {
 
         {currentTab === 'gainers' && (
           <TopMovers type="gainers" />
+        )}
+
+        {currentTab === 'aibx' && (
+          <div className="aibx-tab">
+            <div className="panel-header aibx-header">
+              <h3>AIBX</h3>
+              <span>Basket influence by emerging company</span>
+            </div>
+
+            {opportunityCompanies.length > 0 ? (
+              <>
+                <AIBXLChart companies={companies} onSelectCompany={openCompanyProfile} />
+                <div className="aibx-grid">
+                  {opportunityCompanies.map((company) => (
+                    <div key={company.symbol} className="aibx-card">
+                      <div className="aibx-card-header">
+                        <div>
+                          <h4>{company.name}</h4>
+                          <span>{company.symbol}</span>
+                        </div>
+                        <button
+                          type="button"
+                          className="aibx-profile-button"
+                          onClick={() => openCompanyProfile(company)}
+                        >
+                          Open profile
+                        </button>
+                      </div>
+                      <AIBXChart company={company} companies={companies} />
+                    </div>
+                  ))}
+                </div>
+              </>
+            ) : (
+              <div className="loading">Loading AIBX data...</div>
+            )}
+          </div>
         )}
 
         {currentTab === 'watchlist' && (

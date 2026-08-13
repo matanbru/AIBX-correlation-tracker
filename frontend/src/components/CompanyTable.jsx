@@ -66,11 +66,12 @@ function CompanyTable({ companies, onSelectCompany }) {
                 </td>
                 <td>{company.symbol}</td>
                 <td className="price">
-                  {price ? formatPrice(price.price) : 'Loading...'}
+                  {price?.price == null ? 'Unavailable' : formatPrice(price.price)}
+                  {price?.dataStatus === 'stale' && <span className="stale-badge">Stale</span>}
                 </td>
                 <td>
                   <span className={`change ${(price?.changePercent || 0) >= 0 ? 'positive' : 'negative'}`}>
-                    {price ? formatChange(price.changePercent) : 'N/A'}
+                    {price?.changePercent == null ? 'N/A' : formatChange(price.changePercent)}
                   </span>
                 </td>
                 <td>${company.metrics?.marketCap ?? 0}B</td>

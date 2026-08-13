@@ -3,12 +3,188 @@ import cors from 'cors';
 import dotenv from 'dotenv';
 import { Server as SocketIOServer } from 'socket.io';
 import http from 'http';
+import priceDataService from './services/priceDataService.js';
 
 dotenv.config();
 
+const quarterlyLabels = ['Q2 2026', 'Q1 2026', 'Q4 2025', 'Q3 2025'];
+
+// ============================================================================
+// PRICE DATA INITIALIZATION
+// ============================================================================
+
+let pricesCache = {};
+let pricesInitialized = false;
+
+const initializePriceData = async () => {
+  try {
+    const allTickers = [...companiesRawData, ...opportunityCompaniesRawData]
+      .map(company => company.symbol);
+    
+    console.log('\n========================================');
+    console.log('🔧 Initializing Real Price Data');
+    console.log('========================================');
+    
+    pricesCache = priceDataService.loadPricesFromDisk();
+    pricesInitialized = true;
+    
+    console.log('\n✅ Price initialization complete\n');
+  } catch (error) {
+    console.error('\n❌ FATAL: Price initialization failed:', error.message);
+    console.error('\nPlease check:');
+    console.error('  1. TWELVE_DATA_API_KEY is set in backend/.env');
+    console.error('  2. Your API key is valid (sign up at https://twelvedata.com)');
+    console.error('  3. Network connectivity to api.twelvedata.com');
+    console.error('\nThe server will not start without real price data.\n');
+    process.exit(1);
+  }
+};
+
+const scheduleDailyRefresh = () => {
+  const now = new Date();
+  const next4_05PM = new Date(now);
+  next4_05PM.setHours(16, 5, 0, 0); // 4:05 PM ET (after market close)
+  
+  if (next4_05PM <= now) {
+    next4_05PM.setDate(next4_05PM.getDate() + 1);
+  }
+  
+  const msUntilRefresh = next4_05PM.getTime() - now.getTime();
+  console.log(`⏰ Next price refresh scheduled: ${next4_05PM.toLocaleString()}`);
+  
+  setTimeout(async () => {
+    try {
+      const allTickers = [...companiesRawData, ...opportunityCompaniesRawData]
+        .map(company => company.symbol);
+      pricesCache = await priceDataService.refreshLatestPrices(allTickers);
+      syncDatabasePrices();
+      io.emit('live-prices', {
+        companies: [...db.companies, ...db.opportunityCompanies],
+        timestamp: new Date()
+      });
+    } catch (error) {
+      console.error('❌ Daily refresh failed:', error.message);
+    }
+    scheduleDailyRefresh();
+  }, msUntilRefresh);
+};
+
+// ============================================================================
+// BUILD QUARTERLY ACCOUNTING
+// ============================================================================
+
+const buildQuarterlyAccounting = (company) => {
+ const revenueTtm = Number(company.metrics?.revenueTtm || 0);
+  const revenueGrowth = Number(company.metrics?.revenueGrowth || 0);
+  const grossMargin = Number(company.metrics?.grossMargin || 0);
+  const operatingMargin = Number(company.metrics?.operatingMargin || 0);
+  const cashBalance = Number(company.metrics?.cashBalance || 0);
+  const debtToEquity = Number(company.metrics?.debtToEquity || 0);
+  const currentRatio = Number(company.metrics?.currentRatio || 0);
+  const marketCap = Number(company.metrics?.marketCap || 0);
+
+  const quarterlyRevenue = [
+    revenueTtm * (1 + (revenueGrowth / 100) * 0.28),
+    revenueTtm * (1 + (revenueGrowth / 100) * 0.12),
+    revenueTtm * (1 + (revenueGrowth / 100) * 0.04),
+    revenueTtm * (1 - (revenueGrowth / 100) * 0.05)
+  ];
+
+  const incomeStatement = quarterlyLabels.map((label, index) => {
+    const revenue = quarterlyRevenue[index];
+    const grossProfit = revenue * (grossMargin / 100);
+    const operatingIncome = revenue * (operatingMargin / 100);
+    const netIncome = operatingIncome * (0.42 + (marketCap > 500 ? 0.12 : 0));
+    const ebitda = operatingIncome + (revenue * 0.08);
+
+    return {
+      quarter: label,
+      revenue: Number(revenue.toFixed(2)),
+      grossProfit: Number(grossProfit.toFixed(2)),
+      operatingIncome: Number(operatingIncome.toFixed(2)),
+      netIncome: Number(netIncome.toFixed(2)),
+      ebitda: Number(ebitda.toFixed(2))
+    };
+  });
+
+  const balanceSheet = quarterlyLabels.map((label, index) => {
+    const cash = cashBalance * (1 + index * 0.04);
+    const currentAssets = cash * (1.4 + currentRatio * 0.45);
+    const currentLiabilities = currentAssets / Math.max(currentRatio, 1.1);
+    const longTermDebt = (debtToEquity || 0.2) * (marketCap * 0.32) / 10;
+    const totalLiabilities = currentLiabilities + longTermDebt;
+    const totalAssets = currentAssets + (marketCap * 1.5 + cashBalance * 2.8);
+    const shareholdersEquity = totalAssets - totalLiabilities;
+
+    return {
+      quarter: label,
+      cash: Number(cash.toFixed(2)),
+      currentAssets: Number(currentAssets.toFixed(2)),
+      currentLiabilities: Number(currentLiabilities.toFixed(2)),
+      longTermDebt: Number(longTermDebt.toFixed(2)),
+      totalAssets: Number(totalAssets.toFixed(2)),
+      totalLiabilities: Number(totalLiabilities.toFixed(2)),
+      shareholdersEquity: Number(shareholdersEquity.toFixed(2))
+    };
+  });
+
+  return {
+    reportingPeriod: 'Last 4 quarters',
+    incomeStatement,
+    balanceSheet
+  };
+};
+
+const enrichCompanyAccounting = (company, priceData = []) => {
+  const sharesOutstanding = Number(company.metrics?.sharesOutstanding ?? company.sharesOutstanding ?? Math.max(1, ((company.metrics?.marketCap || company.price || 1) * 1.25) / Math.max(company.price || 1, 1)));
+  
+  // Use real price data if available, otherwise empty array (error state)
+  const alignedSeries = priceData && Array.isArray(priceData) && priceData.length > 0 
+    ? priceData 
+    : [];
+  const latestPrice = alignedSeries.length > 0
+    ? alignedSeries[alignedSeries.length - 1].adjustedClose
+    : null;
+  const latestChange = alignedSeries.length > 1
+    ? Number((((alignedSeries[alignedSeries.length - 1].adjustedClose - alignedSeries[alignedSeries.length - 2].adjustedClose) / alignedSeries[alignedSeries.length - 2].adjustedClose) * 100).toFixed(2))
+    : null;
+
+  return {
+    ...company,
+    price: latestPrice,
+    change: latestChange,
+    sharesOutstanding,
+    metrics: {
+      ...company.metrics,
+      sharesOutstanding
+    },
+    priceHistory: alignedSeries,
+    dailyAdjustedClose: alignedSeries.map(point => ({
+      date: point.date,
+      adjustedClose: point.adjustedClose,
+      close: point.close,
+      timestamp: point.timestamp
+    })),
+    marketData: {
+      sharesOutstanding,
+      adjustmentMethod: 'Twelve Data daily adjusted close',
+      dataStatus: alignedSeries.length > 0 ? 'available' : 'unavailable',
+      snapshotTime: '16:00 ET',
+      dateCoverage: alignedSeries.length,
+      dateIndex: alignedSeries.map(point => point.date),
+      dataSource: 'Twelve Data API',
+      lastUpdate: alignedSeries.length > 0 ? alignedSeries[alignedSeries.length - 1].date : 'N/A'
+    },
+    accounting: buildQuarterlyAccounting(company)
+  };
+};
+
 // In-memory database storage
-const db = {
-  companies: [
+// ============================================================================
+// RAW COMPANY DATA (before price enrichment)
+// ============================================================================
+
+const companiesRawData = [
     {
       _id: '1', rank: 1, symbol: 'NVDA', name: 'NVIDIA Corporation', price: 445.23, change: 2.5, founded: 1993,
       headquarters: 'Santa Clara, CA', description: 'Leading AI chip manufacturer', aiProducts: ['CUDA', 'GPUs', 'AI Infrastructure'],
@@ -249,55 +425,104 @@ const db = {
         { label: 'Macro theory', description: 'Lower inflation and stable consumer spending can widen adoption, while higher costs can delay investment in new digital tools.' }
       ]
     }
-  ],
-  opportunityCompanies: [
+  ];
+
+const opportunityCompaniesRawData = [
     {
-      _id: 'opp-1', rank: 1, symbol: 'PLTR', name: 'Palantir Technologies', price: 28.4, change: 1.9, founded: 2003,
-      headquarters: 'Denver, CO', description: 'AI and data analytics for enterprise and government clients', aiProducts: ['AIP Platform', 'Ontology', 'ML Ops'],
-      metrics: { marketCap: 68, revenueTtm: 3.2, revenueGrowth: 26.4, grossMargin: 81.6, operatingMargin: 18.8, freeCashFlow: 1.1, debtToEquity: 0.12, currentRatio: 4.4, peRatio: 44.2, cashBalance: 3.9, capex: 0.3 },
-      macroContext: { inflationSensitivity: 'Low', interestRateSensitivity: 'Moderate', demandCycle: 'Government and enterprise analytics', supplyChainRisk: 'Low', aiDemand: 'Very high' },
-      patternSignals: [{ label: 'Historical pattern', description: 'Enterprise AI platforms can gain faster when customers move from pilots to production workloads.' }, { label: 'Macro theory', description: 'When firms seek productivity rather than broad spending, data-analytics platforms often become critical infrastructure.' }]
+      _id: 'opp-1', rank: 1, symbol: 'C3AI', name: 'C3.ai', price: 24.8, change: 2.6, founded: 2009,
+      headquarters: 'Redwood City, CA', description: 'Enterprise AI software platform for predictive analytics and industrial applications', aiProducts: ['Enterprise AI Suite', 'Predictive Ops', 'AI Applications'],
+      metrics: { marketCap: 4.6, revenueTtm: 0.8, revenueGrowth: 17.4, grossMargin: 63.5, operatingMargin: 0.8, freeCashFlow: 0.1, debtToEquity: 0.51, currentRatio: 2.3, peRatio: 32.5, cashBalance: 0.8, capex: 0.1 },
+      macroContext: { inflationSensitivity: 'Low', interestRateSensitivity: 'Moderate', demandCycle: 'Enterprise AI deployment and industrial automation', supplyChainRisk: 'Low', aiDemand: 'High' },
+      patternSignals: [{ label: 'Historical pattern', description: 'Enterprise AI software names often benefit when pilots mature into production deployments across operations and analytics teams.' }, { label: 'Macro theory', description: 'As AI becomes a productivity tool rather than a theoretical concept, adoption tends to follow operational ROI and lower-risk use cases.' }]
     },
     {
-      _id: 'opp-2', rank: 2, symbol: 'MDB', name: 'MongoDB', price: 315.0, change: 1.3, founded: 2007,
+      _id: 'opp-2', rank: 2, symbol: 'PATH', name: 'UiPath', price: 18.4, change: 1.2, founded: 2005,
+      headquarters: 'New York, NY', description: 'Automation platform using AI to streamline enterprise workflows', aiProducts: ['Automation Cloud', 'AI Copilot', 'Document Understanding'],
+      metrics: { marketCap: 8.2, revenueTtm: 1.5, revenueGrowth: 8.1, grossMargin: 83.1, operatingMargin: 7.4, freeCashFlow: 0.6, debtToEquity: 0.18, currentRatio: 2.1, peRatio: 29.6, cashBalance: 1.2, capex: 0.1 },
+      macroContext: { inflationSensitivity: 'Low', interestRateSensitivity: 'Moderate', demandCycle: 'Workflow automation and digital operations', supplyChainRisk: 'Low', aiDemand: 'High' },
+      patternSignals: [{ label: 'Historical pattern', description: 'Automation platforms often gain as businesses seek productivity gains without large hiring or restructuring programs.' }, { label: 'Macro theory', description: 'When labour costs rise and operational complexity grows, workflow automation becomes a scaling lever rather than a discretionary investment.' }]
+    },
+    {
+      _id: 'opp-3', rank: 3, symbol: 'SOUN', name: 'SoundHound AI', price: 8.95, change: 4.3, founded: 2005,
+      headquarters: 'Santa Clara, CA', description: 'Voice AI and conversational intelligence platform', aiProducts: ['Voice AI', 'Speech Recognition', 'Agentic Commerce'],
+      metrics: { marketCap: 3.1, revenueTtm: 0.2, revenueGrowth: 35.8, grossMargin: 47.2, operatingMargin: -19.2, freeCashFlow: -0.1, debtToEquity: 0.18, currentRatio: 2.8, peRatio: 42.7, cashBalance: 0.3, capex: 0.1 },
+      macroContext: { inflationSensitivity: 'Low', interestRateSensitivity: 'Moderate', demandCycle: 'Voice commerce and customer service automation', supplyChainRisk: 'Low', aiDemand: 'Very high' },
+      patternSignals: [{ label: 'Historical pattern', description: 'Voice AI businesses often undergo sharp reratings when the market identifies a large addressable use-case and early commercial traction.' }, { label: 'Macro theory', description: 'When AI makes customer interaction cheaper and more scalable, early movers in voice and conversational systems can see rapid adoption curves.' }]
+    },
+    {
+      _id: 'opp-4', rank: 4, symbol: 'BBAI', name: 'BigBear.ai', price: 5.18, change: 2.1, founded: 2019,
+      headquarters: 'Columbia, MD', description: 'AI analytics and decision-support software for government and enterprise use cases', aiProducts: ['AI Decision Intelligence', 'Data Fusion', 'Predictive Analytics'],
+      metrics: { marketCap: 1.1, revenueTtm: 0.2, revenueGrowth: 22.7, grossMargin: 32.4, operatingMargin: -11.5, freeCashFlow: -0.1, debtToEquity: 0.25, currentRatio: 1.8, peRatio: 38.6, cashBalance: 0.2, capex: 0.0 },
+      macroContext: { inflationSensitivity: 'Low', interestRateSensitivity: 'Moderate', demandCycle: 'Government AI security and decision support', supplyChainRisk: 'Low', aiDemand: 'Moderate' },
+      patternSignals: [{ label: 'Historical pattern', description: 'Government and defense-linked AI providers can see distinct demand waves when agencies accelerate digital transformation programs.' }, { label: 'Macro theory', description: 'Public-sector procurement often trails private adoption, but once budgets unlock, the resulting contracts can create sustained demand.' }]
+    },
+    {
+      _id: 'opp-5', rank: 5, symbol: 'APP', name: 'AppLovin', price: 282.5, change: 1.7, founded: 2012,
+      headquarters: 'Palo Alto, CA', description: 'AI-driven mobile advertising and software platform', aiProducts: ['AXON', 'AdTech AI', 'Consumer Apps'],
+      metrics: { marketCap: 117, revenueTtm: 4.8, revenueGrowth: 22.1, grossMargin: 74.9, operatingMargin: 36.4, freeCashFlow: 2.6, debtToEquity: 0.13, currentRatio: 3.2, peRatio: 41.2, cashBalance: 3.4, capex: 0.5 },
+      macroContext: { inflationSensitivity: 'Low', interestRateSensitivity: 'Moderate', demandCycle: 'Digital ads and app monetisation', supplyChainRisk: 'Low', aiDemand: 'High' },
+      patternSignals: [{ label: 'Historical pattern', description: 'AI-driven ad-tech businesses often re-rate sharply when their algorithms improve monetisation and monetisable engagement.' }, { label: 'Macro theory', description: 'The most scalable ad platforms benefit when AI lifts conversion efficiency faster than ad spend expands.' }]
+    },
+    {
+      _id: 'opp-6', rank: 6, symbol: 'PD', name: 'PagerDuty', price: 21.6, change: 0.9, founded: 2009,
+      headquarters: 'San Francisco, CA', description: 'AI-enabled incident response and digital operations platform', aiProducts: ['AIOps', 'Ops Cloud', 'Incident Intelligence'],
+      metrics: { marketCap: 2.8, revenueTtm: 0.6, revenueGrowth: 10.4, grossMargin: 78.7, operatingMargin: 6.5, freeCashFlow: 0.2, debtToEquity: 0.15, currentRatio: 2.4, peRatio: 28.1, cashBalance: 0.8, capex: 0.1 },
+      macroContext: { inflationSensitivity: 'Low', interestRateSensitivity: 'Moderate', demandCycle: 'IT resilience and operational tooling', supplyChainRisk: 'Low', aiDemand: 'Moderate' },
+      patternSignals: [{ label: 'Historical pattern', description: 'Operations software often gains from increased automation and resilience budgets during uncertain macro periods.' }, { label: 'Macro theory', description: 'The value of digital operations tools tends to rise when organisations focus on uptime and risk reduction instead of pure growth spending.' }]
+    },
+    {
+      _id: 'opp-7', rank: 7, symbol: 'UPST', name: 'Upstart', price: 52.1, change: 2.4, founded: 2012,
+      headquarters: 'San Mateo, CA', description: 'AI lending platform for consumer credit decisions', aiProducts: ['AI Lending Model', 'Banking Analytics', 'Risk Assessment'],
+      metrics: { marketCap: 5.9, revenueTtm: 1.1, revenueGrowth: 13.4, grossMargin: 65.1, operatingMargin: 0.4, freeCashFlow: 0.2, debtToEquity: 1.1, currentRatio: 1.3, peRatio: 26.7, cashBalance: 0.9, capex: 0.1 },
+      macroContext: { inflationSensitivity: 'Moderate', interestRateSensitivity: 'High', demandCycle: 'Consumer credit and AI risk underwriting', supplyChainRisk: 'Moderate', aiDemand: 'High' },
+      patternSignals: [{ label: 'Historical pattern', description: 'Fintech models with AI underwriting can be highly sensitive to rates and credit conditions, but can re-rate when borrowing demand stabilises.' }, { label: 'Macro theory', description: 'AI improves underwriting precision, but macro credit conditions often remain the dominant driver of near-term performance.' }]
+    },
+    {
+      _id: 'opp-8', rank: 8, symbol: 'S', name: 'SentinelOne', price: 28.4, change: 1.6, founded: 2013,
+      headquarters: 'Mountain View, CA', description: 'AI-driven endpoint security and threat detection platform', aiProducts: ['Singularity', 'XDR', 'Autonomous Security'],
+      metrics: { marketCap: 9.7, revenueTtm: 0.8, revenueGrowth: 29.4, grossMargin: 77.1, operatingMargin: 6.3, freeCashFlow: 0.3, debtToEquity: 0.1, currentRatio: 1.9, peRatio: 45.2, cashBalance: 1.0, capex: 0.1 },
+      macroContext: { inflationSensitivity: 'Low', interestRateSensitivity: 'Moderate', demandCycle: 'Cybersecurity and autonomous protection', supplyChainRisk: 'Low', aiDemand: 'Very high' },
+      patternSignals: [{ label: 'Historical pattern', description: 'Cybersecurity vendors with AI automation often perform strongly when enterprises prioritise breach prevention and operational resilience.' }, { label: 'Macro theory', description: 'Defensive infrastructure is often more resilient in uncertain markets because the cost of an incident exceeds the cost of prevention.' }]
+    },
+    {
+      _id: 'opp-9', rank: 9, symbol: 'MDB', name: 'MongoDB', price: 315.0, change: 1.3, founded: 2007,
       headquarters: 'New York, NY', description: 'Database platform for modern application workloads', aiProducts: ['Atlas AI', 'Search', 'Data Platform'],
       metrics: { marketCap: 31, revenueTtm: 1.7, revenueGrowth: 18.2, grossMargin: 81.4, operatingMargin: 5.6, freeCashFlow: 0.5, debtToEquity: 0.02, currentRatio: 5.7, peRatio: 54.4, cashBalance: 1.6, capex: 0.2 },
       macroContext: { inflationSensitivity: 'Low', interestRateSensitivity: 'Moderate', demandCycle: 'Developer tooling and app modernization', supplyChainRisk: 'Low', aiDemand: 'High' },
       patternSignals: [{ label: 'Historical pattern', description: 'Developer tooling platforms often benefit when application modernization accelerates under digital transformation programs.' }, { label: 'Macro theory', description: 'Infrastructure software with recurring usage tends to reward adoption efficiency more than incremental GDP growth.' }]
     },
     {
-      _id: 'opp-3', rank: 3, symbol: 'DDOG', name: 'Datadog', price: 119.8, change: 0.8, founded: 2010,
+      _id: 'opp-10', rank: 10, symbol: 'DDOG', name: 'Datadog', price: 119.8, change: 0.8, founded: 2010,
       headquarters: 'New York, NY', description: 'Monitoring and observability for cloud-native systems', aiProducts: ['AI Observability', 'Security', 'Monitoring'],
       metrics: { marketCap: 48, revenueTtm: 2.8, revenueGrowth: 24.3, grossMargin: 79.1, operatingMargin: 18.1, freeCashFlow: 0.9, debtToEquity: 0.03, currentRatio: 2.0, peRatio: 45.5, cashBalance: 2.2, capex: 0.3 },
       macroContext: { inflationSensitivity: 'Low', interestRateSensitivity: 'Moderate', demandCycle: 'Cloud operations and reliability spend', supplyChainRisk: 'Low', aiDemand: 'Very high' },
       patternSignals: [{ label: 'Historical pattern', description: 'Monitoring and observability firms perform well when digital infrastructure complexity rises faster than traditional IT budgets.' }, { label: 'Macro theory', description: 'As cloud complexity grows, observability becomes a core operational cost rather than discretionary software spend.' }]
-    },
-    {
-      _id: 'opp-4', rank: 4, symbol: 'SNOW', name: 'Snowflake', price: 174.5, change: -0.6, founded: 2012,
-      headquarters: 'Bozeman, MT', description: 'Cloud data platform for analytics and AI workloads', aiProducts: ['Cortex AI', 'Data Cloud', 'ML Features'],
-      metrics: { marketCap: 58, revenueTtm: 3.6, revenueGrowth: 32.6, grossMargin: 68.5, operatingMargin: 6.7, freeCashFlow: 0.9, debtToEquity: 0.12, currentRatio: 1.9, peRatio: 58.4, cashBalance: 4.2, capex: 0.4 },
-      macroContext: { inflationSensitivity: 'Low', interestRateSensitivity: 'Moderate', demandCycle: 'Data infrastructure and analytics spending', supplyChainRisk: 'Low', aiDemand: 'Very high' },
-      patternSignals: [{ label: 'Historical pattern', description: 'Data cloud adoption often accelerates during periods when enterprises want to centralise AI and analytics workloads.' }, { label: 'Macro theory', description: 'A platform that lowers the cost of data access can become strategically important when AI compute expands.' }]
-    },
-    {
-      _id: 'opp-5', rank: 5, symbol: 'CRWD', name: 'CrowdStrike', price: 334.7, change: 0.5, founded: 2011,
-      headquarters: 'Austin, TX', description: 'Cybersecurity platform with AI-driven detection', aiProducts: ['Falcon', 'Threat Intelligence', 'AI Security'],
-      metrics: { marketCap: 87, revenueTtm: 4.8, revenueGrowth: 31.7, grossMargin: 76.8, operatingMargin: 19.4, freeCashFlow: 1.7, debtToEquity: 0.05, currentRatio: 1.5, peRatio: 54.8, cashBalance: 4.1, capex: 0.4 },
-      macroContext: { inflationSensitivity: 'Low', interestRateSensitivity: 'Moderate', demandCycle: 'Cybersecurity and compliance spending', supplyChainRisk: 'Low', aiDemand: 'High' },
-      patternSignals: [{ label: 'Historical pattern', description: 'Cybersecurity remains resilient during slower growth periods because breach risk continues even in downturns.' }, { label: 'Macro theory', description: 'Defensive digital infrastructure often benefits when organisations prioritise risk control during uncertain macro conditions.' }]
-    },
-    {
-      _id: 'opp-6', rank: 6, symbol: 'NET', name: 'Cloudflare', price: 72.8, change: 1.1, founded: 2009,
-      headquarters: 'San Francisco, CA', description: 'Edge network and AI-enabled security services', aiProducts: ['Workers AI', 'Security', 'Edge compute'],
-      metrics: { marketCap: 41, revenueTtm: 1.9, revenueGrowth: 29.1, grossMargin: 77.8, operatingMargin: 6.7, freeCashFlow: 0.4, debtToEquity: 0.03, currentRatio: 2.9, peRatio: 51.2, cashBalance: 1.6, capex: 0.3 },
-      macroContext: { inflationSensitivity: 'Low', interestRateSensitivity: 'Moderate', demandCycle: 'Edge infrastructure and security', supplyChainRisk: 'Low', aiDemand: 'High' },
-      patternSignals: [{ label: 'Historical pattern', description: 'Edge and security platforms can gain traction when digital distribution becomes more critical to enterprise resilience.' }, { label: 'Macro theory', description: 'Infrastructure needed for secure digital delivery often becomes strategically important in volatile markets.' }]
     }
-  ],
-  prices: [],
-  users: [],
-  watchlists: []
+  ];
+
+/**
+ * Setup database after prices are loaded
+ * Enriches raw company data with real price data
+ */
+const setupDatabase = () => {
+  if (!pricesInitialized) {
+    throw new Error('❌ Prices not initialized. Call initializePriceData() before setupDatabase()');
+  }
+
+  return {
+    companies: companiesRawData.map(company => 
+      enrichCompanyAccounting(company, pricesCache[company.symbol] || [])
+    ),
+    opportunityCompanies: opportunityCompaniesRawData.map(company => 
+      enrichCompanyAccounting(company, pricesCache[company.symbol] || [])
+    ),
+    prices: [],
+    users: [],
+    watchlists: []
+  };
 };
+
+let db = {};
 
 // Import routes
 import companiesRoutes from './routes/companies.js';
@@ -324,7 +549,7 @@ app.use((req, res, next) => {
   next();
 });
 
-console.log('✓ In-memory database initialized with 10 AI companies');
+console.log('✓ In-memory database initialized with 20 AI companies');
 
 // Routes
 app.use('/api/companies', companiesRoutes);
@@ -354,23 +579,18 @@ io.on('connection', (socket) => {
 // Store io instance for use in routes
 app.locals.io = io;
 
-// Simulate live price updates every 5 seconds
-setInterval(() => {
-  db.companies.forEach(company => {
-    // Random price fluctuation between -2% and +2%
-    const changePercent = (Math.random() - 0.5) * 4;
-    const priceChange = (company.price * changePercent) / 100;
-    
-    company.price = parseFloat((company.price + priceChange).toFixed(2));
-    company.change = parseFloat(changePercent.toFixed(2));
+const syncDatabasePrices = () => {
+  [...db.companies, ...db.opportunityCompanies].forEach(company => {
+    const history = pricesCache[company.symbol] || [];
+    const refreshedCompany = enrichCompanyAccounting(company, history);
+    Object.assign(company, refreshedCompany);
+    const refreshError = priceDataService.getLatestPriceErrors()[company.symbol];
+    if (refreshError && history.length > 0) {
+      company.marketData.dataStatus = 'stale';
+      company.marketData.lastError = refreshError;
+    }
   });
-  
-  // Broadcast price updates to all connected clients
-  io.emit('live-prices', {
-    companies: db.companies,
-    timestamp: new Date()
-  });
-}, 5000);
+};
 
 // Error handling middleware
 app.use((err, req, res, next) => {
@@ -382,8 +602,21 @@ app.use((err, req, res, next) => {
 });
 
 const PORT = process.env.PORT || 5000;
-server.listen(PORT, () => {
-  console.log(`
+
+// Start server with async initialization
+(async () => {
+  // Step 1: Load or fetch real price data
+  await initializePriceData();
+
+  // Step 2: Initialize database with enriched company data
+  db = setupDatabase();
+
+  // Step 3: Schedule daily refresh
+  scheduleDailyRefresh();
+
+  // Step 4: Start listening
+  server.listen(PORT, () => {
+    console.log(`
 ╔════════════════════════════════════════════════════╗
 ║   🤖 AI Stock Tracker - Backend Server Started     ║
 ╚════════════════════════════════════════════════════╝
@@ -395,12 +628,13 @@ server.listen(PORT, () => {
   - POST /api/auth/register
   - POST /api/auth/login
   
-✓ Live price updates enabled (every 5 seconds)
+✓ Live price updates use the daily Twelve Data refresh
 ✓ WebSocket connection active on port ${PORT}
-✓ In-memory database with 10 AI companies
+✓ Real price data loaded: ${db.companies.length} companies with historical prices
 
 Ready to connect frontend at http://localhost:5173
   `);
-});
+  });
+})();
 
 export default app;
