@@ -14,7 +14,7 @@ const SOCKET_URL = import.meta.env.VITE_SOCKET_URL || 'http://localhost:5000';
 
 const clamp = (value, min, max) => Math.min(Math.max(value, min), max);
 
-const formatBillions = (value) => `$${Number(value || 0).toFixed(2)}B`;
+const formatBillions = (value) => value == null ? 'Unavailable' : `$${Number(value).toFixed(2)}B`;
 
 const patternFormula = {
   base: 50,
@@ -350,6 +350,14 @@ function App() {
 
                 <div className="accounting-section">
                   <h3>Quarterly accounting data</h3>
+                  {selectedCompany.accounting?.dataStatus === 'unavailable' || (
+                    !selectedCompany.accounting?.incomeStatement?.length &&
+                    !selectedCompany.accounting?.balanceSheet?.length
+                  ) ? (
+                    <div className="chart-empty">
+                      Quarterly accounting data is unavailable until Twelve Data fundamentals are fetched.
+                    </div>
+                  ) : (
                   <div className="accounting-grid">
                     <div className="statement-panel">
                       <h4>Statement of profit and loss</h4>
@@ -411,6 +419,7 @@ function App() {
                       </div>
                     </div>
                   </div>
+                  )}
                 </div>
 
                 <div className="context-section">

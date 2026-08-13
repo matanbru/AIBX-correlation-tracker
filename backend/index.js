@@ -4,6 +4,7 @@ import dotenv from 'dotenv';
 import { Server as SocketIOServer } from 'socket.io';
 import http from 'http';
 import priceDataService from './services/priceDataService.js';
+import fundamentalsDataService from './services/fundamentalsDataService.js';
 
 dotenv.config();
 
@@ -14,6 +15,7 @@ const quarterlyLabels = ['Q2 2026', 'Q1 2026', 'Q4 2025', 'Q3 2025'];
 // ============================================================================
 
 let pricesCache = {};
+let fundamentalsCache = {};
 let pricesInitialized = false;
 
 const initializePriceData = async () => {
@@ -26,6 +28,7 @@ const initializePriceData = async () => {
     console.log('========================================');
     
     pricesCache = priceDataService.loadPricesFromDisk();
+    fundamentalsCache = fundamentalsDataService.loadFundamentalsFromDisk();
     pricesInitialized = true;
     
     console.log('\n✅ Price initialization complete\n');
@@ -69,73 +72,7 @@ const scheduleDailyRefresh = () => {
   }, msUntilRefresh);
 };
 
-// ============================================================================
-// BUILD QUARTERLY ACCOUNTING
-// ============================================================================
-
-const buildQuarterlyAccounting = (company) => {
- const revenueTtm = Number(company.metrics?.revenueTtm || 0);
-  const revenueGrowth = Number(company.metrics?.revenueGrowth || 0);
-  const grossMargin = Number(company.metrics?.grossMargin || 0);
-  const operatingMargin = Number(company.metrics?.operatingMargin || 0);
-  const cashBalance = Number(company.metrics?.cashBalance || 0);
-  const debtToEquity = Number(company.metrics?.debtToEquity || 0);
-  const currentRatio = Number(company.metrics?.currentRatio || 0);
-  const marketCap = Number(company.metrics?.marketCap || 0);
-
-  const quarterlyRevenue = [
-    revenueTtm * (1 + (revenueGrowth / 100) * 0.28),
-    revenueTtm * (1 + (revenueGrowth / 100) * 0.12),
-    revenueTtm * (1 + (revenueGrowth / 100) * 0.04),
-    revenueTtm * (1 - (revenueGrowth / 100) * 0.05)
-  ];
-
-  const incomeStatement = quarterlyLabels.map((label, index) => {
-    const revenue = quarterlyRevenue[index];
-    const grossProfit = revenue * (grossMargin / 100);
-    const operatingIncome = revenue * (operatingMargin / 100);
-    const netIncome = operatingIncome * (0.42 + (marketCap > 500 ? 0.12 : 0));
-    const ebitda = operatingIncome + (revenue * 0.08);
-
-    return {
-      quarter: label,
-      revenue: Number(revenue.toFixed(2)),
-      grossProfit: Number(grossProfit.toFixed(2)),
-      operatingIncome: Number(operatingIncome.toFixed(2)),
-      netIncome: Number(netIncome.toFixed(2)),
-      ebitda: Number(ebitda.toFixed(2))
-    };
-  });
-
-  const balanceSheet = quarterlyLabels.map((label, index) => {
-    const cash = cashBalance * (1 + index * 0.04);
-    const currentAssets = cash * (1.4 + currentRatio * 0.45);
-    const currentLiabilities = currentAssets / Math.max(currentRatio, 1.1);
-    const longTermDebt = (debtToEquity || 0.2) * (marketCap * 0.32) / 10;
-    const totalLiabilities = currentLiabilities + longTermDebt;
-    const totalAssets = currentAssets + (marketCap * 1.5 + cashBalance * 2.8);
-    const shareholdersEquity = totalAssets - totalLiabilities;
-
-    return {
-      quarter: label,
-      cash: Number(cash.toFixed(2)),
-      currentAssets: Number(currentAssets.toFixed(2)),
-      currentLiabilities: Number(currentLiabilities.toFixed(2)),
-      longTermDebt: Number(longTermDebt.toFixed(2)),
-      totalAssets: Number(totalAssets.toFixed(2)),
-      totalLiabilities: Number(totalLiabilities.toFixed(2)),
-      shareholdersEquity: Number(shareholdersEquity.toFixed(2))
-    };
-  });
-
-  return {
-    reportingPeriod: 'Last 4 quarters',
-    incomeStatement,
-    balanceSheet
-  };
-};
-
-const enrichCompanyAccounting = (company, priceData = []) => {
+const enrichCompanyAccounting = (company, priceData = [], accounting = null) => {
   const sharesOutstanding = Number(company.metrics?.sharesOutstanding ?? company.sharesOutstanding ?? Math.max(1, ((company.metrics?.marketCap || company.price || 1) * 1.25) / Math.max(company.price || 1, 1)));
   
   // Use real price data if available, otherwise empty array (error state)
@@ -175,7 +112,13 @@ const enrichCompanyAccounting = (company, priceData = []) => {
       dataSource: 'Twelve Data API',
       lastUpdate: alignedSeries.length > 0 ? alignedSeries[alignedSeries.length - 1].date : 'N/A'
     },
-    accounting: buildQuarterlyAccounting(company)
+    accounting: accounting || {
+      reportingPeriod: 'Unavailable',
+      dataSource: 'Twelve Data fundamentals API',
+      dataStatus: 'unavailable',
+      incomeStatement: [],
+      balanceSheet: []
+    }
   };
 };
 
@@ -511,10 +454,10 @@ const setupDatabase = () => {
 
   return {
     companies: companiesRawData.map(company => 
-      enrichCompanyAccounting(company, pricesCache[company.symbol] || [])
+      enrichCompanyAccounting(company, pricesCache[company.symbol] || [], fundamentalsCache[company.symbol])
     ),
     opportunityCompanies: opportunityCompaniesRawData.map(company => 
-      enrichCompanyAccounting(company, pricesCache[company.symbol] || [])
+      enrichCompanyAccounting(company, pricesCache[company.symbol] || [], fundamentalsCache[company.symbol])
     ),
     prices: [],
     users: [],

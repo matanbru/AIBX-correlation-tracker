@@ -1,0 +1,1690 @@
+{
+  "NVDA": {
+    "reportingPeriod": "Last 4 reported quarters",
+    "dataSource": "SEC Company Facts XBRL API",
+    "fetchedAt": "2026-08-13T20:16:26.476Z",
+    "dataStatus": "available",
+    "incomeStatement": [
+      {
+        "quarter": "2026-04-26",
+        "revenue": null,
+        "grossProfit": 61.16,
+        "operatingIncome": 53.54,
+        "netIncome": 58.32,
+        "ebitda": null
+      },
+      {
+        "quarter": "2026-01-25",
+        "revenue": null,
+        "grossProfit": 153.46,
+        "operatingIncome": 130.39,
+        "netIncome": 120.07,
+        "ebitda": null
+      },
+      {
+        "quarter": "2025-10-26",
+        "revenue": null,
+        "grossProfit": 102.37,
+        "operatingIncome": 86.09,
+        "netIncome": 77.11,
+        "ebitda": null
+      }
+    ],
+    "balanceSheet": [
+      {
+        "quarter": "2026-04-26",
+        "cash": 13.24,
+        "currentAssets": 151,
+        "currentLiabilities": 43.88,
+        "longTermDebt": 7.47,
+        "totalAssets": 259.47,
+        "totalLiabilities": 64,
+        "shareholdersEquity": 195.47
+      },
+      {
+        "quarter": "2026-01-25",
+        "cash": 10.61,
+        "currentAssets": 125.61,
+        "currentLiabilities": 32.16,
+        "longTermDebt": 7.47,
+        "totalAssets": 206.8,
+        "totalLiabilities": 49.51,
+        "shareholdersEquity": 157.29
+      },
+      {
+        "quarter": "2025-10-26",
+        "cash": 11.49,
+        "currentAssets": 116.49,
+        "currentLiabilities": 26.07,
+        "longTermDebt": 7.47,
+        "totalAssets": 161.15,
+        "totalLiabilities": 42.25,
+        "shareholdersEquity": 118.9
+      }
+    ]
+  },
+  "MSFT": {
+    "reportingPeriod": "Last 4 reported quarters",
+    "dataSource": "SEC Company Facts XBRL API",
+    "fetchedAt": "2026-08-13T20:16:27.022Z",
+    "dataStatus": "available",
+    "incomeStatement": [
+      {
+        "quarter": "2026-06-30",
+        "revenue": 331.84,
+        "grossProfit": 225.47,
+        "operatingIncome": 155.24,
+        "netIncome": 133.75,
+        "ebitda": null
+      },
+      {
+        "quarter": "2026-03-31",
+        "revenue": 241.83,
+        "grossProfit": 164.98,
+        "operatingIncome": 114.63,
+        "netIncome": 97.98,
+        "ebitda": null
+      },
+      {
+        "quarter": "2025-12-31",
+        "revenue": 158.95,
+        "grossProfit": 108.92,
+        "operatingIncome": 76.24,
+        "netIncome": 66.2,
+        "ebitda": null
+      },
+      {
+        "quarter": "2025-09-30",
+        "revenue": 77.67,
+        "grossProfit": 53.63,
+        "operatingIncome": 37.96,
+        "netIncome": 27.75,
+        "ebitda": null
+      }
+    ],
+    "balanceSheet": [
+      {
+        "quarter": "2026-06-30",
+        "cash": 20.93,
+        "currentAssets": 207.71,
+        "currentLiabilities": 168.82,
+        "longTermDebt": 31.07,
+        "totalAssets": 758.38,
+        "totalLiabilities": 315.99,
+        "shareholdersEquity": 442.39
+      },
+      {
+        "quarter": "2026-03-31",
+        "cash": 32.1,
+        "currentAssets": 175.33,
+        "currentLiabilities": 136.66,
+        "longTermDebt": 31.42,
+        "totalAssets": 694.23,
+        "totalLiabilities": 279.86,
+        "shareholdersEquity": 414.37
+      },
+      {
+        "quarter": "2025-12-31",
+        "cash": 24.3,
+        "currentAssets": 180.19,
+        "currentLiabilities": 130,
+        "longTermDebt": 35.42,
+        "totalAssets": 665.3,
+        "totalLiabilities": 274.43,
+        "shareholdersEquity": 390.88
+      },
+      {
+        "quarter": "2025-09-30",
+        "cash": 28.85,
+        "currentAssets": 189.07,
+        "currentLiabilities": 135,
+        "longTermDebt": 35.38,
+        "totalAssets": 636.35,
+        "totalLiabilities": 273.27,
+        "shareholdersEquity": 363.08
+      }
+    ]
+  },
+  "GOOGL": {
+    "reportingPeriod": "Last 4 reported quarters",
+    "dataSource": "SEC Company Facts XBRL API",
+    "fetchedAt": "2026-08-13T20:16:27.613Z",
+    "dataStatus": "available",
+    "incomeStatement": [
+      {
+        "quarter": "2026-06-30",
+        "revenue": null,
+        "grossProfit": null,
+        "operatingIncome": 80.47,
+        "netIncome": 174.77,
+        "ebitda": null
+      },
+      {
+        "quarter": "2026-03-31",
+        "revenue": null,
+        "grossProfit": null,
+        "operatingIncome": 39.7,
+        "netIncome": 62.58,
+        "ebitda": null
+      },
+      {
+        "quarter": "2025-12-31",
+        "revenue": null,
+        "grossProfit": null,
+        "operatingIncome": 129.04,
+        "netIncome": 132.17,
+        "ebitda": null
+      }
+    ],
+    "balanceSheet": [
+      {
+        "quarter": "2026-06-30",
+        "cash": 55.91,
+        "currentAssets": 343.52,
+        "currentLiabilities": 126.11,
+        "longTermDebt": 98.17,
+        "totalAssets": 921.98,
+        "totalLiabilities": 281.5,
+        "shareholdersEquity": 640.48
+      },
+      {
+        "quarter": "2026-03-31",
+        "cash": 38.06,
+        "currentAssets": 213.75,
+        "currentLiabilities": 111.19,
+        "longTermDebt": 77.5,
+        "totalAssets": 703.92,
+        "totalLiabilities": 225.17,
+        "shareholdersEquity": 478.75
+      },
+      {
+        "quarter": "2025-12-31",
+        "cash": 30.71,
+        "currentAssets": 206.04,
+        "currentLiabilities": 102.75,
+        "longTermDebt": 46.55,
+        "totalAssets": 595.28,
+        "totalLiabilities": 180.02,
+        "shareholdersEquity": 415.26
+      }
+    ]
+  },
+  "AMZN": {
+    "reportingPeriod": "Last 4 reported quarters",
+    "dataSource": "SEC Company Facts XBRL API",
+    "fetchedAt": "2026-08-13T20:16:28.186Z",
+    "dataStatus": "available",
+    "incomeStatement": [
+      {
+        "quarter": "2026-06-30",
+        "revenue": 382.13,
+        "grossProfit": null,
+        "operatingIncome": 51.31,
+        "netIncome": 135.28,
+        "ebitda": null
+      },
+      {
+        "quarter": "2026-03-31",
+        "revenue": 181.52,
+        "grossProfit": null,
+        "operatingIncome": 23.85,
+        "netIncome": 90.8,
+        "ebitda": null
+      },
+      {
+        "quarter": "2025-12-31",
+        "revenue": 716.92,
+        "grossProfit": null,
+        "operatingIncome": 79.97,
+        "netIncome": 77.67,
+        "ebitda": null
+      }
+    ],
+    "balanceSheet": [
+      {
+        "quarter": "2026-06-30",
+        "cash": 78.21,
+        "currentAssets": 249.26,
+        "currentLiabilities": 241.27,
+        "longTermDebt": 128.89,
+        "totalAssets": 1095.69,
+        "totalLiabilities": null,
+        "shareholdersEquity": 551.62
+      },
+      {
+        "quarter": "2026-03-31",
+        "cash": 101.82,
+        "currentAssets": 255.16,
+        "currentLiabilities": 216.76,
+        "longTermDebt": 119.07,
+        "totalAssets": 916.63,
+        "totalLiabilities": null,
+        "shareholdersEquity": 441.91
+      },
+      {
+        "quarter": "2025-12-31",
+        "cash": 86.81,
+        "currentAssets": 229.08,
+        "currentLiabilities": 218,
+        "longTermDebt": 65.65,
+        "totalAssets": 818.04,
+        "totalLiabilities": null,
+        "shareholdersEquity": 411.06
+      }
+    ]
+  },
+  "META": {
+    "reportingPeriod": "Last 4 reported quarters",
+    "dataSource": "SEC Company Facts XBRL API",
+    "fetchedAt": "2026-08-13T20:16:28.676Z",
+    "dataStatus": "available",
+    "incomeStatement": [
+      {
+        "quarter": "2026-06-30",
+        "revenue": 117.11,
+        "grossProfit": null,
+        "operatingIncome": 41.65,
+        "netIncome": 42.62,
+        "ebitda": null
+      },
+      {
+        "quarter": "2026-03-31",
+        "revenue": 56.31,
+        "grossProfit": null,
+        "operatingIncome": 22.87,
+        "netIncome": 26.77,
+        "ebitda": null
+      },
+      {
+        "quarter": "2025-12-31",
+        "revenue": 200.97,
+        "grossProfit": null,
+        "operatingIncome": 83.28,
+        "netIncome": 60.46,
+        "ebitda": null
+      }
+    ],
+    "balanceSheet": [
+      {
+        "quarter": "2026-06-30",
+        "cash": 15.46,
+        "currentAssets": 125.47,
+        "currentLiabilities": 56.38,
+        "longTermDebt": 83.66,
+        "totalAssets": 449.96,
+        "totalLiabilities": 188.74,
+        "shareholdersEquity": 261.22
+      },
+      {
+        "quarter": "2026-03-31",
+        "cash": 23.43,
+        "currentAssets": 109.77,
+        "currentLiabilities": 46.75,
+        "longTermDebt": 58.75,
+        "totalAssets": 395.25,
+        "totalLiabilities": 151.57,
+        "shareholdersEquity": 243.68
+      },
+      {
+        "quarter": "2025-12-31",
+        "cash": 35.87,
+        "currentAssets": 108.72,
+        "currentLiabilities": 41.84,
+        "longTermDebt": 58.74,
+        "totalAssets": 366.02,
+        "totalLiabilities": 148.78,
+        "shareholdersEquity": 217.24
+      }
+    ]
+  },
+  "TSLA": {
+    "reportingPeriod": "Last 4 reported quarters",
+    "dataSource": "SEC Company Facts XBRL API",
+    "fetchedAt": "2026-08-13T20:16:29.499Z",
+    "dataStatus": "available",
+    "incomeStatement": [
+      {
+        "quarter": "2026-06-30",
+        "revenue": 50.62,
+        "grossProfit": 9.47,
+        "operatingIncome": 1.34,
+        "netIncome": 1.59,
+        "ebitda": null
+      },
+      {
+        "quarter": "2026-03-31",
+        "revenue": 22.39,
+        "grossProfit": 4.72,
+        "operatingIncome": 0.94,
+        "netIncome": 0.48,
+        "ebitda": null
+      },
+      {
+        "quarter": "2025-12-31",
+        "revenue": 94.83,
+        "grossProfit": 17.09,
+        "operatingIncome": 4.36,
+        "netIncome": 3.79,
+        "ebitda": null
+      },
+      {
+        "quarter": "2014-09-30",
+        "revenue": null,
+        "grossProfit": null,
+        "operatingIncome": null,
+        "netIncome": null,
+        "ebitda": null
+      }
+    ],
+    "balanceSheet": [
+      {
+        "quarter": "2026-06-30",
+        "cash": 15.22,
+        "currentAssets": 68.76,
+        "currentLiabilities": 35.42,
+        "longTermDebt": null,
+        "totalAssets": 148.52,
+        "totalLiabilities": 61.01,
+        "shareholdersEquity": 86.86
+      },
+      {
+        "quarter": "2026-03-31",
+        "cash": 16.6,
+        "currentAssets": 69.75,
+        "currentLiabilities": 34.14,
+        "longTermDebt": null,
+        "totalAssets": 143.72,
+        "totalLiabilities": 58.92,
+        "shareholdersEquity": 84.12
+      },
+      {
+        "quarter": "2025-12-31",
+        "cash": 16.51,
+        "currentAssets": 68.64,
+        "currentLiabilities": 31.71,
+        "longTermDebt": null,
+        "totalAssets": 137.81,
+        "totalLiabilities": 54.94,
+        "shareholdersEquity": 82.14
+      },
+      {
+        "quarter": "2014-09-30",
+        "cash": 2.37,
+        "currentAssets": 3.36,
+        "currentLiabilities": 1.84,
+        "longTermDebt": 0.6,
+        "totalAssets": 5.44,
+        "totalLiabilities": 4.42,
+        "shareholdersEquity": 0.96
+      }
+    ]
+  },
+  "AMD": {
+    "reportingPeriod": "Last 4 reported quarters",
+    "dataSource": "SEC Company Facts XBRL API",
+    "fetchedAt": "2026-08-13T20:16:29.984Z",
+    "dataStatus": "available",
+    "incomeStatement": [
+      {
+        "quarter": "2026-06-27",
+        "revenue": 21.79,
+        "grossProfit": 11.62,
+        "operatingIncome": 3.47,
+        "netIncome": 3.68,
+        "ebitda": null
+      },
+      {
+        "quarter": "2026-03-28",
+        "revenue": 10.25,
+        "grossProfit": 5.42,
+        "operatingIncome": 1.48,
+        "netIncome": 1.38,
+        "ebitda": null
+      },
+      {
+        "quarter": "2025-12-27",
+        "revenue": 34.64,
+        "grossProfit": 17.15,
+        "operatingIncome": 3.69,
+        "netIncome": 4.33,
+        "ebitda": null
+      }
+    ],
+    "balanceSheet": [
+      {
+        "quarter": "2026-06-27",
+        "cash": 5.09,
+        "currentAssets": 31.52,
+        "currentLiabilities": 12.08,
+        "longTermDebt": 2.35,
+        "totalAssets": 84.46,
+        "totalLiabilities": null,
+        "shareholdersEquity": 67.22
+      },
+      {
+        "quarter": "2026-03-28",
+        "cash": 5.58,
+        "currentAssets": 28.63,
+        "currentLiabilities": 10.51,
+        "longTermDebt": 2.35,
+        "totalAssets": 79.64,
+        "totalLiabilities": null,
+        "shareholdersEquity": 64.46
+      },
+      {
+        "quarter": "2025-12-27",
+        "cash": 5.54,
+        "currentAssets": 26.95,
+        "currentLiabilities": 9.46,
+        "longTermDebt": 2.35,
+        "totalAssets": 76.93,
+        "totalLiabilities": null,
+        "shareholdersEquity": 63
+      }
+    ]
+  },
+  "CRM": {
+    "reportingPeriod": "Last 4 reported quarters",
+    "dataSource": "SEC Company Facts XBRL API",
+    "fetchedAt": "2026-08-13T20:16:30.532Z",
+    "dataStatus": "available",
+    "incomeStatement": [
+      {
+        "quarter": "2026-04-30",
+        "revenue": 11.13,
+        "grossProfit": 8.56,
+        "operatingIncome": 2.35,
+        "netIncome": 2.11,
+        "ebitda": null
+      },
+      {
+        "quarter": "2026-01-31",
+        "revenue": 41.52,
+        "grossProfit": 32.26,
+        "operatingIncome": 8.33,
+        "netIncome": 7.46,
+        "ebitda": null
+      },
+      {
+        "quarter": "2025-10-31",
+        "revenue": 30.32,
+        "grossProfit": 23.56,
+        "operatingIncome": 6.46,
+        "netIncome": 5.51,
+        "ebitda": null
+      }
+    ],
+    "balanceSheet": [
+      {
+        "quarter": "2026-04-30",
+        "cash": 8.94,
+        "currentAssets": 21.61,
+        "currentLiabilities": 27.5,
+        "longTermDebt": 39.28,
+        "totalAssets": 106.68,
+        "totalLiabilities": 72.44,
+        "shareholdersEquity": 34.23
+      },
+      {
+        "quarter": "2026-01-31",
+        "cash": 7.33,
+        "currentAssets": 28.22,
+        "currentLiabilities": 37.12,
+        "longTermDebt": 10.44,
+        "totalAssets": 112.31,
+        "totalLiabilities": 53.16,
+        "shareholdersEquity": 59.14
+      },
+      {
+        "quarter": "2025-10-31",
+        "cash": 8.98,
+        "currentAssets": 21.06,
+        "currentLiabilities": 21.41,
+        "longTermDebt": 8.44,
+        "totalAssets": 95.14,
+        "totalLiabilities": 35.12,
+        "shareholdersEquity": 60.02
+      }
+    ]
+  },
+  "SAP": {
+    "reportingPeriod": "Last 4 reported quarters",
+    "dataSource": "SEC Company Facts XBRL API",
+    "fetchedAt": "2026-08-13T20:18:38.386Z",
+    "dataStatus": "unavailable",
+    "incomeStatement": [],
+    "balanceSheet": []
+  },
+  "IBM": {
+    "reportingPeriod": "Last 4 reported quarters",
+    "dataSource": "SEC Company Facts XBRL API",
+    "fetchedAt": "2026-08-13T20:16:31.479Z",
+    "dataStatus": "available",
+    "incomeStatement": [
+      {
+        "quarter": "2026-06-30",
+        "revenue": 33.08,
+        "grossProfit": 18.86,
+        "operatingIncome": null,
+        "netIncome": 3.38,
+        "ebitda": null
+      },
+      {
+        "quarter": "2026-03-31",
+        "revenue": 15.92,
+        "grossProfit": 8.95,
+        "operatingIncome": null,
+        "netIncome": 1.22,
+        "ebitda": null
+      },
+      {
+        "quarter": "2025-12-31",
+        "revenue": 67.53,
+        "grossProfit": 39.3,
+        "operatingIncome": null,
+        "netIncome": 10.59,
+        "ebitda": null
+      }
+    ],
+    "balanceSheet": [
+      {
+        "quarter": "2026-06-30",
+        "cash": 7.17,
+        "currentAssets": 28.4,
+        "currentLiabilities": 35.91,
+        "longTermDebt": 56.21,
+        "totalAssets": 152.1,
+        "totalLiabilities": 117.56,
+        "shareholdersEquity": 34.45
+      },
+      {
+        "quarter": "2026-03-31",
+        "cash": 10.82,
+        "currentAssets": 31.91,
+        "currentLiabilities": 40.1,
+        "longTermDebt": 57.71,
+        "totalAssets": 156.23,
+        "totalLiabilities": 123.17,
+        "shareholdersEquity": 32.97
+      },
+      {
+        "quarter": "2025-12-31",
+        "cash": 13.59,
+        "currentAssets": 36.94,
+        "currentLiabilities": 38.66,
+        "longTermDebt": 54.84,
+        "totalAssets": 151.88,
+        "totalLiabilities": 119.14,
+        "shareholdersEquity": 32.65
+      }
+    ]
+  },
+  "JPM": {
+    "reportingPeriod": "Last 4 reported quarters",
+    "dataSource": "SEC Company Facts XBRL API",
+    "fetchedAt": "2026-08-13T20:16:33.421Z",
+    "dataStatus": "available",
+    "incomeStatement": [
+      {
+        "quarter": "2026-06-30",
+        "revenue": null,
+        "grossProfit": null,
+        "operatingIncome": null,
+        "netIncome": 37.65,
+        "ebitda": null
+      },
+      {
+        "quarter": "2026-03-31",
+        "revenue": null,
+        "grossProfit": null,
+        "operatingIncome": null,
+        "netIncome": 16.49,
+        "ebitda": null
+      },
+      {
+        "quarter": "2025-12-31",
+        "revenue": 182.45,
+        "grossProfit": null,
+        "operatingIncome": null,
+        "netIncome": 57.05,
+        "ebitda": null
+      },
+      {
+        "quarter": "2018-12-31",
+        "revenue": null,
+        "grossProfit": null,
+        "operatingIncome": null,
+        "netIncome": null,
+        "ebitda": null
+      }
+    ],
+    "balanceSheet": [
+      {
+        "quarter": "2026-06-30",
+        "cash": null,
+        "currentAssets": null,
+        "currentLiabilities": null,
+        "longTermDebt": null,
+        "totalAssets": 5015.07,
+        "totalLiabilities": 4640.47,
+        "shareholdersEquity": 374.6
+      },
+      {
+        "quarter": "2026-03-31",
+        "cash": null,
+        "currentAssets": null,
+        "currentLiabilities": null,
+        "longTermDebt": null,
+        "totalAssets": 4900.48,
+        "totalLiabilities": 4536.44,
+        "shareholdersEquity": 364.04
+      },
+      {
+        "quarter": "2025-12-31",
+        "cash": null,
+        "currentAssets": null,
+        "currentLiabilities": null,
+        "longTermDebt": null,
+        "totalAssets": 4424.9,
+        "totalLiabilities": 4062.46,
+        "shareholdersEquity": 362.44
+      },
+      {
+        "quarter": "2018-12-31",
+        "cash": 278.79,
+        "currentAssets": null,
+        "currentLiabilities": null,
+        "longTermDebt": null,
+        "totalAssets": 2622.53,
+        "totalLiabilities": 2366.02,
+        "shareholdersEquity": 256.51
+      }
+    ]
+  },
+  "V": {
+    "reportingPeriod": "Last 4 reported quarters",
+    "dataSource": "SEC Company Facts XBRL API",
+    "fetchedAt": "2026-08-13T20:16:33.927Z",
+    "dataStatus": "available",
+    "incomeStatement": [
+      {
+        "quarter": "2026-03-31",
+        "revenue": 22.13,
+        "grossProfit": null,
+        "operatingIncome": 13.97,
+        "netIncome": 11.87,
+        "ebitda": null
+      },
+      {
+        "quarter": "2025-12-31",
+        "revenue": 10.9,
+        "grossProfit": null,
+        "operatingIncome": 6.74,
+        "netIncome": 5.85,
+        "ebitda": null
+      },
+      {
+        "quarter": "2025-09-30",
+        "revenue": 40,
+        "grossProfit": null,
+        "operatingIncome": 23.99,
+        "netIncome": 20.06,
+        "ebitda": null
+      },
+      {
+        "quarter": "2011-09-30",
+        "revenue": null,
+        "grossProfit": null,
+        "operatingIncome": null,
+        "netIncome": null,
+        "ebitda": null
+      }
+    ],
+    "balanceSheet": [
+      {
+        "quarter": "2026-03-31",
+        "cash": 12.4,
+        "currentAssets": 31.63,
+        "currentLiabilities": 29.08,
+        "longTermDebt": 22.42,
+        "totalAssets": 95.05,
+        "totalLiabilities": 59.39,
+        "shareholdersEquity": null
+      },
+      {
+        "quarter": "2025-12-31",
+        "cash": 14.76,
+        "currentAssets": 35,
+        "currentLiabilities": 31.49,
+        "longTermDebt": 19.59,
+        "totalAssets": 96.81,
+        "totalLiabilities": 58.04,
+        "shareholdersEquity": null
+      },
+      {
+        "quarter": "2025-09-30",
+        "cash": 17.16,
+        "currentAssets": 37.77,
+        "currentLiabilities": 35.05,
+        "longTermDebt": 19.6,
+        "totalAssets": 99.63,
+        "totalLiabilities": 61.72,
+        "shareholdersEquity": null
+      },
+      {
+        "quarter": "2011-09-30",
+        "cash": 2.13,
+        "currentAssets": 9.19,
+        "currentLiabilities": 3.45,
+        "longTermDebt": null,
+        "totalAssets": 34.76,
+        "totalLiabilities": 8.32,
+        "shareholdersEquity": 26.44
+      }
+    ]
+  },
+  "PYPL": {
+    "reportingPeriod": "Last 4 reported quarters",
+    "dataSource": "SEC Company Facts XBRL API",
+    "fetchedAt": "2026-08-13T20:16:34.298Z",
+    "dataStatus": "available",
+    "incomeStatement": [
+      {
+        "quarter": "2026-03-31",
+        "revenue": null,
+        "grossProfit": null,
+        "operatingIncome": 1.49,
+        "netIncome": 1.11,
+        "ebitda": null
+      },
+      {
+        "quarter": "2025-12-31",
+        "revenue": null,
+        "grossProfit": null,
+        "operatingIncome": 6.07,
+        "netIncome": 5.23,
+        "ebitda": null
+      },
+      {
+        "quarter": "2025-09-30",
+        "revenue": null,
+        "grossProfit": null,
+        "operatingIncome": 4.55,
+        "netIncome": 3.8,
+        "ebitda": null
+      }
+    ],
+    "balanceSheet": [
+      {
+        "quarter": "2026-03-31",
+        "cash": 6.98,
+        "currentAssets": 59.99,
+        "currentLiabilities": 47.64,
+        "longTermDebt": 9.41,
+        "totalAssets": 80.55,
+        "totalLiabilities": 60.52,
+        "shareholdersEquity": 20.02
+      },
+      {
+        "quarter": "2025-12-31",
+        "cash": 8.05,
+        "currentAssets": 59.76,
+        "currentLiabilities": 46.44,
+        "longTermDebt": 9.99,
+        "totalAssets": 80.17,
+        "totalLiabilities": 59.92,
+        "shareholdersEquity": 20.26
+      },
+      {
+        "quarter": "2025-09-30",
+        "cash": 8.99,
+        "currentAssets": 60.18,
+        "currentLiabilities": 44.92,
+        "longTermDebt": 11.28,
+        "totalAssets": 79.8,
+        "totalLiabilities": 59.6,
+        "shareholdersEquity": 20.2
+      }
+    ]
+  },
+  "ORCL": {
+    "reportingPeriod": "Last 4 reported quarters",
+    "dataSource": "SEC Company Facts XBRL API",
+    "fetchedAt": "2026-08-13T20:16:34.703Z",
+    "dataStatus": "available",
+    "incomeStatement": [
+      {
+        "quarter": "2026-05-31",
+        "revenue": 67.36,
+        "grossProfit": null,
+        "operatingIncome": 20.61,
+        "netIncome": 17.09,
+        "ebitda": null
+      },
+      {
+        "quarter": "2026-02-28",
+        "revenue": 48.17,
+        "grossProfit": null,
+        "operatingIncome": 14.47,
+        "netIncome": 12.78,
+        "ebitda": null
+      },
+      {
+        "quarter": "2025-11-30",
+        "revenue": 30.98,
+        "grossProfit": null,
+        "operatingIncome": 9.01,
+        "netIncome": 9.06,
+        "ebitda": null
+      },
+      {
+        "quarter": "2025-08-31",
+        "revenue": 14.93,
+        "grossProfit": null,
+        "operatingIncome": 4.28,
+        "netIncome": 2.93,
+        "ebitda": null
+      }
+    ],
+    "balanceSheet": [
+      {
+        "quarter": "2026-05-31",
+        "cash": 31.29,
+        "currentAssets": 46.57,
+        "currentLiabilities": 41.76,
+        "longTermDebt": null,
+        "totalAssets": 261.76,
+        "totalLiabilities": null,
+        "shareholdersEquity": 42.51
+      },
+      {
+        "quarter": "2026-02-28",
+        "cash": 38.45,
+        "currentAssets": 54.87,
+        "currentLiabilities": 40.74,
+        "longTermDebt": null,
+        "totalAssets": 245.24,
+        "totalLiabilities": null,
+        "shareholdersEquity": 38.49
+      },
+      {
+        "quarter": "2025-11-30",
+        "cash": 19.24,
+        "currentAssets": 34.37,
+        "currentLiabilities": 37.8,
+        "longTermDebt": null,
+        "totalAssets": 204.98,
+        "totalLiabilities": null,
+        "shareholdersEquity": 29.95
+      },
+      {
+        "quarter": "2025-08-31",
+        "cash": 10.45,
+        "currentAssets": 24.63,
+        "currentLiabilities": 39.87,
+        "longTermDebt": null,
+        "totalAssets": 180.45,
+        "totalLiabilities": null,
+        "shareholdersEquity": 24.15
+      }
+    ]
+  },
+  "SHOP": {
+    "reportingPeriod": "Last 4 reported quarters",
+    "dataSource": "SEC Company Facts XBRL API",
+    "fetchedAt": "2026-08-13T20:16:35.207Z",
+    "dataStatus": "available",
+    "incomeStatement": [
+      {
+        "quarter": "2026-06-30",
+        "revenue": null,
+        "grossProfit": 3.25,
+        "operatingIncome": 0.87,
+        "netIncome": 0.92,
+        "ebitda": null
+      },
+      {
+        "quarter": "2026-03-31",
+        "revenue": null,
+        "grossProfit": 1.55,
+        "operatingIncome": 0.38,
+        "netIncome": -0.58,
+        "ebitda": null
+      },
+      {
+        "quarter": "2025-12-31",
+        "revenue": null,
+        "grossProfit": 5.55,
+        "operatingIncome": 1.47,
+        "netIncome": 1.23,
+        "ebitda": null
+      }
+    ],
+    "balanceSheet": [
+      {
+        "quarter": "2026-06-30",
+        "cash": 1.66,
+        "currentAssets": 7.82,
+        "currentLiabilities": 1.46,
+        "longTermDebt": null,
+        "totalAssets": 14.47,
+        "totalLiabilities": null,
+        "shareholdersEquity": 12.68
+      },
+      {
+        "quarter": "2026-03-31",
+        "cash": 1.85,
+        "currentAssets": 8.49,
+        "currentLiabilities": 1.37,
+        "longTermDebt": null,
+        "totalAssets": 14.12,
+        "totalLiabilities": null,
+        "shareholdersEquity": 12.5
+      },
+      {
+        "quarter": "2025-12-31",
+        "cash": 1.54,
+        "currentAssets": 8.3,
+        "currentLiabilities": 1.39,
+        "longTermDebt": null,
+        "totalAssets": 15.19,
+        "totalLiabilities": null,
+        "shareholdersEquity": 13.47
+      }
+    ]
+  },
+  "C3AI": {
+    "reportingPeriod": "Last 4 reported quarters",
+    "dataSource": "SEC Company Facts XBRL API",
+    "fetchedAt": "2026-08-13T20:17:15.973Z",
+    "dataStatus": "available",
+    "incomeStatement": [
+      {
+        "quarter": "2026-04-30",
+        "revenue": 0.25,
+        "grossProfit": 0.08,
+        "operatingIncome": -0.5,
+        "netIncome": -0.47,
+        "ebitda": null
+      },
+      {
+        "quarter": "2026-01-31",
+        "revenue": 0.2,
+        "grossProfit": 0.07,
+        "operatingIncome": -0.38,
+        "netIncome": -0.35,
+        "ebitda": null
+      },
+      {
+        "quarter": "2025-10-31",
+        "revenue": 0.15,
+        "grossProfit": 0.06,
+        "operatingIncome": -0.24,
+        "netIncome": -0.22,
+        "ebitda": null
+      },
+      {
+        "quarter": "2025-07-31",
+        "revenue": 0.07,
+        "grossProfit": 0.03,
+        "operatingIncome": -0.12,
+        "netIncome": -0.12,
+        "ebitda": null
+      }
+    ],
+    "balanceSheet": [
+      {
+        "quarter": "2026-04-30",
+        "cash": 0.07,
+        "currentAssets": 0.71,
+        "currentLiabilities": 0.11,
+        "longTermDebt": null,
+        "totalAssets": 0.82,
+        "totalLiabilities": 0.16,
+        "shareholdersEquity": 0.65
+      },
+      {
+        "quarter": "2026-01-31",
+        "cash": 0.09,
+        "currentAssets": 0.78,
+        "currentLiabilities": 0.12,
+        "longTermDebt": null,
+        "totalAssets": 0.9,
+        "totalLiabilities": 0.18,
+        "shareholdersEquity": 0.72
+      },
+      {
+        "quarter": "2025-10-31",
+        "cash": 0.1,
+        "currentAssets": 0.85,
+        "currentLiabilities": 0.13,
+        "longTermDebt": null,
+        "totalAssets": 0.96,
+        "totalLiabilities": 0.19,
+        "shareholdersEquity": 0.77
+      },
+      {
+        "quarter": "2025-07-31",
+        "cash": 0.08,
+        "currentAssets": 0.85,
+        "currentLiabilities": 0.11,
+        "longTermDebt": null,
+        "totalAssets": 0.97,
+        "totalLiabilities": 0.17,
+        "shareholdersEquity": 0.8
+      }
+    ]
+  },
+  "PATH": {
+    "reportingPeriod": "Last 4 reported quarters",
+    "dataSource": "SEC Company Facts XBRL API",
+    "fetchedAt": "2026-08-13T20:16:35.998Z",
+    "dataStatus": "available",
+    "incomeStatement": [
+      {
+        "quarter": "2026-04-30",
+        "revenue": 0.42,
+        "grossProfit": 0.34,
+        "operatingIncome": 0.03,
+        "netIncome": 0.02,
+        "ebitda": null
+      },
+      {
+        "quarter": "2026-01-31",
+        "revenue": 1.61,
+        "grossProfit": 1.34,
+        "operatingIncome": 0.06,
+        "netIncome": 0.28,
+        "ebitda": null
+      },
+      {
+        "quarter": "2025-10-31",
+        "revenue": 1.13,
+        "grossProfit": 0.93,
+        "operatingIncome": -0.02,
+        "netIncome": 0.18,
+        "ebitda": null
+      }
+    ],
+    "balanceSheet": [
+      {
+        "quarter": "2026-04-30",
+        "cash": 0.63,
+        "currentAssets": 1.92,
+        "currentLiabilities": 0.83,
+        "longTermDebt": null,
+        "totalAssets": 2.9,
+        "totalLiabilities": 1,
+        "shareholdersEquity": 1.9
+      },
+      {
+        "quarter": "2026-01-31",
+        "cash": 0.87,
+        "currentAssets": 2.24,
+        "currentLiabilities": 0.91,
+        "longTermDebt": null,
+        "totalAssets": 3.18,
+        "totalLiabilities": 1.1,
+        "shareholdersEquity": 2.08
+      },
+      {
+        "quarter": "2025-10-31",
+        "cash": 0.74,
+        "currentAssets": 2.09,
+        "currentLiabilities": 0.79,
+        "longTermDebt": null,
+        "totalAssets": 2.9,
+        "totalLiabilities": 0.97,
+        "shareholdersEquity": 1.92
+      }
+    ]
+  },
+  "SOUN": {
+    "reportingPeriod": "Last 4 reported quarters",
+    "dataSource": "SEC Company Facts XBRL API",
+    "fetchedAt": "2026-08-13T20:16:36.431Z",
+    "dataStatus": "available",
+    "incomeStatement": [
+      {
+        "quarter": "2026-06-30",
+        "revenue": null,
+        "grossProfit": null,
+        "operatingIncome": -0.07,
+        "netIncome": -0.07,
+        "ebitda": null
+      },
+      {
+        "quarter": "2026-03-31",
+        "revenue": null,
+        "grossProfit": null,
+        "operatingIncome": -0.02,
+        "netIncome": -0.03,
+        "ebitda": null
+      },
+      {
+        "quarter": "2025-12-31",
+        "revenue": null,
+        "grossProfit": null,
+        "operatingIncome": -0.02,
+        "netIncome": -0.01,
+        "ebitda": null
+      },
+      {
+        "quarter": "2024-12-31",
+        "revenue": null,
+        "grossProfit": null,
+        "operatingIncome": null,
+        "netIncome": null,
+        "ebitda": null
+      }
+    ],
+    "balanceSheet": [
+      {
+        "quarter": "2026-06-30",
+        "cash": 0.2,
+        "currentAssets": 0.28,
+        "currentLiabilities": 0.07,
+        "longTermDebt": null,
+        "totalAssets": 0.67,
+        "totalLiabilities": 0.18,
+        "shareholdersEquity": 0.49
+      },
+      {
+        "quarter": "2026-03-31",
+        "cash": 0.22,
+        "currentAssets": 0.29,
+        "currentLiabilities": 0.07,
+        "longTermDebt": null,
+        "totalAssets": 0.64,
+        "totalLiabilities": 0.18,
+        "shareholdersEquity": 0.46
+      },
+      {
+        "quarter": "2025-12-31",
+        "cash": 0.25,
+        "currentAssets": 0.33,
+        "currentLiabilities": 0.07,
+        "longTermDebt": null,
+        "totalAssets": 0.69,
+        "totalLiabilities": 0.22,
+        "shareholdersEquity": 0.46
+      },
+      {
+        "quarter": "2024-12-31",
+        "cash": 0.2,
+        "currentAssets": 0.26,
+        "currentLiabilities": 0.07,
+        "longTermDebt": 0,
+        "totalAssets": 0.55,
+        "totalLiabilities": 0.37,
+        "shareholdersEquity": 0.18
+      }
+    ]
+  },
+  "BBAI": {
+    "reportingPeriod": "Last 4 reported quarters",
+    "dataSource": "SEC Company Facts XBRL API",
+    "fetchedAt": "2026-08-13T20:16:36.971Z",
+    "dataStatus": "available",
+    "incomeStatement": [
+      {
+        "quarter": "2026-06-30",
+        "revenue": 0.07,
+        "grossProfit": 0.02,
+        "operatingIncome": -0.05,
+        "netIncome": -0.08,
+        "ebitda": null
+      },
+      {
+        "quarter": "2026-03-31",
+        "revenue": 0.03,
+        "grossProfit": 0.01,
+        "operatingIncome": -0.02,
+        "netIncome": -0.06,
+        "ebitda": null
+      },
+      {
+        "quarter": "2025-12-31",
+        "revenue": 0.13,
+        "grossProfit": 0.03,
+        "operatingIncome": -0.21,
+        "netIncome": -0.29,
+        "ebitda": null
+      }
+    ],
+    "balanceSheet": [
+      {
+        "quarter": "2026-06-30",
+        "cash": 0.04,
+        "currentAssets": 0.37,
+        "currentLiabilities": 0.07,
+        "longTermDebt": 0,
+        "totalAssets": 0.84,
+        "totalLiabilities": 0.07,
+        "shareholdersEquity": 0.77
+      },
+      {
+        "quarter": "2026-03-31",
+        "cash": 0.1,
+        "currentAssets": 0.39,
+        "currentLiabilities": 0.06,
+        "longTermDebt": 0,
+        "totalAssets": 0.86,
+        "totalLiabilities": 0.07,
+        "shareholdersEquity": 0.79
+      },
+      {
+        "quarter": "2025-12-31",
+        "cash": 0.09,
+        "currentAssets": 0.33,
+        "currentLiabilities": 0.19,
+        "longTermDebt": 0.09,
+        "totalAssets": 0.89,
+        "totalLiabilities": 0.28,
+        "shareholdersEquity": 0.61
+      }
+    ]
+  },
+  "APP": {
+    "reportingPeriod": "Last 4 reported quarters",
+    "dataSource": "SEC Company Facts XBRL API",
+    "fetchedAt": "2026-08-13T20:16:37.416Z",
+    "dataStatus": "available",
+    "incomeStatement": [
+      {
+        "quarter": "2026-06-30",
+        "revenue": 3.77,
+        "grossProfit": null,
+        "operatingIncome": 2.93,
+        "netIncome": 2.47,
+        "ebitda": null
+      },
+      {
+        "quarter": "2026-03-31",
+        "revenue": 1.84,
+        "grossProfit": null,
+        "operatingIncome": 1.44,
+        "netIncome": 1.21,
+        "ebitda": null
+      },
+      {
+        "quarter": "2025-12-31",
+        "revenue": 5.48,
+        "grossProfit": null,
+        "operatingIncome": 4.15,
+        "netIncome": 3.33,
+        "ebitda": null
+      }
+    ],
+    "balanceSheet": [
+      {
+        "quarter": "2026-06-30",
+        "cash": 3.05,
+        "currentAssets": 5.39,
+        "currentLiabilities": 1.25,
+        "longTermDebt": 3.52,
+        "totalAssets": 8.27,
+        "totalLiabilities": 5.11,
+        "shareholdersEquity": 3.16
+      },
+      {
+        "quarter": "2026-03-31",
+        "cash": 2.76,
+        "currentAssets": 4.85,
+        "currentLiabilities": 1.49,
+        "longTermDebt": 3.51,
+        "totalAssets": 7.71,
+        "totalLiabilities": 5.34,
+        "shareholdersEquity": 2.36
+      },
+      {
+        "quarter": "2025-12-31",
+        "cash": 2.49,
+        "currentAssets": 4.43,
+        "currentLiabilities": 1.33,
+        "longTermDebt": 3.51,
+        "totalAssets": 7.26,
+        "totalLiabilities": 5.12,
+        "shareholdersEquity": 2.13
+      }
+    ]
+  },
+  "PD": {
+    "reportingPeriod": "Last 4 reported quarters",
+    "dataSource": "SEC Company Facts XBRL API",
+    "fetchedAt": "2026-08-13T20:16:37.995Z",
+    "dataStatus": "available",
+    "incomeStatement": [
+      {
+        "quarter": "2026-04-30",
+        "revenue": 0.12,
+        "grossProfit": 0.1,
+        "operatingIncome": 0.01,
+        "netIncome": 0.01,
+        "ebitda": null
+      },
+      {
+        "quarter": "2026-01-31",
+        "revenue": 0.49,
+        "grossProfit": 0.42,
+        "operatingIncome": 0.01,
+        "netIncome": 0.17,
+        "ebitda": null
+      },
+      {
+        "quarter": "2025-10-31",
+        "revenue": 0.37,
+        "grossProfit": 0.31,
+        "operatingIncome": 0,
+        "netIncome": 0.16,
+        "ebitda": null
+      }
+    ],
+    "balanceSheet": [
+      {
+        "quarter": "2026-04-30",
+        "cash": 0.21,
+        "currentAssets": 0.56,
+        "currentLiabilities": 0.29,
+        "longTermDebt": null,
+        "totalAssets": 0.94,
+        "totalLiabilities": 0.71,
+        "shareholdersEquity": 0.22
+      },
+      {
+        "quarter": "2026-01-31",
+        "cash": 0.24,
+        "currentAssets": 0.61,
+        "currentLiabilities": 0.3,
+        "longTermDebt": null,
+        "totalAssets": 0.99,
+        "totalLiabilities": 0.72,
+        "shareholdersEquity": 0.25
+      },
+      {
+        "quarter": "2025-10-31",
+        "cash": 0.32,
+        "currentAssets": 0.66,
+        "currentLiabilities": 0.28,
+        "longTermDebt": null,
+        "totalAssets": 1.03,
+        "totalLiabilities": 0.69,
+        "shareholdersEquity": 0.32
+      }
+    ]
+  },
+  "UPST": {
+    "reportingPeriod": "Last 4 reported quarters",
+    "dataSource": "SEC Company Facts XBRL API",
+    "fetchedAt": "2026-08-13T20:16:38.465Z",
+    "dataStatus": "available",
+    "incomeStatement": [
+      {
+        "quarter": "2026-06-30",
+        "revenue": null,
+        "grossProfit": null,
+        "operatingIncome": 0.01,
+        "netIncome": 0.01,
+        "ebitda": null
+      },
+      {
+        "quarter": "2026-03-31",
+        "revenue": null,
+        "grossProfit": null,
+        "operatingIncome": -0.01,
+        "netIncome": -0.01,
+        "ebitda": null
+      },
+      {
+        "quarter": "2025-12-31",
+        "revenue": null,
+        "grossProfit": null,
+        "operatingIncome": 0.04,
+        "netIncome": 0.05,
+        "ebitda": null
+      }
+    ],
+    "balanceSheet": [
+      {
+        "quarter": "2026-06-30",
+        "cash": 0.46,
+        "currentAssets": null,
+        "currentLiabilities": null,
+        "longTermDebt": null,
+        "totalAssets": 3.17,
+        "totalLiabilities": 2.37,
+        "shareholdersEquity": 0.8
+      },
+      {
+        "quarter": "2026-03-31",
+        "cash": 0.47,
+        "currentAssets": null,
+        "currentLiabilities": null,
+        "longTermDebt": null,
+        "totalAssets": 2.96,
+        "totalLiabilities": 2.23,
+        "shareholdersEquity": 0.73
+      },
+      {
+        "quarter": "2025-12-31",
+        "cash": 0.65,
+        "currentAssets": null,
+        "currentLiabilities": null,
+        "longTermDebt": null,
+        "totalAssets": 2.97,
+        "totalLiabilities": 2.18,
+        "shareholdersEquity": 0.8
+      }
+    ]
+  },
+  "S": {
+    "reportingPeriod": "Last 4 reported quarters",
+    "dataSource": "SEC Company Facts XBRL API",
+    "fetchedAt": "2026-08-13T20:16:38.998Z",
+    "dataStatus": "available",
+    "incomeStatement": [
+      {
+        "quarter": "2026-04-30",
+        "revenue": 0.28,
+        "grossProfit": 0.2,
+        "operatingIncome": -0.08,
+        "netIncome": -0.08,
+        "ebitda": null
+      },
+      {
+        "quarter": "2026-01-31",
+        "revenue": 1,
+        "grossProfit": 0.74,
+        "operatingIncome": -0.32,
+        "netIncome": -0.45,
+        "ebitda": null
+      },
+      {
+        "quarter": "2025-10-31",
+        "revenue": 0.73,
+        "grossProfit": 0.55,
+        "operatingIncome": -0.24,
+        "netIncome": -0.34,
+        "ebitda": null
+      },
+      {
+        "quarter": "2022-01-31",
+        "revenue": null,
+        "grossProfit": null,
+        "operatingIncome": null,
+        "netIncome": null,
+        "ebitda": null
+      }
+    ],
+    "balanceSheet": [
+      {
+        "quarter": "2026-04-30",
+        "cash": 0.15,
+        "currentAssets": 0.97,
+        "currentLiabilities": 0.67,
+        "longTermDebt": null,
+        "totalAssets": 2.36,
+        "totalLiabilities": 0.92,
+        "shareholdersEquity": 1.44
+      },
+      {
+        "quarter": "2026-01-31",
+        "cash": 0.17,
+        "currentAssets": 1.05,
+        "currentLiabilities": 0.76,
+        "longTermDebt": null,
+        "totalAssets": 2.44,
+        "totalLiabilities": 1,
+        "shareholdersEquity": 1.44
+      },
+      {
+        "quarter": "2025-10-31",
+        "cash": 0.15,
+        "currentAssets": 0.96,
+        "currentLiabilities": 0.63,
+        "longTermDebt": null,
+        "totalAssets": 2.43,
+        "totalLiabilities": 0.88,
+        "shareholdersEquity": 1.55
+      },
+      {
+        "quarter": "2022-01-31",
+        "cash": 1.67,
+        "currentAssets": 1.82,
+        "currentLiabilities": 0.28,
+        "longTermDebt": 0,
+        "totalAssets": 2.04,
+        "totalLiabilities": 0.39,
+        "shareholdersEquity": 1.65
+      }
+    ]
+  },
+  "MDB": {
+    "reportingPeriod": "Last 4 reported quarters",
+    "dataSource": "SEC Company Facts XBRL API",
+    "fetchedAt": "2026-08-13T20:16:39.440Z",
+    "dataStatus": "available",
+    "incomeStatement": [
+      {
+        "quarter": "2026-04-30",
+        "revenue": 0.69,
+        "grossProfit": 0.5,
+        "operatingIncome": -0.02,
+        "netIncome": 0,
+        "ebitda": null
+      },
+      {
+        "quarter": "2026-01-31",
+        "revenue": 2.46,
+        "grossProfit": 1.77,
+        "operatingIncome": -0.14,
+        "netIncome": -0.07,
+        "ebitda": null
+      },
+      {
+        "quarter": "2025-10-31",
+        "revenue": 1.77,
+        "grossProfit": 1.26,
+        "operatingIncome": -0.14,
+        "netIncome": -0.09,
+        "ebitda": null
+      }
+    ],
+    "balanceSheet": [
+      {
+        "quarter": "2026-04-30",
+        "cash": 1.04,
+        "currentAssets": 3.06,
+        "currentLiabilities": 0.62,
+        "longTermDebt": null,
+        "totalAssets": 3.69,
+        "totalLiabilities": 0.76,
+        "shareholdersEquity": 2.93
+      },
+      {
+        "quarter": "2026-01-31",
+        "cash": 1.08,
+        "currentAssets": 3.11,
+        "currentLiabilities": 0.67,
+        "longTermDebt": null,
+        "totalAssets": 3.76,
+        "totalLiabilities": 0.81,
+        "shareholdersEquity": 2.95
+      },
+      {
+        "quarter": "2025-10-31",
+        "cash": 0.83,
+        "currentAssets": 2.93,
+        "currentLiabilities": 0.56,
+        "longTermDebt": null,
+        "totalAssets": 3.57,
+        "totalLiabilities": 0.68,
+        "shareholdersEquity": 2.89
+      }
+    ]
+  },
+  "DDOG": {
+    "reportingPeriod": "Last 4 reported quarters",
+    "dataSource": "SEC Company Facts XBRL API",
+    "fetchedAt": "2026-08-13T20:16:39.873Z",
+    "dataStatus": "available",
+    "incomeStatement": [
+      {
+        "quarter": "2026-06-30",
+        "revenue": 2.13,
+        "grossProfit": 1.68,
+        "operatingIncome": 0.01,
+        "netIncome": 0.1,
+        "ebitda": null
+      },
+      {
+        "quarter": "2026-03-31",
+        "revenue": 1.01,
+        "grossProfit": 0.8,
+        "operatingIncome": 0.01,
+        "netIncome": 0.05,
+        "ebitda": null
+      },
+      {
+        "quarter": "2025-12-31",
+        "revenue": 3.43,
+        "grossProfit": 2.74,
+        "operatingIncome": -0.04,
+        "netIncome": 0.11,
+        "ebitda": null
+      }
+    ],
+    "balanceSheet": [
+      {
+        "quarter": "2026-06-30",
+        "cash": 0.43,
+        "currentAssets": 6.01,
+        "currentLiabilities": 1.87,
+        "longTermDebt": null,
+        "totalAssets": 7.55,
+        "totalLiabilities": 3.18,
+        "shareholdersEquity": 4.37
+      },
+      {
+        "quarter": "2026-03-31",
+        "cash": 0.43,
+        "currentAssets": 5.63,
+        "currentLiabilities": 1.66,
+        "longTermDebt": null,
+        "totalAssets": 6.95,
+        "totalLiabilities": 2.96,
+        "shareholdersEquity": 3.99
+      },
+      {
+        "quarter": "2025-12-31",
+        "cash": 0.4,
+        "currentAssets": 5.38,
+        "currentLiabilities": 1.59,
+        "longTermDebt": null,
+        "totalAssets": 6.64,
+        "totalLiabilities": 2.91,
+        "shareholdersEquity": 3.73
+      }
+    ]
+  }
+}

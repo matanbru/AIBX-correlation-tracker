@@ -8,7 +8,8 @@
     "start": "node index.js",
     "dev": "nodemon index.js",
     "seed": "node scripts/seedCompanies.js",
-    "backfill-real-prices": "node scripts/backfillRealPrices.js"
+    "backfill-real-prices": "node scripts/backfillRealPrices.js",
+    "backfill-real-fundamentals": "node scripts/backfillRealFundamentals.js"
   },
   "keywords": ["stock", "ai", "tracking"],
   "author": "",
