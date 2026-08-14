@@ -92,7 +92,7 @@ const formatReturn = (value) => {
   return `${value >= 0 ? '+' : ''}${(value * 100).toFixed(1)}%`;
 };
 
-function MomentumVolatilityChart({ company }) {
+function MomentumVolatilityChart({ company, onSelectCompany }) {
   const [windowSize, setWindowSize] = useState(20);
   const prices = useMemo(() => getPrices(company), [company]);
   const dates = useMemo(() => getDates(company), [company]);
@@ -121,6 +121,15 @@ function MomentumVolatilityChart({ company }) {
           <h3>Momentum &amp; Volatility</h3>
           <p>{company.symbol} returns and annualized rolling volatility from real price history</p>
         </div>
+        {onSelectCompany && (
+          <button
+            type="button"
+            className="momentum-profile-button"
+            onClick={() => onSelectCompany(company)}
+          >
+            Open profile
+          </button>
+        )}
         {regime && (
           <span className={`volatility-regime volatility-regime-${regime.regime.toLowerCase()}`}>
             {regime.regime} ({regime.ratio.toFixed(2)}x normal)

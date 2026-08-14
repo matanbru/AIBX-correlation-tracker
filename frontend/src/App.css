@@ -994,6 +994,81 @@ tbody tr:hover {
   margin: 0;
 }
 
+.momentum-profile-button {
+  flex-shrink: 0;
+  border: 1px solid #b9d9d4;
+  background: #f4faf9;
+  color: #0f766e;
+  padding: 6px 9px;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 0.78rem;
+  font-weight: 700;
+}
+
+.momentum-profile-button:hover,
+.momentum-profile-button:focus-visible {
+  background: #e8f6f3;
+  border-color: #0f766e;
+  outline: none;
+}
+
+.performance-aibxl-panel {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  margin-top: 20px;
+  padding: 20px;
+  background: white;
+  border: 1px solid #d7e8e5;
+  border-radius: 12px;
+  box-shadow: 0 2px 6px rgba(15, 118, 110, 0.08);
+}
+
+.performance-aibxl-header h3,
+.performance-aibxl-header p {
+  margin: 0;
+}
+
+.performance-aibxl-header p {
+  margin-top: 5px;
+  color: var(--text-light);
+  font-size: 0.85rem;
+}
+
+.performance-aibxl-stat-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 10px;
+}
+
+.performance-aibxl-stat {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  padding: 10px;
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: 7px;
+  font-size: 0.8rem;
+}
+
+.performance-aibxl-stat > strong {
+  color: #0f766e;
+  font-size: 0.95rem;
+}
+
+.performance-aibxl-stat span {
+  display: flex;
+  justify-content: space-between;
+  gap: 8px;
+  color: var(--text-light);
+}
+
+.performance-aibxl-stat b {
+  color: var(--text-dark);
+}
+
 .momentum-volatility-header p {
   color: var(--text-light);
   font-size: 0.85rem;

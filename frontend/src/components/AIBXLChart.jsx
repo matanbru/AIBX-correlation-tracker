@@ -65,10 +65,24 @@ const weightedBasket = (companies) => {
     return {
       date,
       level: Number(level.toFixed(2)),
-      dailyReturn: Number((dailyReturn * 100).toFixed(3))
+      dailyReturn: Number((dailyReturn * 100).toFixed(3)),
+      rawReturn: dailyReturn
     };
   });
 };
+
+export const getAIBXLCompanies = (companies) => companies
+  .filter((company) => (
+    Array.isArray(company.dailyAdjustedClose || company.priceHistory) &&
+    (company.dailyAdjustedClose || company.priceHistory).length >= 2
+  ))
+  .sort((companyA, companyB) => (
+    Number(companyB.metrics?.marketCap ?? companyB.marketCap ?? 0) -
+    Number(companyA.metrics?.marketCap ?? companyA.marketCap ?? 0)
+  ))
+  .slice(0, 10);
+
+export const buildAIBXLSeries = weightedBasket;
 
 const getWeights = (companies) => {
   const totalMarketCap = companies.reduce(
@@ -89,16 +103,7 @@ const getWeights = (companies) => {
 
 function AIBXLChart({ companies = [], onSelectCompany }) {
   const basketCompanies = useMemo(
-    () => companies
-      .filter((company) => (
-        Array.isArray(company.dailyAdjustedClose || company.priceHistory) &&
-        (company.dailyAdjustedClose || company.priceHistory).length >= 2
-      ))
-      .sort((companyA, companyB) => (
-        Number(companyB.metrics?.marketCap ?? companyB.marketCap ?? 0) -
-        Number(companyA.metrics?.marketCap ?? companyA.marketCap ?? 0)
-      ))
-      .slice(0, 10),
+    () => getAIBXLCompanies(companies),
     [companies]
   );
   const chartData = useMemo(

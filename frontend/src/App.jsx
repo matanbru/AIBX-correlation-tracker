@@ -8,6 +8,7 @@ import TopMovers from './components/TopMovers';
 import AIBXLCorrelationChart from './components/AIBXChart';
 import AIBXLChart from './components/AIBXLChart';
 import MomentumVolatilityChart from './components/MomentumVolatilityChart';
+import PerformanceVsAIBXL from './components/PerformanceVsAIBXL';
 import './App.css';
 
 const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
@@ -187,6 +188,15 @@ function App() {
     setSelectedCompany(company);
     setCurrentTab('overview');
   };
+
+  const aibxlCompanies = companies
+    .slice()
+    .sort((companyA, companyB) => (
+      Number(companyB.metrics?.marketCap ?? companyB.marketCap ?? 0) -
+      Number(companyA.metrics?.marketCap ?? companyA.marketCap ?? 0)
+    ))
+    .slice(0, 10);
+  const momentumCompanies = [...aibxlCompanies, ...opportunityCompanies];
 
   useEffect(() => {
     // Connect to WebSocket for live updates
@@ -457,10 +467,11 @@ function App() {
 
                 <PriceChart symbol={selectedCompany.symbol} />
                 <AIBXLChart companies={companies} onSelectCompany={openCompanyProfile} />
+                <PerformanceVsAIBXL company={selectedCompany} companies={companies} />
                 {opportunityCompanies.some((company) => company.symbol === selectedCompany.symbol) && (
                   <AIBXLCorrelationChart company={selectedCompany} companies={companies} />
                 )}
-                <MomentumVolatilityChart company={selectedCompany} />
+                <MomentumVolatilityChart company={selectedCompany} onSelectCompany={openCompanyProfile} />
               </div>
             ) : (
               <>
@@ -541,12 +552,12 @@ function App() {
           <div className="momentum-volatility-tab">
             <div className="panel-header">
               <h3>Momentum &amp; Volatility</h3>
-              <span>Real price-history momentum and volatility for each smaller company</span>
+              <span>Real price-history momentum and volatility for AIBXL constituents and smaller AIBX companies</span>
             </div>
-            {opportunityCompanies.length > 0 ? (
+            {momentumCompanies.length > 0 ? (
               <div className="momentum-volatility-grid">
-                {opportunityCompanies.map((company) => (
-                  <MomentumVolatilityChart company={company} key={company.symbol} />
+                {momentumCompanies.map((company) => (
+                  <MomentumVolatilityChart company={company} onSelectCompany={openCompanyProfile} key={company.symbol} />
                 ))}
               </div>
             ) : (
