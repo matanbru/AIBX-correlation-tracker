@@ -335,16 +335,16 @@ function App() {
                 <div className="metrics-section">
                   <h3>Financial profile</h3>
                   <div className="metric-grid">
-                    <div className="metric-card"><span>Market cap</span><strong>${selectedCompany.metrics?.marketCap ?? 0}B</strong></div>
-                    <div className="metric-card"><span>Revenue TTM</span><strong>${selectedCompany.metrics?.revenueTtm ?? 0}B</strong></div>
-                    <div className="metric-card"><span>Revenue growth</span><strong>{selectedCompany.metrics?.revenueGrowth ?? 0}%</strong></div>
-                    <div className="metric-card"><span>Gross margin</span><strong>{selectedCompany.metrics?.grossMargin ?? 0}%</strong></div>
-                    <div className="metric-card"><span>Operating margin</span><strong>{selectedCompany.metrics?.operatingMargin ?? 0}%</strong></div>
-                    <div className="metric-card"><span>Free cash flow</span><strong>${selectedCompany.metrics?.freeCashFlow ?? 0}B</strong></div>
-                    <div className="metric-card"><span>Debt-to-equity</span><strong>{selectedCompany.metrics?.debtToEquity ?? 0}</strong></div>
-                    <div className="metric-card"><span>Current ratio</span><strong>{selectedCompany.metrics?.currentRatio ?? 0}</strong></div>
-                    <div className="metric-card"><span>P/E ratio</span><strong>{selectedCompany.metrics?.peRatio ?? 0}</strong></div>
-                    <div className="metric-card"><span>Cash balance</span><strong>${selectedCompany.metrics?.cashBalance ?? 0}B</strong></div>
+                    <div className="metric-card"><span>Market cap</span><strong>{selectedCompany.metrics?.marketCap == null ? 'Unavailable' : `$${selectedCompany.metrics.marketCap}B`}</strong></div>
+                    <div className="metric-card"><span>Revenue TTM</span><strong>{selectedCompany.metrics?.revenueTtm == null ? 'Unavailable' : `$${selectedCompany.metrics.revenueTtm}B`}</strong></div>
+                    <div className="metric-card"><span>Revenue growth</span><strong>{selectedCompany.metrics?.revenueGrowth == null ? 'Unavailable' : `${selectedCompany.metrics.revenueGrowth}%`}</strong></div>
+                    <div className="metric-card"><span>Gross margin</span><strong>{selectedCompany.metrics?.grossMargin == null ? 'Unavailable' : `${selectedCompany.metrics.grossMargin}%`}</strong></div>
+                    <div className="metric-card"><span>Operating margin</span><strong>{selectedCompany.metrics?.operatingMargin == null ? 'Unavailable' : `${selectedCompany.metrics.operatingMargin}%`}</strong></div>
+                    <div className="metric-card"><span>Free cash flow</span><strong>{selectedCompany.metrics?.freeCashFlow == null ? 'Unavailable' : `$${selectedCompany.metrics.freeCashFlow}B`}</strong></div>
+                    <div className="metric-card"><span>Debt-to-equity</span><strong>{selectedCompany.metrics?.debtToEquity == null ? 'Unavailable' : selectedCompany.metrics.debtToEquity}</strong></div>
+                    <div className="metric-card"><span>Current ratio</span><strong>{selectedCompany.metrics?.currentRatio == null ? 'Unavailable' : selectedCompany.metrics.currentRatio}</strong></div>
+                    <div className="metric-card"><span>P/E ratio</span><strong>{selectedCompany.metrics?.peRatio == null ? 'Unavailable' : selectedCompany.metrics.peRatio}</strong></div>
+                    <div className="metric-card"><span>Cash balance</span><strong>{selectedCompany.metrics?.cashBalance == null ? 'Unavailable' : `$${selectedCompany.metrics.cashBalance}B`}</strong></div>
                   </div>
                 </div>
 

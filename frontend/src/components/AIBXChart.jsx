@@ -70,6 +70,76 @@ const correlation = (seriesA, seriesB) => {
   return covariance / Math.sqrt(varianceA * varianceB);
 };
 
+const logGamma = (value) => {
+  const coefficients = [
+    76.18009172947146, -86.50532032941677, 24.01409824083091,
+    -1.231739572450155, 0.001208650973866179, -0.000005395239384953
+  ];
+  let sum = value + 5.5;
+  sum -= (value + 0.5) * Math.log(sum);
+  let series = 1.000000000190015;
+  for (let index = 0; index < coefficients.length; index += 1) {
+    series += coefficients[index] / (value + index + 1);
+  }
+  return -sum + Math.log(2.5066282746310005 * series / value);
+};
+
+const regularizedBeta = (x, a, b) => {
+  const maxIterations = 100;
+  const epsilon = 3e-7;
+  const tiny = 1e-30;
+  const continuedFraction = () => {
+    let qab = a + b;
+    let qap = a + 1;
+    let qam = a - 1;
+    let c = 1;
+    let d = 1 - (qab * x / qap);
+    d = Math.abs(d) < tiny ? tiny : d;
+    d = 1 / d;
+    let h = d;
+    for (let index = 1; index <= maxIterations; index += 1) {
+      const index2 = 2 * index;
+      let aa = index * (b - index) * x / ((qam + index2) * (a + index2));
+      d = 1 + aa * d;
+      d = Math.abs(d) < tiny ? tiny : d;
+      c = 1 + aa / c;
+      c = Math.abs(c) < tiny ? tiny : c;
+      d = 1 / d;
+      h *= d * c;
+      aa = -(a + index) * (qab + index) * x / ((a + index2) * (qap + index2));
+      d = 1 + aa * d;
+      d = Math.abs(d) < tiny ? tiny : d;
+      c = 1 + aa / c;
+      c = Math.abs(c) < tiny ? tiny : c;
+      d = 1 / d;
+      const delta = d * c;
+      h *= delta;
+      if (Math.abs(delta - 1) < epsilon) break;
+    }
+    return h;
+  };
+  if (x <= 0) return 0;
+  if (x >= 1) return 1;
+  const front = Math.exp(
+    a * Math.log(x) + b * Math.log(1 - x) - logGamma(a) - logGamma(b) + logGamma(a + b)
+  );
+  if (x < (a + 1) / (a + b + 2)) return front * continuedFraction() / a;
+  return 1 - (front * (() => {
+    const originalX = x;
+    x = 1 - originalX;
+    const result = continuedFraction();
+    x = originalX;
+    return result;
+  })() / b);
+};
+
+const correlationPValue = (value, sampleSize) => {
+  if (sampleSize < 3 || Math.abs(value) >= 1) return Math.abs(value) === 1 ? 0 : 1;
+  const degreesOfFreedom = sampleSize - 2;
+  const tSquared = (value * value * degreesOfFreedom) / Math.max(1e-12, 1 - value * value);
+  return regularizedBeta(degreesOfFreedom / (degreesOfFreedom + tSquared), degreesOfFreedom / 2, 0.5);
+};
+
 const rollingBeta = (seriesA, seriesB, windowSize) => {
   const results = [];
   for (let i = windowSize; i <= seriesA.length; i++) {
@@ -112,7 +182,7 @@ const getSeriesSnapshot = (company) => {
   };
 };
 
-const crossCorrelation = (basketReturnSeries, companyReturnSeries, maxLag, minimumOverlap) => {
+const crossCorrelation = (basketReturnSeries, companyReturnSeries, maxLag, minimumOverlap, totalTests) => {
   const results = [];
 
   for (let k = -maxLag; k <= maxLag; k++) {
@@ -129,7 +199,13 @@ const crossCorrelation = (basketReturnSeries, companyReturnSeries, maxLag, minim
 
     results.push({
       lag: k,
-      correlation: basketSlice.length >= minimumOverlap ? correlation(basketSlice, companySlice) : 0
+      correlation: basketSlice.length >= minimumOverlap ? correlation(basketSlice, companySlice) : 0,
+      overlap: basketSlice.length,
+      eligible: basketSlice.length >= minimumOverlap,
+      pValue: basketSlice.length >= minimumOverlap
+        ? correlationPValue(correlation(basketSlice, companySlice), basketSlice.length)
+        : null,
+      bonferroniAlpha: 0.05 / totalTests
     });
   }
 
@@ -220,9 +296,14 @@ function AIBXChart({ company, companies = [] }) {
     const lagWindowCompany = companyReturns.slice(-windowSize);
     const lagMax = Math.min(30, Math.max(1, Math.floor(windowSize / 2)));
     const minimumOverlap = windowSize - lagMax;
-    const lag = crossCorrelation(lagWindowBasket, lagWindowCompany, lagMax, minimumOverlap).map((point) => ({
+    const totalLagTests = (lagMax * 2) + 1;
+    const lag = crossCorrelation(lagWindowBasket, lagWindowCompany, lagMax, minimumOverlap, totalLagTests).map((point) => ({
       lag: point.lag,
-      correlation: Number(point.correlation.toFixed(4))
+      correlation: point.eligible ? Number(point.correlation.toFixed(4)) : null,
+      overlap: point.overlap,
+      eligible: point.eligible,
+      pValue: point.pValue == null ? null : Number(point.pValue.toFixed(6)),
+      significant: point.eligible && point.pValue <= point.bonferroniAlpha
     }));
 
     return { chartData: beta, lagData: lag };
@@ -230,10 +311,11 @@ function AIBXChart({ company, companies = [] }) {
 
   const latestPoint = chartData[chartData.length - 1] || null;
   const strongestLag = lagData.length > 0
-    ? lagData.reduce((best, curr) => 
-        Math.abs(curr.correlation) > Math.abs(best.correlation) ? curr : best
-      )
+    ? lagData.filter((point) => point.eligible).reduce((best, curr) => 
+        !best || Math.abs(curr.correlation) > Math.abs(best.correlation) ? curr : best
+      , null)
     : null;
+  const reliableLag = strongestLag?.significant ? strongestLag : null;
   const lagRange = lagData.length > 0
     ? Math.max(...lagData.map((point) => Math.abs(point.lag)))
     : 0;
@@ -284,7 +366,7 @@ function AIBXChart({ company, companies = [] }) {
       <div className="aibx-lag-section">
         <div className="aibx-lag-header">
           <h4>Lead/Lag Analysis (±{lagRange}D lag test)</h4>
-          {strongestLag && (
+          {reliableLag && (
             <div className="aibx-lag-summary">
               <span className="aibx-lag-label">Strongest correlation:</span>
               <span className="aibx-lag-value">{strongestLag.correlation.toFixed(3)}</span>
@@ -296,6 +378,11 @@ function AIBXChart({ company, companies = [] }) {
                   : 'No lead/lag'}
               </span>
             </div>
+          )}
+          {!reliableLag && (
+            <p className="aibx-lag-warning">
+              Insufficient evidence for a reliable lag reading after the 20-observation minimum and Bonferroni correction ({lagData.length} lags tested).
+            </p>
           )}
           {strongestLagIsEdge && (
             <p className="aibx-lag-warning">
