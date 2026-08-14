@@ -51,15 +51,16 @@ const saveFundamentalsToDisk = (fundamentals) => {
 
 const tagFacts = (facts, tags) => {
   const namespaces = ['us-gaap', 'ifrs-full'];
+  const rows = [];
   for (const tag of tags) {
     for (const namespace of namespaces) {
       const fact = facts[namespace]?.[tag];
       if (!fact) continue;
       const units = fact.units?.USD || fact.units?.EUR || fact.units?.shares || fact.units?.pure;
-      if (Array.isArray(units)) return units;
+      if (Array.isArray(units)) rows.push(...units);
     }
   }
-  return [];
+  return rows;
 };
 
 const latestQuarterlyValues = (facts, tags) => {
@@ -86,6 +87,21 @@ const periodRows = (facts, tags) => latestQuarterlyValues(facts, tags).map(row =
   value: Number((Number(row.val) / 1_000_000_000).toFixed(2))
 }));
 
+const latestFactValue = (facts, tags) => {
+  const rows = tags.flatMap(tag => {
+    for (const namespace of ['us-gaap', 'ifrs-full', 'dei']) {
+      const units = facts[namespace]?.[tag]?.units;
+      const values = units ? Object.values(units).flat() : [];
+      if (values.length) return values;
+    }
+    return [];
+  }).filter(row => Number.isFinite(Number(row.val)) && row.end);
+  rows.sort((a, b) => String(b.end).localeCompare(String(a.end)));
+  return rows[0]?.val == null ? null : Number(rowValue(rows[0]));
+};
+
+const rowValue = (row) => Number(row.val);
+
 const buildAccounting = (facts) => {
   const revenue = periodRows(facts, ['RevenueFromContractWithCustomerExcludingAssessedTax', 'Revenues', 'SalesRevenueNet']);
   const grossProfit = periodRows(facts, ['GrossProfit']);
@@ -101,7 +117,15 @@ const buildAccounting = (facts) => {
     totalLiabilities: ['Liabilities'],
     shareholdersEquity: ['StockholdersEquity', 'Equity']
   };
-  const dates = [...new Set(Object.values(balanceTags).flatMap(tags => latestQuarterlyValues(facts, tags).map(row => row.end)))].sort().reverse().slice(0, 4);
+  const incomeTags = [
+    'RevenueFromContractWithCustomerExcludingAssessedTax', 'Revenues', 'SalesRevenueNet',
+    'GrossProfit', 'OperatingIncomeLoss', 'OperatingProfitLoss', 'NetIncomeLoss',
+    'ProfitLoss', 'EarningsBeforeInterestTaxesDepreciationAndAmortization'
+  ];
+  const dates = [...new Set([
+    ...Object.values(balanceTags).flatMap(tags => latestQuarterlyValues(facts, tags).map(row => row.end)),
+    ...incomeTags.flatMap(tag => latestQuarterlyValues(facts, [tag]).map(row => row.end))
+  ])].sort().reverse().slice(0, 4);
   const balanceSheet = dates.map(date => {
     const row = { quarter: date };
     for (const [field, tags] of Object.entries(balanceTags)) {
@@ -119,12 +143,37 @@ const buildAccounting = (facts) => {
     netIncome: netIncome.find(row => row.quarter === quarter)?.value ?? null,
     ebitda: ebitda.find(row => row.quarter === quarter)?.value ?? null
   }));
+  const latestIncome = incomeByDate[0] || {};
+  const previousIncome = incomeByDate[1] || {};
+  const latestBalance = balanceSheet[0] || {};
+  const shares = latestFactValue(facts, ['EntityCommonStockSharesOutstanding']);
+  const revenueGrowth = latestIncome.revenue != null && previousIncome.revenue
+    ? Number((((latestIncome.revenue - previousIncome.revenue) / Math.abs(previousIncome.revenue)) * 100).toFixed(2))
+    : null;
+  const metrics = {
+    sharesOutstandingMillions: shares == null ? null : Number((shares / 1_000_000).toFixed(2)),
+    revenueTtm: latestIncome.revenue ?? null,
+    revenueGrowth,
+    grossMargin: latestIncome.revenue && latestIncome.grossProfit != null
+      ? Number(((latestIncome.grossProfit / latestIncome.revenue) * 100).toFixed(2)) : null,
+    operatingMargin: latestIncome.revenue && latestIncome.operatingIncome != null
+      ? Number(((latestIncome.operatingIncome / latestIncome.revenue) * 100).toFixed(2)) : null,
+    cashBalance: latestBalance.cash ?? null,
+    debtToEquity: latestBalance.longTermDebt != null && latestBalance.shareholdersEquity
+      ? Number((latestBalance.longTermDebt / latestBalance.shareholdersEquity).toFixed(3)) : null,
+    currentRatio: latestBalance.currentAssets != null && latestBalance.currentLiabilities
+      ? Number((latestBalance.currentAssets / latestBalance.currentLiabilities).toFixed(3)) : null,
+    freeCashFlow: null,
+    peRatio: null,
+    marketCap: null
+  };
 
   return {
     reportingPeriod: 'Last 4 reported quarters',
     dataSource: 'SEC Company Facts XBRL API',
     fetchedAt: new Date().toISOString(),
     dataStatus: incomeByDate.length || balanceSheet.length ? 'available' : 'unavailable',
+    metrics,
     incomeStatement: incomeByDate,
     balanceSheet
   };
@@ -144,7 +193,6 @@ const backfillFundamentals = async (tickers) => {
   const fundamentals = loadFundamentalsFromDisk();
 
   for (const symbol of tickers) {
-    if (fundamentals[symbol]?.dataStatus === 'available') continue;
     try {
       const cik = SEC_CIK_ALIASES[symbol] || tickerMap[symbol];
       if (!cik) throw new Error('No SEC CIK found; this company may not file U.S. SEC XBRL data');

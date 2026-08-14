@@ -73,7 +73,9 @@ const scheduleDailyRefresh = () => {
 };
 
 const enrichCompanyAccounting = (company, priceData = [], accounting = null) => {
-  const sharesOutstanding = Number(company.metrics?.sharesOutstanding ?? company.sharesOutstanding ?? Math.max(1, ((company.metrics?.marketCap || company.price || 1) * 1.25) / Math.max(company.price || 1, 1)));
+  const realMetrics = accounting?.metrics || {};
+  const sharesOutstandingMillions = realMetrics.sharesOutstandingMillions;
+  const sharesOutstanding = sharesOutstandingMillions == null ? null : sharesOutstandingMillions * 1_000_000;
   
   // Use real price data if available, otherwise empty array (error state)
   const alignedSeries = priceData && Array.isArray(priceData) && priceData.length > 0 
@@ -92,8 +94,11 @@ const enrichCompanyAccounting = (company, priceData = [], accounting = null) => 
     change: latestChange,
     sharesOutstanding,
     metrics: {
-      ...company.metrics,
-      sharesOutstanding
+      ...realMetrics,
+      marketCap: latestPrice != null && sharesOutstandingMillions != null
+        ? Number((latestPrice * sharesOutstandingMillions / 1000).toFixed(2))
+        : null,
+      sharesOutstanding: sharesOutstandingMillions
     },
     priceHistory: alignedSeries,
     dailyAdjustedClose: alignedSeries.map(point => ({
