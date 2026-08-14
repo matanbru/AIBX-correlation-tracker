@@ -12,7 +12,7 @@ import {
   Bar
 } from 'recharts';
 
-const mean = (arr) => arr.reduce((sum, value) => sum + value, 0) / arr.length;
+export const mean = (arr) => arr.reduce((sum, value) => sum + value, 0) / arr.length;
 const calculateReturns = (prices, logReturns = true) => {
   const returns = [];
   for (let i = 1; i < prices.length; i++) {
@@ -212,7 +212,7 @@ const crossCorrelation = (basketReturnSeries, companyReturnSeries, maxLag, minim
   return results;
 };
 
-function AIBXChart({ company, companies = [] }) {
+function AIBXLCorrelationChart({ company, companies = [] }) {
   const [windowSize, setWindowSize] = React.useState(60);
   const [refreshKey, setRefreshKey] = useState(0);
 
@@ -273,7 +273,7 @@ function AIBXChart({ company, companies = [] }) {
       )
     );
 
-    console.info('[AIBX correlation] benchmark basket', {
+    console.info('[AIBXL Correlation] benchmark basket', {
       targetTicker: company.symbol,
       benchmark: 'AIBXL',
       benchmarkTickers: validCompanies.map((entry) => entry.symbol),
@@ -322,24 +322,24 @@ function AIBXChart({ company, companies = [] }) {
   const strongestLagIsEdge = strongestLag && Math.abs(strongestLag.lag) === lagRange;
 
   if (!chartData.length) {
-    return <div className="chart-empty">No AIBXL benchmark data available for {company?.symbol || 'this company'}.</div>;
+    return <div className="chart-empty">No AIBXL Correlation benchmark data available for {company?.symbol || 'this company'}.</div>;
   }
 
   return (
-    <div className="aibx-chart-wrap">
-      <div className="aibx-toolbar">
-        <div className="aibx-metrics">
-          <span className="aibx-tag">{windowSize}D beta</span>
+    <div className="aibxl-correlation-chart-wrap">
+      <div className="aibxl-correlation-toolbar">
+        <div className="aibxl-correlation-metrics">
+          <span className="aibxl-correlation-tag">{windowSize}D beta</span>
           <strong>{latestPoint.beta.toFixed(3)}</strong>
-          <span className="aibx-sub">R² {latestPoint.r2.toFixed(3)}</span>
+          <span className="aibxl-correlation-sub">R² {latestPoint.r2.toFixed(3)}</span>
         </div>
 
-        <div className="aibx-window-controls">
+        <div className="aibxl-correlation-window-controls">
           {[30, 60, 90].map((option) => (
             <button
               key={option}
               type="button"
-              className={windowSize === option ? 'aibx-window-button active' : 'aibx-window-button'}
+              className={windowSize === option ? 'aibxl-correlation-window-button active' : 'aibxl-correlation-window-button'}
               onClick={() => setWindowSize(option)}
             >
               {option}D
@@ -363,14 +363,14 @@ function AIBXChart({ company, companies = [] }) {
       </ResponsiveContainer>
 
       {/* Lag Correlation Section */}
-      <div className="aibx-lag-section">
-        <div className="aibx-lag-header">
+      <div className="aibxl-correlation-lag-section">
+        <div className="aibxl-correlation-lag-header">
           <h4>Lead/Lag Analysis (±{lagRange}D lag test)</h4>
           {reliableLag && (
-            <div className="aibx-lag-summary">
-              <span className="aibx-lag-label">Strongest correlation:</span>
-              <span className="aibx-lag-value">{strongestLag.correlation.toFixed(3)}</span>
-              <span className="aibx-lag-lag">
+            <div className="aibxl-correlation-lag-summary">
+              <span className="aibxl-correlation-lag-label">Strongest correlation:</span>
+              <span className="aibxl-correlation-lag-value">{strongestLag.correlation.toFixed(3)}</span>
+              <span className="aibxl-correlation-lag-lag">
                 {strongestLag.lag > 0
                   ? `Basket leads by ${strongestLag.lag}D`
                   : strongestLag.lag < 0
@@ -380,12 +380,12 @@ function AIBXChart({ company, companies = [] }) {
             </div>
           )}
           {!reliableLag && (
-            <p className="aibx-lag-warning">
+            <p className="aibxl-correlation-lag-warning">
               Insufficient evidence for a reliable lag reading after the 20-observation minimum and Bonferroni correction ({lagData.length} lags tested).
             </p>
           )}
           {strongestLagIsEdge && (
-            <p className="aibx-lag-warning">
+            <p className="aibxl-correlation-lag-warning">
               Peak is at the tested range edge; interpret this short-window result cautiously.
             </p>
           )}
@@ -409,4 +409,4 @@ function AIBXChart({ company, companies = [] }) {
   );
 }
 
-export default AIBXChart;
+export default AIBXLCorrelationChart;

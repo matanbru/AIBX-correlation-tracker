@@ -5,8 +5,9 @@ import CompanyTable from './components/CompanyTable';
 import SearchBar from './components/SearchBar';
 import PriceChart from './components/PriceChart';
 import TopMovers from './components/TopMovers';
-import AIBXChart from './components/AIBXChart';
+import AIBXLCorrelationChart from './components/AIBXChart';
 import AIBXLChart from './components/AIBXLChart';
+import MomentumVolatilityChart from './components/MomentumVolatilityChart';
 import './App.css';
 
 const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
@@ -274,10 +275,16 @@ function App() {
           Top Gainers
         </button>
         <button
-          className={`tab ${currentTab === 'aibx' ? 'active' : ''}`}
-          onClick={() => setCurrentTab('aibx')}
+          className={`tab ${currentTab === 'aibxlCorrelation' ? 'active' : ''}`}
+          onClick={() => setCurrentTab('aibxlCorrelation')}
         >
-          AIBX
+          AIBXL Correlation
+        </button>
+        <button
+          className={`tab ${currentTab === 'momentumVolatility' ? 'active' : ''}`}
+          onClick={() => setCurrentTab('momentumVolatility')}
+        >
+          Momentum &amp; Volatility
         </button>
         <button
           className={`tab ${currentTab === 'watchlist' ? 'active' : ''}`}
@@ -451,8 +458,9 @@ function App() {
                 <PriceChart symbol={selectedCompany.symbol} />
                 <AIBXLChart companies={companies} onSelectCompany={openCompanyProfile} />
                 {opportunityCompanies.some((company) => company.symbol === selectedCompany.symbol) && (
-                  <AIBXChart company={selectedCompany} companies={companies} />
+                  <AIBXLCorrelationChart company={selectedCompany} companies={companies} />
                 )}
+                <MomentumVolatilityChart company={selectedCompany} />
               </div>
             ) : (
               <>
@@ -492,39 +500,57 @@ function App() {
           <TopMovers type="gainers" />
         )}
 
-        {currentTab === 'aibx' && (
-          <div className="aibx-tab">
-            <div className="panel-header aibx-header">
-              <h3>AIBX</h3>
+        {currentTab === 'aibxlCorrelation' && (
+          <div className="aibxl-correlation-tab">
+            <div className="panel-header aibxl-correlation-header">
+              <h3>AIBXL Correlation</h3>
               <span>Basket influence by emerging company</span>
             </div>
 
             {opportunityCompanies.length > 0 ? (
               <>
                 <AIBXLChart companies={companies} onSelectCompany={openCompanyProfile} />
-                <div className="aibx-grid">
+                <div className="aibxl-correlation-grid">
                   {opportunityCompanies.map((company) => (
-                    <div key={company.symbol} className="aibx-card">
-                      <div className="aibx-card-header">
+                    <div key={company.symbol} className="aibxl-correlation-card">
+                      <div className="aibxl-correlation-card-header">
                         <div>
                           <h4>{company.name}</h4>
                           <span>{company.symbol}</span>
                         </div>
                         <button
                           type="button"
-                          className="aibx-profile-button"
+                          className="aibxl-correlation-profile-button"
                           onClick={() => openCompanyProfile(company)}
                         >
                           Open profile
                         </button>
                       </div>
-                      <AIBXChart company={company} companies={companies} />
+                      <AIBXLCorrelationChart company={company} companies={companies} />
                     </div>
                   ))}
                 </div>
               </>
             ) : (
-              <div className="loading">Loading AIBX data...</div>
+              <div className="loading">Loading AIBXL Correlation data...</div>
+            )}
+          </div>
+        )}
+
+        {currentTab === 'momentumVolatility' && (
+          <div className="momentum-volatility-tab">
+            <div className="panel-header">
+              <h3>Momentum &amp; Volatility</h3>
+              <span>Real price-history momentum and volatility for each smaller company</span>
+            </div>
+            {opportunityCompanies.length > 0 ? (
+              <div className="momentum-volatility-grid">
+                {opportunityCompanies.map((company) => (
+                  <MomentumVolatilityChart company={company} key={company.symbol} />
+                ))}
+              </div>
+            ) : (
+              <div className="loading">Loading Momentum &amp; Volatility data...</div>
             )}
           </div>
         )}

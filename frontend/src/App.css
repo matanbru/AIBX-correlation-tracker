@@ -610,12 +610,12 @@ tbody tr:hover {
   margin-top: 28px;
 }
 
-.aibx-panel {
+.aibxl-correlation-panel {
   margin-top: 30px;
 }
 
 .chart-container,
-.aibx-chart-wrap {
+.aibxl-correlation-chart-wrap {
   background: white;
   padding: 20px;
   border-radius: 8px;
@@ -671,7 +671,7 @@ tbody tr:hover {
   color: var(--text-light);
 }
 
-.aibx-tab {
+.aibxl-correlation-tab {
   display: flex;
   flex-direction: column;
   gap: 18px;
@@ -718,6 +718,16 @@ tbody tr:hover {
   color: #0f766e;
   font-size: 1.35rem;
   margin-top: 3px;
+}
+
+.aibxl-disclosure {
+  margin: 10px 0 14px;
+  padding: 8px 10px;
+  border-left: 3px solid #d97706;
+  background: #fffbeb;
+  color: #92400e;
+  font-size: 0.82rem;
+  line-height: 1.4;
 }
 
 .aibxl-footnote {
@@ -784,13 +794,13 @@ tbody tr:hover {
   white-space: nowrap;
 }
 
-.aibx-grid {
+.aibxl-correlation-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(360px, 1fr));
   gap: 20px;
 }
 
-.aibx-card {
+.aibxl-correlation-card {
   background: white;
   border: 1px solid #e3ebf5;
   border-radius: 12px;
@@ -798,7 +808,7 @@ tbody tr:hover {
   box-shadow: 0 1px 3px rgba(0,0,0,0.08);
 }
 
-.aibx-card-header {
+.aibxl-correlation-card-header {
   display: flex;
   align-items: flex-start;
   justify-content: space-between;
@@ -806,18 +816,18 @@ tbody tr:hover {
   margin-bottom: 10px;
 }
 
-.aibx-card-header h4 {
+.aibxl-correlation-card-header h4 {
   margin: 0 0 4px;
   font-size: 1.1rem;
 }
 
-.aibx-card-header span {
+.aibxl-correlation-card-header span {
   color: var(--text-light);
   font-size: 0.85rem;
   letter-spacing: 0.04em;
 }
 
-.aibx-profile-button {
+.aibxl-correlation-profile-button {
   flex-shrink: 0;
   border: 1px solid #b9d9d4;
   background: #f4faf9;
@@ -829,14 +839,14 @@ tbody tr:hover {
   font-weight: 700;
 }
 
-.aibx-profile-button:hover,
-.aibx-profile-button:focus-visible {
+.aibxl-correlation-profile-button:hover,
+.aibxl-correlation-profile-button:focus-visible {
   background: #e8f6f3;
   border-color: #0f766e;
   outline: none;
 }
 
-.aibx-toolbar {
+.aibxl-correlation-toolbar {
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -845,13 +855,13 @@ tbody tr:hover {
   flex-wrap: wrap;
 }
 
-.aibx-metrics {
+.aibxl-correlation-metrics {
   display: flex;
   align-items: baseline;
   gap: 8px;
 }
 
-.aibx-tag {
+.aibxl-correlation-tag {
   display: inline-flex;
   background: #edf5ff;
   color: var(--primary-color);
@@ -864,23 +874,23 @@ tbody tr:hover {
   text-transform: uppercase;
 }
 
-.aibx-metrics strong {
+.aibxl-correlation-metrics strong {
   font-size: 1.4rem;
   color: var(--text-dark);
 }
 
-.aibx-sub {
+.aibxl-correlation-sub {
   color: var(--text-light);
   font-size: 0.8rem;
 }
 
-.aibx-window-controls {
+.aibxl-correlation-window-controls {
   display: flex;
   gap: 8px;
   flex-wrap: wrap;
 }
 
-.aibx-window-button {
+.aibxl-correlation-window-button {
   border: 1px solid #d8e3f0;
   background: #f7f9fc;
   color: #334155;
@@ -890,19 +900,19 @@ tbody tr:hover {
   transition: all 0.2s ease;
 }
 
-.aibx-window-button.active {
+.aibxl-correlation-window-button.active {
   background: var(--primary-color);
   border-color: var(--primary-color);
   color: white;
 }
 
-.aibx-lag-section {
+.aibxl-correlation-lag-section {
   margin-top: 20px;
   padding-top: 20px;
   border-top: 1px solid #e2e8f0;
 }
 
-.aibx-lag-header {
+.aibxl-correlation-lag-header {
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -911,13 +921,13 @@ tbody tr:hover {
   flex-wrap: wrap;
 }
 
-.aibx-lag-header h4 {
+.aibxl-correlation-lag-header h4 {
   font-size: 0.95rem;
   color: var(--text-dark);
   margin: 0;
 }
 
-.aibx-lag-summary {
+.aibxl-correlation-lag-summary {
   display: flex;
   align-items: center;
   gap: 8px;
@@ -927,26 +937,140 @@ tbody tr:hover {
   border-radius: 6px;
 }
 
-.aibx-lag-label {
+.aibxl-correlation-lag-label {
   color: var(--text-light);
 }
 
-.aibx-lag-value {
+.aibxl-correlation-lag-value {
   font-weight: bold;
   color: var(--primary-color);
 }
 
-.aibx-lag-lag {
+.aibxl-correlation-lag-lag {
   color: #7c3aed;
   font-weight: 600;
   font-size: 0.8rem;
 }
 
-.aibx-lag-warning {
+.aibxl-correlation-lag-warning {
   flex-basis: 100%;
   margin: 0;
   color: #856404;
   font-size: 0.82rem;
+}
+
+.momentum-volatility-tab,
+.momentum-volatility-panel {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.momentum-volatility-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(420px, 1fr));
+  gap: 20px;
+}
+
+.momentum-volatility-panel {
+  background: white;
+  border: 1px solid #e3ebf5;
+  border-radius: 12px;
+  padding: 18px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+}
+
+.momentum-volatility-header,
+.momentum-volatility-toolbar {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.momentum-volatility-header h3,
+.momentum-volatility-header p {
+  margin: 0;
+}
+
+.momentum-volatility-header p {
+  color: var(--text-light);
+  font-size: 0.85rem;
+  margin-top: 5px;
+}
+
+.momentum-stat-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 8px;
+}
+
+.momentum-stat-card {
+  border: 1px solid #e2e8f0;
+  border-radius: 7px;
+  padding: 9px;
+  background: #f8fafc;
+}
+
+.momentum-stat-card span {
+  display: block;
+  color: var(--text-light);
+  font-size: 0.75rem;
+}
+
+.momentum-stat-card strong {
+  display: block;
+  margin-top: 4px;
+  color: var(--text-dark);
+  font-size: 1.05rem;
+}
+
+.momentum-stat-card.positive strong {
+  color: #15803d;
+}
+
+.momentum-stat-card.negative strong {
+  color: #b91c1c;
+}
+
+.momentum-volatility-toolbar {
+  align-items: center;
+  color: var(--text-light);
+  font-size: 0.85rem;
+}
+
+.volatility-regime {
+  border-radius: 999px;
+  padding: 5px 9px;
+  font-size: 0.75rem;
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+.volatility-regime-elevated {
+  background: #fee2e2;
+  color: #991b1b;
+}
+
+.volatility-regime-normal {
+  background: #e0f2fe;
+  color: #075985;
+}
+
+.volatility-regime-quiet {
+  background: #dcfce7;
+  color: #166534;
+}
+
+@media (max-width: 640px) {
+  .momentum-volatility-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .momentum-stat-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
 }
 
 /* Watchlist Placeholder */

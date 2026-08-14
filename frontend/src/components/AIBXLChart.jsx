@@ -23,6 +23,10 @@ const toSeries = (company) => {
   );
 };
 
+const simpleReturn = (currentPrice, previousPrice) => (
+  (currentPrice - previousPrice) / previousPrice
+);
+
 const weightedBasket = (companies) => {
   const seriesBySymbol = new Map(companies.map((company) => [company.symbol, toSeries(company)]));
   const dates = [...seriesBySymbol.values()].reduce((sharedDates, series) => {
@@ -53,7 +57,7 @@ const weightedBasket = (companies) => {
           const series = seriesBySymbol.get(company.symbol);
           const previous = series.get(sortedDates[index - 1]);
           const current = series.get(date);
-          return basketReturn + weights.get(company.symbol) * ((current - previous) / previous);
+          return basketReturn + weights.get(company.symbol) * simpleReturn(current, previous);
         }, 0);
     const level = index === 0 ? 100 : previousLevel * (1 + dailyReturn);
     previousLevel = level;
@@ -133,6 +137,9 @@ function AIBXLChart({ companies = [], onSelectCompany }) {
             {totalReturn >= 0 ? '+' : ''}{totalReturn.toFixed(2)}% since start
           </span>
         </div>
+      </div>
+      <div className="aibxl-disclosure">
+        Current top-10 composition and weights are applied across the full price history; historical market-cap rebalancing is unavailable.
       </div>
       <ResponsiveContainer width="100%" height={300}>
         <LineChart data={chartData} margin={{ top: 10, right: 14, left: 0, bottom: 0 }}>

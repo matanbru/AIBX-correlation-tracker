@@ -1,8 +1,8 @@
-# AIBX Audit Evidence
+# AIBXL Correlation Audit Evidence
 
 Date of audit: 2026-08-13
 
-This document records the raw evidence used to review the AIBX and AIBXL calculations after real Twelve Data price histories were loaded.
+This document records the raw evidence used to review AIBXL and its per-company AIBXL Correlation calculations after real Twelve Data price histories were loaded.
 
 ## 1. Toggle Bug: Raw Output
 
@@ -186,7 +186,7 @@ The price chart renders:
 No chart data available
 ```
 
-The AIBX chart renders:
+The AIBXL Correlation chart renders:
 
 ```text
 No AIBXL benchmark data available for [ticker].
