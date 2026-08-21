@@ -20,8 +20,22 @@ const API_SYMBOL_ALIASES = {
   C3AI: 'AI'
 };
 const latestPriceErrors = {};
+const lastRefreshInfo = {
+  status: 'idle',
+  lastAttemptAt: null,
+  lastSuccessAt: null,
+  lastError: null,
+  tickersChecked: 0,
+  tickersUpdated: 0
+};
 
 const getApiKey = () => process.env.TWELVE_DATA_API_KEY;
+
+const getLastRefreshInfo = () => ({
+  ...lastRefreshInfo,
+  lastAttemptAt: lastRefreshInfo.lastAttemptAt ? new Date(lastRefreshInfo.lastAttemptAt).toISOString() : null,
+  lastSuccessAt: lastRefreshInfo.lastSuccessAt ? new Date(lastRefreshInfo.lastSuccessAt).toISOString() : null
+});
 
 /**
  * Sleep utility for throttling API requests (free tier safety)
@@ -166,24 +180,33 @@ const fetchHistoricalPricesBatch = async (symbols, outputSize = 250) => {
 const fetchLatestPrice = async (symbol) => {
   const apiKey = getApiKey();
   if (!apiKey) {
-    throw new Error('TWELVE_DATA_API_KEY environment variable is not set');
+    const errorMessage = 'TWELVE_DATA_API_KEY environment variable is not set';
+    latestPriceErrors[symbol] = errorMessage;
+    lastRefreshInfo.status = 'failed';
+    lastRefreshInfo.lastError = errorMessage;
+    lastRefreshInfo.lastAttemptAt = new Date().toISOString();
+    console.error(`⚠️  Could not fetch latest price for ${symbol}:`, errorMessage);
+    return null;
   }
 
-  const url = `${API_BASE}/time_series?symbol=${symbol}&interval=1day&outputsize=1&apikey=${apiKey}`;
+  const apiSymbol = API_SYMBOL_ALIASES[symbol] || symbol;
+  const url = `${API_BASE}/time_series?symbol=${encodeURIComponent(apiSymbol)}&interval=1day&outputsize=1&apikey=${apiKey}`;
 
   try {
-    const response = await fetch(url);
-    if (!response.ok) {
-      throw new Error(`HTTP ${response.status}`);
-    }
+    const latest = await fetchWithRetries(async () => {
+      const response = await fetch(url);
+      if (!response.ok) {
+        throw new Error(`HTTP ${response.status}`);
+      }
 
-    const data = await response.json();
+      const data = await response.json();
+      if (data.status !== 'ok' || !data.values || data.values.length === 0) {
+        throw new Error(`No current price data returned for ${symbol}`);
+      }
 
-    if (data.status !== 'ok' || !data.values || data.values.length === 0) {
-      return null;
-    }
+      return data.values[0];
+    }, `latest price ${symbol}`);
 
-    const latest = data.values[0]; // Most recent is first
     delete latestPriceErrors[symbol];
     return {
       date: latest.datetime,
@@ -194,6 +217,9 @@ const fetchLatestPrice = async (symbol) => {
     };
   } catch (error) {
     latestPriceErrors[symbol] = error.message;
+    lastRefreshInfo.status = 'failed';
+    lastRefreshInfo.lastError = `${symbol}: ${error.message}`;
+    lastRefreshInfo.lastAttemptAt = new Date().toISOString();
     console.error(`⚠️  Could not fetch latest price for ${symbol}:`, error.message);
     return null;
   }
@@ -297,6 +323,12 @@ const refreshLatestPrices = async (tickers) => {
   const pricesMap = loadPricesFromDisk();
   let updated = false;
 
+  lastRefreshInfo.status = 'running';
+  lastRefreshInfo.lastAttemptAt = new Date().toISOString();
+  lastRefreshInfo.lastError = null;
+  lastRefreshInfo.tickersChecked = tickers.length;
+  lastRefreshInfo.tickersUpdated = 0;
+
   console.log(`\n🔄 Daily refresh at ${new Date().toISOString()}`);
 
   for (const symbol of tickers) {
@@ -314,20 +346,37 @@ const refreshLatestPrices = async (tickers) => {
     const lastDate = pricesMap[symbol][pricesMap[symbol].length - 1]?.date;
     if (latest.date === lastDate) {
       console.log(`   ✓ ${symbol}: already up to date`);
-      continue;
+    } else {
+      pricesMap[symbol].push(latest);
+      updated = true;
+      lastRefreshInfo.tickersUpdated += 1;
+      console.log(`   ✓ ${symbol}: added ${latest.date}`);
     }
 
-    pricesMap[symbol].push(latest);
-    updated = true;
-    console.log(`   ✓ ${symbol}: added ${latest.date}`);
+    if (symbol !== tickers[tickers.length - 1]) {
+      await sleep(REQUEST_DELAY_MS);
+    }
   }
 
   if (updated) {
     savePricesToDisk(pricesMap);
+    lastRefreshInfo.lastSuccessAt = new Date().toISOString();
+    lastRefreshInfo.status = Object.keys(latestPriceErrors).length > 0 ? 'partial' : 'success';
+    lastRefreshInfo.lastError = Object.keys(latestPriceErrors).length > 0
+      ? 'Some symbols failed to refresh; see console logs.'
+      : null;
+  } else {
+    lastRefreshInfo.lastSuccessAt = new Date().toISOString();
+    lastRefreshInfo.status = Object.keys(latestPriceErrors).length > 0 ? 'failed' : 'success';
+    lastRefreshInfo.lastError = Object.keys(latestPriceErrors).length > 0
+      ? 'No new data appended. Latest refresh attempts failed.'
+      : null;
   }
 
   return pricesMap;
 };
+
+export { getLastRefreshInfo };
 
 export default {
   loadPricesFromDisk,
@@ -336,5 +385,6 @@ export default {
   fetchLatestPrice,
   backfillPrices,
   refreshLatestPrices,
-  getLatestPriceErrors: () => ({ ...latestPriceErrors })
+  getLatestPriceErrors: () => ({ ...latestPriceErrors }),
+  getLastRefreshInfo
 };

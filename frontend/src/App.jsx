@@ -9,6 +9,7 @@ import AIBXLCorrelationChart from './components/AIBXChart';
 import AIBXLChart from './components/AIBXLChart';
 import MomentumVolatilityChart from './components/MomentumVolatilityChart';
 import PerformanceVsAIBXL from './components/PerformanceVsAIBXL';
+import FundamentalsPanel from './components/FundamentalsPanel';
 import './App.css';
 
 const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
@@ -183,6 +184,12 @@ function App() {
   const [selectedCompany, setSelectedCompany] = useState(null);
   const [currentTab, setCurrentTab] = useState('overview');
   const [socket, setSocket] = useState(null);
+  const [lastRefreshInfo, setLastRefreshInfo] = useState({
+    status: 'idle',
+    lastAttemptAt: null,
+    lastSuccessAt: null,
+    lastError: null
+  });
 
   const openCompanyProfile = (company) => {
     setSelectedCompany(company);
@@ -217,7 +224,30 @@ function App() {
 
   useEffect(() => {
     fetchCompanies();
+    fetchRefreshStatus();
+    const statusRefreshTimer = setInterval(fetchRefreshStatus, 60000);
+    return () => clearInterval(statusRefreshTimer);
   }, []);
+
+  const fetchRefreshStatus = async () => {
+    try {
+      const response = await axios.get(`${API_URL}/prices/refresh-status`);
+      setLastRefreshInfo(response.data);
+    } catch (error) {
+      console.error('Error fetching refresh status:', error);
+    }
+  };
+
+  const triggerManualRefresh = async () => {
+    try {
+      const response = await axios.post(`${API_URL}/prices/refresh-now`);
+      setLastRefreshInfo(response.data.lastRefresh || { status: 'success' });
+      await fetchCompanies();
+    } catch (error) {
+      console.error('Error triggering manual refresh:', error);
+      setLastRefreshInfo((prev) => ({ ...prev, status: 'failed', lastError: error.message }));
+    }
+  };
 
   const fetchCompanies = async () => {
     try {
@@ -269,6 +299,18 @@ function App() {
       <header className="header">
         <h1>🤖 AI Stock Tracker</h1>
         <p>Track share prices of the top 100 AI development companies</p>
+        <p style={{ marginTop: '8px', opacity: 0.9 }}>
+          Data refresh: {lastRefreshInfo.status === 'success' ? 'Up to date' : lastRefreshInfo.status === 'partial' ? 'Partially refreshed' : lastRefreshInfo.status === 'running' ? 'Refreshing…' : 'Needs attention'}
+          {lastRefreshInfo.lastSuccessAt ? ` • Last updated ${new Date(lastRefreshInfo.lastSuccessAt).toLocaleString()}` : ''}
+          {lastRefreshInfo.lastError ? ` • ${lastRefreshInfo.lastError}` : ''}
+        </p>
+        <button
+          type="button"
+          onClick={triggerManualRefresh}
+          style={{ marginTop: '10px', padding: '8px 14px', borderRadius: '8px', border: '1px solid #0f766e', background: '#0f766e', color: '#fff', cursor: 'pointer' }}
+        >
+          Refresh now
+        </button>
       </header>
 
       <nav className="nav-tabs">
@@ -295,6 +337,12 @@ function App() {
           onClick={() => setCurrentTab('momentumVolatility')}
         >
           Momentum &amp; Volatility
+        </button>
+        <button
+          className={`tab ${currentTab === 'fundamentals' ? 'active' : ''}`}
+          onClick={() => setCurrentTab('fundamentals')}
+        >
+          Fundamentals
         </button>
         <button
           className={`tab ${currentTab === 'watchlist' ? 'active' : ''}`}
@@ -472,6 +520,7 @@ function App() {
                   <AIBXLCorrelationChart company={selectedCompany} companies={companies} />
                 )}
                 <MomentumVolatilityChart company={selectedCompany} onSelectCompany={openCompanyProfile} />
+                <FundamentalsPanel company={selectedCompany} />
               </div>
             ) : (
               <>
@@ -562,6 +611,24 @@ function App() {
               </div>
             ) : (
               <div className="loading">Loading Momentum &amp; Volatility data...</div>
+            )}
+          </div>
+        )}
+
+        {currentTab === 'fundamentals' && (
+          <div className="fundamentals-tab">
+            <div className="panel-header">
+              <h3>Fundamentals</h3>
+              <span>SEC-derived accounting data for AIBXL constituents and smaller AIBX companies</span>
+            </div>
+            {momentumCompanies.length > 0 ? (
+              <div className="fundamentals-grid">
+                {momentumCompanies.map((company) => (
+                  <FundamentalsPanel company={company} onSelectCompany={openCompanyProfile} key={company.symbol} />
+                ))}
+              </div>
+            ) : (
+              <div className="loading">Loading Fundamentals data...</div>
             )}
           </div>
         )}

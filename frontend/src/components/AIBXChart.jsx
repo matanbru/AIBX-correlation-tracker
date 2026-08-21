@@ -11,6 +11,7 @@ import {
   BarChart,
   Bar
 } from 'recharts';
+import { normalizePriceSeries } from './AIBXLChart';
 
 export const mean = (arr) => arr.reduce((sum, value) => sum + value, 0) / arr.length;
 const calculateReturns = (prices, logReturns = true) => {
@@ -169,11 +170,9 @@ const rollingBeta = (seriesA, seriesB, windowSize) => {
 
 const getSeriesSnapshot = (company) => {
   const rawSeries = company.dailyAdjustedClose || company.priceHistory || [];
-  if (!Array.isArray(rawSeries) || rawSeries.length === 0) return { dates: [], values: [] };
-
-  const alignedSeries = rawSeries.map((point) => ({
-    date: point.date || new Date(point.timestamp).toISOString().slice(0, 10),
-    value: Number(point.adjustedClose ?? point.close ?? point.price ?? company.price ?? 0)
+  const alignedSeries = normalizePriceSeries(rawSeries).map((point) => ({
+    date: point.date,
+    value: Number(point.value ?? company.price ?? 0)
   }));
 
   return {

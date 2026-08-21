@@ -9,17 +9,49 @@ import {
   Tooltip
 } from 'recharts';
 
+export const normalizePriceSeries = (rawSeries = []) => {
+  if (!Array.isArray(rawSeries) || rawSeries.length === 0) return [];
+
+  const entries = rawSeries
+    .map((point) => ({
+      date: point.date || new Date(point.timestamp).toISOString().slice(0, 10),
+      value: Number(point.adjustedClose ?? point.close ?? point.price ?? NaN)
+    }))
+    .filter((point) => point.date && Number.isFinite(point.value) && point.value > 0)
+    .sort((a, b) => a.date.localeCompare(b.date));
+
+  if (!entries.length) return [];
+
+  const normalized = [];
+  let lastValue = entries[0].value;
+  let lastDate = new Date(entries[0].date);
+
+  entries.forEach((entry) => {
+    const currentDate = new Date(entry.date);
+    let cursor = new Date(lastDate);
+
+    while (cursor < currentDate) {
+      const nextDay = new Date(cursor);
+      nextDay.setDate(nextDay.getDate() + 1);
+      const iso = nextDay.toISOString().slice(0, 10);
+      if (iso !== entry.date) {
+        normalized.push({ date: iso, value: lastValue });
+      }
+      cursor = nextDay;
+    }
+
+    normalized.push({ date: entry.date, value: entry.value });
+    lastValue = entry.value;
+    lastDate = currentDate;
+  });
+
+  return normalized;
+};
+
 const toSeries = (company) => {
   const rawSeries = company.dailyAdjustedClose || company.priceHistory || [];
-  if (!Array.isArray(rawSeries)) return new Map();
-
   return new Map(
-    rawSeries
-      .map((point) => [
-        point.date || new Date(point.timestamp).toISOString().slice(0, 10),
-        Number(point.adjustedClose ?? point.close ?? point.price)
-      ])
-      .filter(([, value]) => Number.isFinite(value) && value > 0)
+    normalizePriceSeries(rawSeries).map((point) => [point.date, Number(point.value)])
   );
 };
 

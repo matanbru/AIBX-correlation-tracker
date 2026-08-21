@@ -2,7 +2,7 @@
   "NVDA": {
     "reportingPeriod": "Last 4 reported quarters",
     "dataSource": "SEC Company Facts XBRL API",
-    "fetchedAt": "2026-08-13T20:29:29.262Z",
+    "fetchedAt": "2026-08-15T18:03:53.635Z",
     "dataStatus": "available",
     "metrics": {
       "sharesOutstandingMillions": 24200,
@@ -97,7 +97,7 @@
   "MSFT": {
     "reportingPeriod": "Last 4 reported quarters",
     "dataSource": "SEC Company Facts XBRL API",
-    "fetchedAt": "2026-08-13T20:29:29.886Z",
+    "fetchedAt": "2026-08-15T18:03:54.597Z",
     "dataStatus": "available",
     "metrics": {
       "sharesOutstandingMillions": 7425.55,
@@ -192,13 +192,13 @@
   "GOOGL": {
     "reportingPeriod": "Last 4 reported quarters",
     "dataSource": "SEC Company Facts XBRL API",
-    "fetchedAt": "2026-08-13T20:29:30.444Z",
+    "fetchedAt": "2026-08-15T18:03:55.266Z",
     "dataStatus": "available",
     "metrics": {
-      "sharesOutstandingMillions": null,
+      "sharesOutstandingMillions": 12230,
       "revenueTtm": 229.69,
       "revenueGrowth": 109,
-      "grossMargin": null,
+      "grossMargin": 62.03,
       "operatingMargin": 35.03,
       "cashBalance": 55.91,
       "debtToEquity": 0.153,
@@ -211,7 +211,7 @@
       {
         "quarter": "2026-06-30",
         "revenue": 229.69,
-        "grossProfit": null,
+        "grossProfit": 142.48,
         "operatingIncome": 80.47,
         "netIncome": 174.77,
         "ebitda": null
@@ -219,7 +219,7 @@
       {
         "quarter": "2026-03-31",
         "revenue": 109.9,
-        "grossProfit": null,
+        "grossProfit": 68.63,
         "operatingIncome": 39.7,
         "netIncome": 62.58,
         "ebitda": null
@@ -227,7 +227,7 @@
       {
         "quarter": "2025-12-31",
         "revenue": 402.84,
-        "grossProfit": null,
+        "grossProfit": 240.31,
         "operatingIncome": 129.04,
         "netIncome": 132.17,
         "ebitda": null
@@ -235,7 +235,7 @@
       {
         "quarter": "2025-09-30",
         "revenue": 289.01,
-        "grossProfit": null,
+        "grossProfit": 172.24,
         "operatingIncome": 93.11,
         "netIncome": 97.72,
         "ebitda": null
@@ -287,13 +287,13 @@
   "AMZN": {
     "reportingPeriod": "Last 4 reported quarters",
     "dataSource": "SEC Company Facts XBRL API",
-    "fetchedAt": "2026-08-13T20:29:31.001Z",
+    "fetchedAt": "2026-08-15T18:03:56.039Z",
     "dataStatus": "available",
     "metrics": {
       "sharesOutstandingMillions": 10786.31,
       "revenueTtm": 382.13,
       "revenueGrowth": 110.52,
-      "grossMargin": null,
+      "grossMargin": 52.05,
       "operatingMargin": 13.43,
       "cashBalance": 78.21,
       "debtToEquity": 0.234,
@@ -306,7 +306,7 @@
       {
         "quarter": "2026-06-30",
         "revenue": 382.13,
-        "grossProfit": null,
+        "grossProfit": 198.89,
         "operatingIncome": 51.31,
         "netIncome": 135.28,
         "ebitda": null
@@ -314,7 +314,7 @@
       {
         "quarter": "2026-03-31",
         "revenue": 181.52,
-        "grossProfit": null,
+        "grossProfit": 94.06,
         "operatingIncome": 23.85,
         "netIncome": 90.8,
         "ebitda": null
@@ -322,7 +322,7 @@
       {
         "quarter": "2025-12-31",
         "revenue": 716.92,
-        "grossProfit": null,
+        "grossProfit": 360.51,
         "operatingIncome": 79.97,
         "netIncome": 77.67,
         "ebitda": null
@@ -330,7 +330,7 @@
       {
         "quarter": "2025-09-30",
         "revenue": 503.54,
-        "grossProfit": null,
+        "grossProfit": 257.08,
         "operatingIncome": 55,
         "netIncome": 76.48,
         "ebitda": null
@@ -382,13 +382,13 @@
   "META": {
     "reportingPeriod": "Last 4 reported quarters",
     "dataSource": "SEC Company Facts XBRL API",
-    "fetchedAt": "2026-08-13T20:29:31.510Z",
+    "fetchedAt": "2026-08-15T18:03:56.550Z",
     "dataStatus": "available",
     "metrics": {
       "sharesOutstandingMillions": null,
       "revenueTtm": 117.11,
       "revenueGrowth": 107.97,
-      "grossMargin": null,
+      "grossMargin": 81.6,
       "operatingMargin": 35.56,
       "cashBalance": 15.46,
       "debtToEquity": 0.32,
@@ -401,7 +401,7 @@
       {
         "quarter": "2026-06-30",
         "revenue": 117.11,
-        "grossProfit": null,
+        "grossProfit": 95.56,
         "operatingIncome": 41.65,
         "netIncome": 42.62,
         "ebitda": null
@@ -409,7 +409,7 @@
       {
         "quarter": "2026-03-31",
         "revenue": 56.31,
-        "grossProfit": null,
+        "grossProfit": 46.09,
         "operatingIncome": 22.87,
         "netIncome": 26.77,
         "ebitda": null
@@ -417,7 +417,7 @@
       {
         "quarter": "2025-12-31",
         "revenue": 200.97,
-        "grossProfit": null,
+        "grossProfit": 164.8,
         "operatingIncome": 83.28,
         "netIncome": 60.46,
         "ebitda": null
@@ -425,7 +425,7 @@
       {
         "quarter": "2025-09-30",
         "revenue": 141.07,
-        "grossProfit": null,
+        "grossProfit": 115.8,
         "operatingIncome": 58.53,
         "netIncome": 37.69,
         "ebitda": null
@@ -477,7 +477,7 @@
   "TSLA": {
     "reportingPeriod": "Last 4 reported quarters",
     "dataSource": "SEC Company Facts XBRL API",
-    "fetchedAt": "2026-08-13T20:29:32.076Z",
+    "fetchedAt": "2026-08-15T18:03:57.079Z",
     "dataStatus": "available",
     "metrics": {
       "sharesOutstandingMillions": 3949.55,
@@ -486,7 +486,7 @@
       "grossMargin": 18.71,
       "operatingMargin": 2.65,
       "cashBalance": 15.22,
-      "debtToEquity": null,
+      "debtToEquity": 0.089,
       "currentRatio": 1.941,
       "freeCashFlow": null,
       "peRatio": null,
@@ -532,7 +532,7 @@
         "cash": 15.22,
         "currentAssets": 68.76,
         "currentLiabilities": 35.42,
-        "longTermDebt": null,
+        "longTermDebt": 7.72,
         "totalAssets": 148.52,
         "totalLiabilities": 61.01,
         "shareholdersEquity": 86.86
@@ -542,7 +542,7 @@
         "cash": 16.6,
         "currentAssets": 69.75,
         "currentLiabilities": 34.14,
-        "longTermDebt": null,
+        "longTermDebt": 7.64,
         "totalAssets": 143.72,
         "totalLiabilities": 58.92,
         "shareholdersEquity": 84.12
@@ -552,7 +552,7 @@
         "cash": 16.51,
         "currentAssets": 68.64,
         "currentLiabilities": 31.71,
-        "longTermDebt": null,
+        "longTermDebt": 6.58,
         "totalAssets": 137.81,
         "totalLiabilities": 54.94,
         "shareholdersEquity": 82.14
@@ -562,7 +562,7 @@
         "cash": 18.29,
         "currentAssets": 64.65,
         "currentLiabilities": 31.29,
-        "longTermDebt": null,
+        "longTermDebt": 5.61,
         "totalAssets": 133.74,
         "totalLiabilities": 53.02,
         "shareholdersEquity": 79.97
@@ -572,7 +572,7 @@
   "AMD": {
     "reportingPeriod": "Last 4 reported quarters",
     "dataSource": "SEC Company Facts XBRL API",
-    "fetchedAt": "2026-08-13T20:29:32.611Z",
+    "fetchedAt": "2026-08-15T18:03:58.101Z",
     "dataStatus": "available",
     "metrics": {
       "sharesOutstandingMillions": 1632.48,
@@ -667,7 +667,7 @@
   "CRM": {
     "reportingPeriod": "Last 4 reported quarters",
     "dataSource": "SEC Company Facts XBRL API",
-    "fetchedAt": "2026-08-13T20:29:33.168Z",
+    "fetchedAt": "2026-08-15T18:03:59.029Z",
     "dataStatus": "available",
     "metrics": {
       "sharesOutstandingMillions": 819,
@@ -762,7 +762,7 @@
   "SAP": {
     "reportingPeriod": "Last 4 reported quarters",
     "dataSource": "SEC Company Facts XBRL API",
-    "fetchedAt": "2026-08-13T20:29:33.711Z",
+    "fetchedAt": "2026-08-15T18:03:59.629Z",
     "dataStatus": "unavailable",
     "metrics": {
       "sharesOutstandingMillions": 1228.5,
@@ -783,7 +783,7 @@
   "IBM": {
     "reportingPeriod": "Last 4 reported quarters",
     "dataSource": "SEC Company Facts XBRL API",
-    "fetchedAt": "2026-08-13T20:29:34.687Z",
+    "fetchedAt": "2026-08-15T18:04:00.606Z",
     "dataStatus": "available",
     "metrics": {
       "sharesOutstandingMillions": 942.13,
@@ -878,7 +878,7 @@
   "JPM": {
     "reportingPeriod": "Last 4 reported quarters",
     "dataSource": "SEC Company Facts XBRL API",
-    "fetchedAt": "2026-08-13T20:29:35.332Z",
+    "fetchedAt": "2026-08-15T18:04:02.883Z",
     "dataStatus": "available",
     "metrics": {
       "sharesOutstandingMillions": 2658.19,
@@ -973,10 +973,10 @@
   "V": {
     "reportingPeriod": "Last 4 reported quarters",
     "dataSource": "SEC Company Facts XBRL API",
-    "fetchedAt": "2026-08-13T20:29:35.888Z",
+    "fetchedAt": "2026-08-15T18:04:04.201Z",
     "dataStatus": "available",
     "metrics": {
-      "sharesOutstandingMillions": 469.28,
+      "sharesOutstandingMillions": null,
       "revenueTtm": 22.13,
       "revenueGrowth": 103.03,
       "grossMargin": null,
@@ -1068,7 +1068,7 @@
   "PYPL": {
     "reportingPeriod": "Last 4 reported quarters",
     "dataSource": "SEC Company Facts XBRL API",
-    "fetchedAt": "2026-08-13T20:29:36.567Z",
+    "fetchedAt": "2026-08-15T18:04:04.933Z",
     "dataStatus": "available",
     "metrics": {
       "sharesOutstandingMillions": 882.11,
@@ -1163,7 +1163,7 @@
   "ORCL": {
     "reportingPeriod": "Last 4 reported quarters",
     "dataSource": "SEC Company Facts XBRL API",
-    "fetchedAt": "2026-08-13T20:29:37.077Z",
+    "fetchedAt": "2026-08-15T18:04:06.245Z",
     "dataStatus": "available",
     "metrics": {
       "sharesOutstandingMillions": 2880.47,
@@ -1258,7 +1258,7 @@
   "SHOP": {
     "reportingPeriod": "Last 4 reported quarters",
     "dataSource": "SEC Company Facts XBRL API",
-    "fetchedAt": "2026-08-13T20:29:37.669Z",
+    "fetchedAt": "2026-08-15T18:04:06.806Z",
     "dataStatus": "available",
     "metrics": {
       "sharesOutstandingMillions": null,
@@ -1353,7 +1353,7 @@
   "C3AI": {
     "reportingPeriod": "Last 4 reported quarters",
     "dataSource": "SEC Company Facts XBRL API",
-    "fetchedAt": "2026-08-13T20:29:38.195Z",
+    "fetchedAt": "2026-08-15T18:04:07.560Z",
     "dataStatus": "available",
     "metrics": {
       "sharesOutstandingMillions": null,
@@ -1448,7 +1448,7 @@
   "PATH": {
     "reportingPeriod": "Last 4 reported quarters",
     "dataSource": "SEC Company Facts XBRL API",
-    "fetchedAt": "2026-08-13T20:29:38.669Z",
+    "fetchedAt": "2026-08-15T18:04:08.150Z",
     "dataStatus": "available",
     "metrics": {
       "sharesOutstandingMillions": null,
@@ -1543,10 +1543,10 @@
   "SOUN": {
     "reportingPeriod": "Last 4 reported quarters",
     "dataSource": "SEC Company Facts XBRL API",
-    "fetchedAt": "2026-08-13T20:29:39.216Z",
+    "fetchedAt": "2026-08-15T18:04:08.679Z",
     "dataStatus": "available",
     "metrics": {
-      "sharesOutstandingMillions": 17.46,
+      "sharesOutstandingMillions": null,
       "revenueTtm": null,
       "revenueGrowth": null,
       "grossMargin": null,
@@ -1638,7 +1638,7 @@
   "BBAI": {
     "reportingPeriod": "Last 4 reported quarters",
     "dataSource": "SEC Company Facts XBRL API",
-    "fetchedAt": "2026-08-13T20:29:39.809Z",
+    "fetchedAt": "2026-08-15T18:04:09.223Z",
     "dataStatus": "available",
     "metrics": {
       "sharesOutstandingMillions": 479.49,
@@ -1733,13 +1733,13 @@
   "APP": {
     "reportingPeriod": "Last 4 reported quarters",
     "dataSource": "SEC Company Facts XBRL API",
-    "fetchedAt": "2026-08-13T20:29:40.599Z",
+    "fetchedAt": "2026-08-15T18:04:09.820Z",
     "dataStatus": "available",
     "metrics": {
-      "sharesOutstandingMillions": null,
+      "sharesOutstandingMillions": 335.29,
       "revenueTtm": 3.77,
       "revenueGrowth": 104.89,
-      "grossMargin": null,
+      "grossMargin": 88.59,
       "operatingMargin": 77.72,
       "cashBalance": 3.05,
       "debtToEquity": 1.114,
@@ -1752,7 +1752,7 @@
       {
         "quarter": "2026-06-30",
         "revenue": 3.77,
-        "grossProfit": null,
+        "grossProfit": 3.34,
         "operatingIncome": 2.93,
         "netIncome": 2.47,
         "ebitda": null
@@ -1760,7 +1760,7 @@
       {
         "quarter": "2026-03-31",
         "revenue": 1.84,
-        "grossProfit": null,
+        "grossProfit": 1.64,
         "operatingIncome": 1.44,
         "netIncome": 1.21,
         "ebitda": null
@@ -1768,7 +1768,7 @@
       {
         "quarter": "2025-12-31",
         "revenue": 5.48,
-        "grossProfit": null,
+        "grossProfit": 4.81,
         "operatingIncome": 4.15,
         "netIncome": 3.33,
         "ebitda": null
@@ -1776,7 +1776,7 @@
       {
         "quarter": "2025-09-30",
         "revenue": 3.82,
-        "grossProfit": null,
+        "grossProfit": 3.34,
         "operatingIncome": 2.88,
         "netIncome": null,
         "ebitda": null
@@ -1828,7 +1828,7 @@
   "PD": {
     "reportingPeriod": "Last 4 reported quarters",
     "dataSource": "SEC Company Facts XBRL API",
-    "fetchedAt": "2026-08-13T20:29:41.210Z",
+    "fetchedAt": "2026-08-15T18:04:10.460Z",
     "dataStatus": "available",
     "metrics": {
       "sharesOutstandingMillions": 77.12,
@@ -1893,7 +1893,7 @@
         "cash": 0.24,
         "currentAssets": 0.61,
         "currentLiabilities": 0.3,
-        "longTermDebt": null,
+        "longTermDebt": 0.42,
         "totalAssets": 0.99,
         "totalLiabilities": 0.72,
         "shareholdersEquity": 0.25
@@ -1923,7 +1923,7 @@
   "UPST": {
     "reportingPeriod": "Last 4 reported quarters",
     "dataSource": "SEC Company Facts XBRL API",
-    "fetchedAt": "2026-08-13T20:29:42.196Z",
+    "fetchedAt": "2026-08-15T18:04:10.989Z",
     "dataStatus": "available",
     "metrics": {
       "sharesOutstandingMillions": 97.31,
@@ -2018,7 +2018,7 @@
   "S": {
     "reportingPeriod": "Last 4 reported quarters",
     "dataSource": "SEC Company Facts XBRL API",
-    "fetchedAt": "2026-08-13T20:29:42.689Z",
+    "fetchedAt": "2026-08-15T18:04:11.533Z",
     "dataStatus": "available",
     "metrics": {
       "sharesOutstandingMillions": null,
@@ -2113,7 +2113,7 @@
   "MDB": {
     "reportingPeriod": "Last 4 reported quarters",
     "dataSource": "SEC Company Facts XBRL API",
-    "fetchedAt": "2026-08-13T20:29:43.336Z",
+    "fetchedAt": "2026-08-15T18:04:12.222Z",
     "dataStatus": "available",
     "metrics": {
       "sharesOutstandingMillions": 80.43,
@@ -2208,7 +2208,7 @@
   "DDOG": {
     "reportingPeriod": "Last 4 reported quarters",
     "dataSource": "SEC Company Facts XBRL API",
-    "fetchedAt": "2026-08-13T20:29:43.817Z",
+    "fetchedAt": "2026-08-15T18:04:12.804Z",
     "dataStatus": "available",
     "metrics": {
       "sharesOutstandingMillions": null,

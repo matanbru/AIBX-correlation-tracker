@@ -30,7 +30,10 @@ function TopMovers({ type = 'gainers' }) {
     <div className="top-movers">
       {movers.map(mover => (
         <div key={mover.symbol} className="mover-card">
-          <div className="mover-symbol">{mover.symbol}</div>
+          <div className="mover-symbol">
+            {mover.symbol}
+            {mover.dataStatus === 'stale' && <span className="stale-badge">Stale</span>}
+          </div>
           <div className="mover-price">${mover.price.toFixed(2)}</div>
           <div className={`mover-change ${mover.changePercent >= 0 ? 'positive' : 'negative'}`}>
             {mover.changePercent >= 0 ? '+' : ''}{mover.changePercent.toFixed(2)}%

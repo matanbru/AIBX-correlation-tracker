@@ -87,7 +87,7 @@ const periodRows = (facts, tags) => latestQuarterlyValues(facts, tags).map(row =
   value: Number((Number(row.val) / 1_000_000_000).toFixed(2))
 }));
 
-const latestFactValue = (facts, tags) => {
+const latestFactValue = (facts, tags, sinceDate = null) => {
   const rows = tags.flatMap(tag => {
     for (const namespace of ['us-gaap', 'ifrs-full', 'dei']) {
       const units = facts[namespace]?.[tag]?.units;
@@ -95,7 +95,9 @@ const latestFactValue = (facts, tags) => {
       if (values.length) return values;
     }
     return [];
-  }).filter(row => Number.isFinite(Number(row.val)) && row.end);
+  }).filter(row => Number.isFinite(Number(row.val)) && Number(row.val) > 0 && row.end)
+    // Reject stale/defunct tags (e.g. pre-IPO share counts a filer stopped updating).
+    .filter(row => !sinceDate || String(row.end) >= sinceDate);
   rows.sort((a, b) => String(b.end).localeCompare(String(a.end)));
   return rows[0]?.val == null ? null : Number(rowValue(rows[0]));
 };
@@ -105,6 +107,8 @@ const rowValue = (row) => Number(row.val);
 const buildAccounting = (facts) => {
   const revenue = periodRows(facts, ['RevenueFromContractWithCustomerExcludingAssessedTax', 'Revenues', 'SalesRevenueNet']);
   const grossProfit = periodRows(facts, ['GrossProfit']);
+  // Some filers (e.g. Alphabet) don't tag GrossProfit directly; derive it from cost-of-revenue tags instead.
+  const costOfRevenue = periodRows(facts, ['CostOfRevenue', 'CostOfGoodsAndServicesSold', 'CostOfServices']);
   const operatingIncome = periodRows(facts, ['OperatingIncomeLoss', 'OperatingProfitLoss']);
   const netIncome = periodRows(facts, ['NetIncomeLoss', 'ProfitLoss']);
   const ebitda = periodRows(facts, ['EarningsBeforeInterestTaxesDepreciationAndAmortization']);
@@ -112,7 +116,7 @@ const buildAccounting = (facts) => {
     cash: ['CashAndCashEquivalentsAtCarryingValue', 'CashAndCashEquivalents'],
     currentAssets: ['AssetsCurrent', 'CurrentAssets'],
     currentLiabilities: ['LiabilitiesCurrent', 'CurrentLiabilities'],
-    longTermDebt: ['LongTermDebtNoncurrent', 'LongTermDebtAndFinanceLeaseObligationsNoncurrent'],
+    longTermDebt: ['LongTermDebtNoncurrent', 'LongTermDebtAndFinanceLeaseObligationsNoncurrent', 'LongTermDebt'],
     totalAssets: ['Assets'],
     totalLiabilities: ['Liabilities'],
     shareholdersEquity: ['StockholdersEquity', 'Equity']
@@ -135,18 +139,28 @@ const buildAccounting = (facts) => {
     }
     return row;
   });
-  const incomeByDate = dates.map(quarter => ({
-    quarter,
-    revenue: revenue.find(row => row.quarter === quarter)?.value ?? null,
-    grossProfit: grossProfit.find(row => row.quarter === quarter)?.value ?? null,
-    operatingIncome: operatingIncome.find(row => row.quarter === quarter)?.value ?? null,
-    netIncome: netIncome.find(row => row.quarter === quarter)?.value ?? null,
-    ebitda: ebitda.find(row => row.quarter === quarter)?.value ?? null
-  }));
+  const incomeByDate = dates.map(quarter => {
+    const revenueValue = revenue.find(row => row.quarter === quarter)?.value ?? null;
+    const costOfRevenueValue = costOfRevenue.find(row => row.quarter === quarter)?.value ?? null;
+    const grossProfitValue = grossProfit.find(row => row.quarter === quarter)?.value
+      ?? (revenueValue != null && costOfRevenueValue != null ? Number((revenueValue - costOfRevenueValue).toFixed(2)) : null);
+    return {
+      quarter,
+      revenue: revenueValue,
+      grossProfit: grossProfitValue,
+      operatingIncome: operatingIncome.find(row => row.quarter === quarter)?.value ?? null,
+      netIncome: netIncome.find(row => row.quarter === quarter)?.value ?? null,
+      ebitda: ebitda.find(row => row.quarter === quarter)?.value ?? null
+    };
+  });
   const latestIncome = incomeByDate[0] || {};
   const previousIncome = incomeByDate[1] || {};
   const latestBalance = balanceSheet[0] || {};
-  const shares = latestFactValue(facts, ['EntityCommonStockSharesOutstanding']);
+  // Only trust a shares-outstanding value reported around the same period as the recent quarters above.
+  const oldestRecentQuarter = dates[dates.length - 1] || null;
+  // dei:EntityCommonStockSharesOutstanding is omitted by some filers (e.g. Alphabet); fall back to us-gaap tags.
+  const shares = latestFactValue(facts, ['EntityCommonStockSharesOutstanding'], oldestRecentQuarter)
+    ?? latestFactValue(facts, ['CommonStockSharesOutstanding', 'CommonStockSharesIssued'], oldestRecentQuarter);
   const revenueGrowth = latestIncome.revenue != null && previousIncome.revenue
     ? Number((((latestIncome.revenue - previousIncome.revenue) / Math.abs(previousIncome.revenue)) * 100).toFixed(2))
     : null;

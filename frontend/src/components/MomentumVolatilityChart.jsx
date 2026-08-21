@@ -9,24 +9,20 @@ import {
   Tooltip
 } from 'recharts';
 import { mean } from './AIBXChart';
+import { normalizePriceSeries } from './AIBXLChart';
 
 const HORIZONS = [1, 5, 10, 20];
 const WINDOWS = [10, 20, 30];
 const TRADING_DAYS_PER_YEAR = 252;
 
 const getPrices = (company) => {
-  const series = company?.dailyAdjustedClose || company?.priceHistory || [];
-  return Array.isArray(series)
-    ? series.map((point) => Number(point.adjustedClose ?? point.close ?? point.price))
-      .filter((price) => Number.isFinite(price) && price > 0)
-    : [];
+  const series = normalizePriceSeries(company?.dailyAdjustedClose || company?.priceHistory || []);
+  return series.map((point) => Number(point.value)).filter((price) => Number.isFinite(price) && price > 0);
 };
 
 const getDates = (company) => {
-  const series = company?.dailyAdjustedClose || company?.priceHistory || [];
-  return Array.isArray(series)
-    ? series.map((point) => point.date || new Date(point.timestamp).toISOString().slice(0, 10))
-    : [];
+  const series = normalizePriceSeries(company?.dailyAdjustedClose || company?.priceHistory || []);
+  return series.map((point) => point.date);
 };
 
 const multiHorizonReturns = (prices, horizons = HORIZONS) => {

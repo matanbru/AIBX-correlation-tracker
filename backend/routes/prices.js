@@ -1,4 +1,5 @@
 import express from 'express';
+import priceDataService from '../services/priceDataService.js';
 
 const router = express.Router();
 
@@ -10,6 +11,29 @@ const findCompanyBySymbol = (db, symbol) => {
 };
 
 const observationTimestamp = (company) => company.priceHistory?.at(-1)?.timestamp || null;
+
+router.get('/refresh-status', (req, res) => {
+  try {
+    res.json(priceDataService.getLastRefreshInfo());
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+router.post('/refresh-now', async (req, res) => {
+  try {
+    const allCompanies = [...(req.db.companies || []), ...(req.db.opportunityCompanies || [])];
+    const tickers = allCompanies.map(company => company.symbol);
+    const refreshed = await priceDataService.refreshLatestPrices(tickers);
+    res.json({
+      ok: true,
+      refreshed: Object.keys(refreshed).length,
+      lastRefresh: priceDataService.getLastRefreshInfo()
+    });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
 
 // Get current prices for all companies
 router.get('/current', (req, res) => {
@@ -126,8 +150,11 @@ router.get('/gainers/top', (req, res) => {
   try {
     const limit = parseInt(req.query.limit) || 10;
 
+    // Stale/unavailable change% reflects an old trading day, not today's move,
+    // so mixing it into a same-day ranking would misrank fresh entries. Exclude it.
     const prices = getAllCompanies(req.db)
       .filter(company => Number.isFinite(company.change) && Number.isFinite(company.price))
+      .filter(company => company.marketData?.dataStatus === 'available')
       .sort((a, b) => b.change - a.change)
       .slice(0, limit)
       .map(c => ({
@@ -150,8 +177,11 @@ router.get('/losers/top', (req, res) => {
   try {
     const limit = parseInt(req.query.limit) || 10;
 
+    // Stale/unavailable change% reflects an old trading day, not today's move,
+    // so mixing it into a same-day ranking would misrank fresh entries. Exclude it.
     const prices = getAllCompanies(req.db)
       .filter(company => Number.isFinite(company.change) && Number.isFinite(company.price))
+      .filter(company => company.marketData?.dataStatus === 'available')
       .sort((a, b) => a.change - b.change)
       .slice(0, limit)
       .map(c => ({
