@@ -10,6 +10,8 @@ import AIBXLChart from './components/AIBXLChart';
 import MomentumVolatilityChart from './components/MomentumVolatilityChart';
 import PerformanceVsAIBXL from './components/PerformanceVsAIBXL';
 import FundamentalsPanel from './components/FundamentalsPanel';
+import RealYieldsChart from './components/RealYieldsChart';
+import CurrencyStrengthChart from './components/CurrencyStrengthChart';
 import './App.css';
 
 const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
@@ -345,6 +347,18 @@ function App() {
           Fundamentals
         </button>
         <button
+          className={`tab ${currentTab === 'realYields' ? 'active' : ''}`}
+          onClick={() => setCurrentTab('realYields')}
+        >
+          Real Yields
+        </button>
+        <button
+          className={`tab ${currentTab === 'currencyStrength' ? 'active' : ''}`}
+          onClick={() => setCurrentTab('currencyStrength')}
+        >
+          Currency Strength
+        </button>
+        <button
           className={`tab ${currentTab === 'watchlist' ? 'active' : ''}`}
           onClick={() => setCurrentTab('watchlist')}
         >
@@ -632,6 +646,10 @@ function App() {
             )}
           </div>
         )}
+
+        {currentTab === 'realYields' && <RealYieldsChart />}
+
+        {currentTab === 'currencyStrength' && <CurrencyStrengthChart />}
 
         {currentTab === 'watchlist' && (
           <div className="watchlist-placeholder">

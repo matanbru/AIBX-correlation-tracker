@@ -5,7 +5,7 @@ import { fileURLToPath } from 'url';
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const DATA_DIR = path.join(__dirname, '../data');
 const FUNDAMENTALS_FILE = path.join(DATA_DIR, 'fundamentals.json');
-const API_BASE = 'https://api.twelvedata.com';
+const API_BASE = 'https://finnhub.io/api/v1';
 const REQUEST_DELAY_MS = 8000;
 const MAX_RETRIES = 2;
 
@@ -14,7 +14,16 @@ if (!fs.existsSync(DATA_DIR)) {
 }
 
 const sleep = (milliseconds) => new Promise(resolve => setTimeout(resolve, milliseconds));
-const getApiKey = () => process.env.TWELVE_DATA_API_KEY;
+const normalizeApiKey = (value) => {
+  if (!value || typeof value !== 'string') return '';
+  const trimmed = value.trim();
+  if (!trimmed || trimmed.toLowerCase().includes('your-') || trimmed.toLowerCase().includes('example')) {
+    return '';
+  }
+  return trimmed;
+};
+
+const getApiKey = () => normalizeApiKey(process.env.FINNHUB_API_KEY) || normalizeApiKey(process.env.TWELVE_DATA_API_KEY);
 
 const loadFundamentalsFromDisk = () => {
   if (!fs.existsSync(FUNDAMENTALS_FILE)) return {};
@@ -33,13 +42,18 @@ const saveFundamentalsToDisk = (fundamentals) => {
 
 const fetchJson = async (url) => {
   const response = await fetch(url);
-  const data = await response.json();
+  const contentType = response.headers.get('content-type') || '';
+  const data = contentType.includes('application/json') ? await response.json() : await response.text();
+
   if (!response.ok) {
-    throw new Error(`HTTP ${response.status}: ${data.message || response.statusText}`);
+    const message = typeof data === 'object' ? (data.message || data.error || response.statusText) : data || response.statusText;
+    throw new Error(`HTTP ${response.status}: ${message}`);
   }
-  if (data.status === 'error') {
-    throw new Error(data.message || 'Twelve Data fundamentals request failed');
+
+  if (data && typeof data === 'object' && data.error) {
+    throw new Error(data.error);
   }
+
   return data;
 };
 
@@ -72,7 +86,20 @@ const quarterLabel = (row) => row?.fiscal_date || row?.fiscal_period || row?.per
 
 const fetchCompanyFundamentals = async (symbol) => {
   const apiKey = getApiKey();
-  if (!apiKey) throw new Error('TWELVE_DATA_API_KEY environment variable is not set');
+  if (!apiKey) throw new Error('FINNHUB_API_KEY or TWELVE_DATA_API_KEY environment variable is not set');
+
+  const provider = process.env.FINNHUB_API_KEY ? 'finnhub' : 'twelvedata';
+
+  if (provider === 'finnhub') {
+    return {
+      reportingPeriod: 'Unavailable',
+      dataSource: 'Finnhub metrics API',
+      dataStatus: 'unavailable',
+      fetchedAt: new Date().toISOString(),
+      incomeStatement: [],
+      balanceSheet: []
+    };
+  }
 
   const params = `symbol=${encodeURIComponent(symbol)}&period=quarter&outputsize=4&apikey=${apiKey}`;
   const [incomePayload, balancePayload] = await Promise.all([

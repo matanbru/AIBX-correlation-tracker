@@ -5,6 +5,7 @@ import { Server as SocketIOServer } from 'socket.io';
 import http from 'http';
 import priceDataService from './services/priceDataService.js';
 import fundamentalsDataService from './services/fundamentalsDataService.js';
+import yieldsDataService from './services/yieldsDataService.js';
 
 dotenv.config();
 
@@ -16,6 +17,7 @@ const quarterlyLabels = ['Q2 2026', 'Q1 2026', 'Q4 2025', 'Q3 2025'];
 
 let pricesCache = {};
 let fundamentalsCache = {};
+let yieldsCache = {};
 let pricesInitialized = false;
 
 const initializePriceData = async () => {
@@ -29,17 +31,37 @@ const initializePriceData = async () => {
     
     pricesCache = priceDataService.loadPricesFromDisk();
     fundamentalsCache = fundamentalsDataService.loadFundamentalsFromDisk();
+    yieldsCache = yieldsDataService.loadYieldsFromDisk();
+
+    const hasProviderKey = Boolean(process.env.FINNHUB_API_KEY || process.env.TWELVE_DATA_API_KEY);
+    const hasCachedPrices = Object.keys(pricesCache || {}).length > 0;
+
+    if (!hasProviderKey && !hasCachedPrices) {
+      throw new Error('No market data source is available. Add FINNHUB_API_KEY or TWELVE_DATA_API_KEY to backend/.env.');
+    }
+
+    if (!hasProviderKey && hasCachedPrices) {
+      console.warn('\n⚠️ No live market API key is configured. Starting with cached data only.');
+      console.warn('   Add FINNHUB_API_KEY to backend/.env to resume live updates.\n');
+    }
+
+    if (process.env.FRED_API_KEY && !yieldsCache['10y']?.length) {
+      yieldsCache = await yieldsDataService.refreshYields();
+    }
     pricesInitialized = true;
     
     console.log('\n✅ Price initialization complete\n');
   } catch (error) {
     console.error('\n❌ FATAL: Price initialization failed:', error.message);
     console.error('\nPlease check:');
-    console.error('  1. TWELVE_DATA_API_KEY is set in backend/.env');
-    console.error('  2. Your API key is valid (sign up at https://twelvedata.com)');
-    console.error('  3. Network connectivity to api.twelvedata.com');
-    console.error('\nThe server will not start without real price data.\n');
-    process.exit(1);
+    console.error('  1. FINNHUB_API_KEY or TWELVE_DATA_API_KEY is set in backend/.env');
+    console.error('  2. Your API key is valid');
+    console.error('  3. Network connectivity to the selected market API');
+    console.error('\nThe server will attempt to continue with cached data if available.\n');
+    pricesCache = priceDataService.loadPricesFromDisk();
+    fundamentalsCache = fundamentalsDataService.loadFundamentalsFromDisk();
+    yieldsCache = yieldsDataService.loadYieldsFromDisk();
+    pricesInitialized = true;
   }
 };
 
@@ -60,6 +82,9 @@ const scheduleDailyRefresh = () => {
       const allTickers = [...companiesRawData, ...opportunityCompaniesRawData]
         .map(company => company.symbol);
       pricesCache = await priceDataService.refreshLatestPrices(allTickers);
+      if (process.env.FRED_API_KEY) {
+        yieldsCache = await yieldsDataService.refreshYields();
+      }
       syncDatabasePrices();
       io.emit('live-prices', {
         companies: [...db.companies, ...db.opportunityCompanies],
@@ -475,6 +500,8 @@ let db = {};
 // Import routes
 import companiesRoutes from './routes/companies.js';
 import pricesRoutes from './routes/prices.js';
+import yieldsRoutes from './routes/yields.js';
+import currencyRoutes from './routes/currency.js';
 import watchlistRoutes from './routes/watchlist.js';
 import authRoutes from './routes/auth.js';
 
@@ -502,6 +529,8 @@ console.log('✓ In-memory database initialized with 20 AI companies');
 // Routes
 app.use('/api/companies', companiesRoutes);
 app.use('/api/prices', pricesRoutes);
+app.use('/api/yields', yieldsRoutes);
+app.use('/api/currency', currencyRoutes);
 app.use('/api/watchlist', watchlistRoutes);
 app.use('/api/auth', authRoutes);
 
@@ -528,9 +557,10 @@ io.on('connection', (socket) => {
 app.locals.io = io;
 
 const syncDatabasePrices = () => {
-  [...db.companies, ...db.opportunityCompanies].forEach(company => {
+  const companies = [...(db.companies || []), ...(db.opportunityCompanies || [])];
+  companies.forEach(company => {
     const history = pricesCache[company.symbol] || [];
-    const refreshedCompany = enrichCompanyAccounting(company, history);
+    const refreshedCompany = enrichCompanyAccounting(company, history, fundamentalsCache[company.symbol]);
     Object.assign(company, refreshedCompany);
     const refreshError = priceDataService.getLatestPriceErrors()[company.symbol];
     if (refreshError && history.length > 0) {

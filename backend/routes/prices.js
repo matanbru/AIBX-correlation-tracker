@@ -25,6 +25,26 @@ router.post('/refresh-now', async (req, res) => {
     const allCompanies = [...(req.db.companies || []), ...(req.db.opportunityCompanies || [])];
     const tickers = allCompanies.map(company => company.symbol);
     const refreshed = await priceDataService.refreshLatestPrices(tickers);
+    Object.keys(refreshed).forEach(symbol => {
+      const company = [...(req.db.companies || []), ...(req.db.opportunityCompanies || [])].find(item => item.symbol === symbol);
+      if (company) {
+        const history = refreshed[symbol] || [];
+        Object.assign(company, {
+          ...company,
+          price: history.at(-1)?.adjustedClose ?? company.price,
+          change: history.length > 1
+            ? Number((((history.at(-1).adjustedClose - history.at(-2).adjustedClose) / history.at(-2).adjustedClose) * 100).toFixed(2))
+            : company.change,
+          priceHistory: history,
+          dailyAdjustedClose: history.map(point => ({
+            date: point.date,
+            adjustedClose: point.adjustedClose,
+            close: point.close,
+            timestamp: point.timestamp
+          }))
+        });
+      }
+    });
     res.json({
       ok: true,
       refreshed: Object.keys(refreshed).length,

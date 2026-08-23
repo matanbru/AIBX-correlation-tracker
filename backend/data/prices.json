@@ -1777,6 +1777,13 @@
       "close": 215.43,
       "timestamp": "2026-08-21T16:00:00Z",
       "volume": 734354
+    },
+    {
+      "date": "2026-08-23",
+      "adjustedClose": 214.72,
+      "close": 214.72,
+      "timestamp": "2026-08-23T16:00:00Z",
+      "volume": 0
     }
   ],
   "MSFT": [
@@ -3557,6 +3564,13 @@
       "close": 484.805,
       "timestamp": "2026-08-21T16:00:00Z",
       "volume": 88281
+    },
+    {
+      "date": "2026-08-23",
+      "adjustedClose": 483.24,
+      "close": 483.24,
+      "timestamp": "2026-08-23T16:00:00Z",
+      "volume": 0
     }
   ],
   "GOOGL": [
@@ -5337,6 +5351,13 @@
       "close": 342.03,
       "timestamp": "2026-08-21T16:00:00Z",
       "volume": 116124
+    },
+    {
+      "date": "2026-08-23",
+      "adjustedClose": 344.82,
+      "close": 344.82,
+      "timestamp": "2026-08-23T16:00:00Z",
+      "volume": 0
     }
   ],
   "AMZN": [
@@ -7117,6 +7138,13 @@
       "close": 259.5,
       "timestamp": "2026-08-21T16:00:00Z",
       "volume": 442678
+    },
+    {
+      "date": "2026-08-23",
+      "adjustedClose": 258.63,
+      "close": 258.63,
+      "timestamp": "2026-08-23T16:00:00Z",
+      "volume": 0
     }
   ],
   "META": [
@@ -8897,6 +8925,13 @@
       "close": 550.75,
       "timestamp": "2026-08-21T16:00:00Z",
       "volume": 101491
+    },
+    {
+      "date": "2026-08-23",
+      "adjustedClose": 549.9,
+      "close": 549.9,
+      "timestamp": "2026-08-23T16:00:00Z",
+      "volume": 0
     }
   ],
   "TSLA": [
@@ -10677,6 +10712,13 @@
       "close": 358.74,
       "timestamp": "2026-08-21T16:00:00Z",
       "volume": 276668
+    },
+    {
+      "date": "2026-08-23",
+      "adjustedClose": 362.86,
+      "close": 362.86,
+      "timestamp": "2026-08-23T16:00:00Z",
+      "volume": 0
     }
   ],
   "AMD": [
@@ -12457,6 +12499,13 @@
       "close": 465.19,
       "timestamp": "2026-08-21T16:00:00Z",
       "volume": 69571
+    },
+    {
+      "date": "2026-08-23",
+      "adjustedClose": 473.25,
+      "close": 473.25,
+      "timestamp": "2026-08-23T16:00:00Z",
+      "volume": 0
     }
   ],
   "CRM": [
@@ -14237,6 +14286,13 @@
       "close": 208.08,
       "timestamp": "2026-08-21T16:00:00Z",
       "volume": 79462
+    },
+    {
+      "date": "2026-08-23",
+      "adjustedClose": 209.17,
+      "close": 209.17,
+      "timestamp": "2026-08-23T16:00:00Z",
+      "volume": 0
     }
   ],
   "SAP": [
@@ -16010,6 +16066,13 @@
       "close": 217.92,
       "timestamp": "2026-08-21T16:00:00Z",
       "volume": 10406
+    },
+    {
+      "date": "2026-08-23",
+      "adjustedClose": 218.68,
+      "close": 218.68,
+      "timestamp": "2026-08-23T16:00:00Z",
+      "volume": 0
     }
   ],
   "IBM": [
@@ -17783,6 +17846,13 @@
       "close": 235.23,
       "timestamp": "2026-08-21T16:00:00Z",
       "volume": 16130
+    },
+    {
+      "date": "2026-08-23",
+      "adjustedClose": 235.68,
+      "close": 235.68,
+      "timestamp": "2026-08-23T16:00:00Z",
+      "volume": 0
     }
   ],
   "JPM": [
@@ -19563,6 +19633,13 @@
       "close": 354.71,
       "timestamp": "2026-08-21T16:00:00Z",
       "volume": 39289
+    },
+    {
+      "date": "2026-08-23",
+      "adjustedClose": 351.58,
+      "close": 351.58,
+      "timestamp": "2026-08-23T16:00:00Z",
+      "volume": 0
     }
   ],
   "V": [
@@ -21343,6 +21420,13 @@
       "close": 370.985,
       "timestamp": "2026-08-21T16:00:00Z",
       "volume": 37583
+    },
+    {
+      "date": "2026-08-23",
+      "adjustedClose": 371.04,
+      "close": 371.04,
+      "timestamp": "2026-08-23T16:00:00Z",
+      "volume": 0
     }
   ],
   "PYPL": [
@@ -23123,6 +23207,13 @@
       "close": 62.3,
       "timestamp": "2026-08-21T16:00:00Z",
       "volume": 75295
+    },
+    {
+      "date": "2026-08-23",
+      "adjustedClose": 61.55,
+      "close": 61.55,
+      "timestamp": "2026-08-23T16:00:00Z",
+      "volume": 0
     }
   ],
   "ORCL": [
@@ -24903,6 +24994,13 @@
       "close": 146.18,
       "timestamp": "2026-08-21T16:00:00Z",
       "volume": 204077
+    },
+    {
+      "date": "2026-08-23",
+      "adjustedClose": 146.47,
+      "close": 146.47,
+      "timestamp": "2026-08-23T16:00:00Z",
+      "volume": 0
     }
   ],
   "SHOP": [
@@ -26683,6 +26781,13 @@
       "close": 148.41,
       "timestamp": "2026-08-21T16:00:00Z",
       "volume": 34446
+    },
+    {
+      "date": "2026-08-23",
+      "adjustedClose": 149.25,
+      "close": 149.25,
+      "timestamp": "2026-08-23T16:00:00Z",
+      "volume": 0
     }
   ],
   "C3AI": [
@@ -28463,6 +28568,13 @@
       "close": 10.365,
       "timestamp": "2026-08-21T16:00:00Z",
       "volume": 145144
+    },
+    {
+      "date": "2026-08-23",
+      "adjustedClose": 10.3,
+      "close": 10.3,
+      "timestamp": "2026-08-23T16:00:00Z",
+      "volume": 0
     }
   ],
   "PATH": [
@@ -30243,6 +30355,13 @@
       "close": 15.94,
       "timestamp": "2026-08-21T16:00:00Z",
       "volume": 109162
+    },
+    {
+      "date": "2026-08-23",
+      "adjustedClose": 16.39,
+      "close": 16.39,
+      "timestamp": "2026-08-23T16:00:00Z",
+      "volume": 0
     }
   ],
   "SOUN": [
@@ -32023,6 +32142,13 @@
       "close": 7.105,
       "timestamp": "2026-08-21T16:00:00Z",
       "volume": 115832
+    },
+    {
+      "date": "2026-08-23",
+      "adjustedClose": 7.32,
+      "close": 7.32,
+      "timestamp": "2026-08-23T16:00:00Z",
+      "volume": 0
     }
   ],
   "BBAI": [
@@ -33803,6 +33929,13 @@
       "close": 3.185,
       "timestamp": "2026-08-21T16:00:00Z",
       "volume": 116159
+    },
+    {
+      "date": "2026-08-23",
+      "adjustedClose": 3.22,
+      "close": 3.22,
+      "timestamp": "2026-08-23T16:00:00Z",
+      "volume": 0
     }
   ],
   "APP": [
@@ -35583,6 +35716,13 @@
       "close": 301.89,
       "timestamp": "2026-08-21T16:00:00Z",
       "volume": 47492
+    },
+    {
+      "date": "2026-08-23",
+      "adjustedClose": 305.77,
+      "close": 305.77,
+      "timestamp": "2026-08-23T16:00:00Z",
+      "volume": 0
     }
   ],
   "PD": [
@@ -37363,6 +37503,13 @@
       "close": 12.19,
       "timestamp": "2026-08-21T16:00:00Z",
       "volume": 2996
+    },
+    {
+      "date": "2026-08-23",
+      "adjustedClose": 12.32,
+      "close": 12.32,
+      "timestamp": "2026-08-23T16:00:00Z",
+      "volume": 0
     }
   ],
   "UPST": [
@@ -39150,6 +39297,13 @@
       "close": 29.6,
       "timestamp": "2026-08-21T16:00:00Z",
       "volume": 34485
+    },
+    {
+      "date": "2026-08-23",
+      "adjustedClose": 30.3,
+      "close": 30.3,
+      "timestamp": "2026-08-23T16:00:00Z",
+      "volume": 0
     }
   ],
   "S": [
@@ -40937,6 +41091,13 @@
       "close": 20.675,
       "timestamp": "2026-08-21T16:00:00Z",
       "volume": 54758
+    },
+    {
+      "date": "2026-08-23",
+      "adjustedClose": 21.19,
+      "close": 21.19,
+      "timestamp": "2026-08-23T16:00:00Z",
+      "volume": 0
     }
   ],
   "MDB": [
@@ -42724,6 +42885,13 @@
       "close": 424.69,
       "timestamp": "2026-08-21T16:00:00Z",
       "volume": 4897
+    },
+    {
+      "date": "2026-08-23",
+      "adjustedClose": 430.83,
+      "close": 430.83,
+      "timestamp": "2026-08-23T16:00:00Z",
+      "volume": 0
     }
   ],
   "DDOG": [
@@ -44511,6 +44679,13 @@
       "close": 231.47,
       "timestamp": "2026-08-21T16:00:00Z",
       "volume": 12837
+    },
+    {
+      "date": "2026-08-23",
+      "adjustedClose": 235.62,
+      "close": 235.62,
+      "timestamp": "2026-08-23T16:00:00Z",
+      "volume": 0
     }
   ]
 }

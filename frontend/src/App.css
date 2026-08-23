@@ -84,6 +84,54 @@ body {
   width: 100%;
 }
 
+.real-yields-tab,
+.currency-strength-tab {
+  display: grid;
+  gap: 20px;
+}
+
+.real-yields-heading,
+.currency-strength-header {
+  align-items: center;
+}
+
+.real-yields-panel,
+.currency-panel {
+  background: #fff;
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  padding: 20px;
+}
+
+.real-yields-panel-header,
+.currency-panel-header {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 12px;
+}
+
+.real-yields-panel-header h3,
+.currency-panel-header h3 {
+  font-size: 1.1rem;
+  margin-bottom: 4px;
+}
+
+.real-yields-panel-header p,
+.real-yields-heading span,
+.currency-panel-header p,
+.currency-strength-header span {
+  color: var(--text-light);
+  font-size: 0.9rem;
+}
+
+.real-yields-panel-header strong,
+.currency-panel-header strong {
+  color: #0f766e;
+  font-size: 1.2rem;
+  white-space: nowrap;
+}
+
 /* Loading */
 .loading {
   text-align: center;
