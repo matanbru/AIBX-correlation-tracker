@@ -1,0 +1,752 @@
+{
+  "companies": [
+    {
+      "_id": "1",
+      "symbol": "NVDA",
+      "name": "NVIDIA Corporation",
+      "founded": 1993,
+      "headquarters": "Santa Clara, CA",
+      "description": "Leading AI chip manufacturer",
+      "aiProducts": [
+        "CUDA",
+        "GPUs",
+        "AI Infrastructure"
+      ],
+      "macroContext": {
+        "inflationSensitivity": "Low to moderate",
+        "interestRateSensitivity": "Moderate",
+        "demandCycle": "AI infrastructure buildout",
+        "supplyChainRisk": "Semi-conductor dependency and hyperscaler procurement cycles",
+        "aiDemand": "Very high"
+      },
+      "patternSignals": [
+        {
+          "label": "Historical pattern",
+          "description": "Periods of rapid AI-capex expansion often coincide with strong institutional demand for semiconductor supply chains."
+        },
+        {
+          "label": "Macro theory",
+          "description": "When productivity gains accelerate, capex-heavy suppliers often outperform in the early phase of adoption, before broad-based earnings catch up."
+        }
+      ]
+    },
+    {
+      "_id": "2",
+      "symbol": "MSFT",
+      "name": "Microsoft",
+      "founded": 1975,
+      "headquarters": "Redmond, WA",
+      "description": "AI integration in enterprise software",
+      "aiProducts": [
+        "Copilot",
+        "Azure AI",
+        "ChatGPT"
+      ],
+      "macroContext": {
+        "inflationSensitivity": "Low",
+        "interestRateSensitivity": "Low",
+        "demandCycle": "Enterprise software renewal cycles",
+        "supplyChainRisk": "Low software execution risk",
+        "aiDemand": "Very high"
+      },
+      "patternSignals": [
+        {
+          "label": "Historical pattern",
+          "description": "Large enterprise software platforms tend to benefit when AI improves workflow productivity and increases software attachment rates."
+        },
+        {
+          "label": "Macro theory",
+          "description": "In inflationary periods, software with recurring revenue and operating leverage often remains resilient because costs are relatively predictable."
+        }
+      ]
+    },
+    {
+      "_id": "3",
+      "symbol": "GOOGL",
+      "name": "Alphabet (Google)",
+      "founded": 1998,
+      "headquarters": "Mountain View, CA",
+      "description": "AI research and development",
+      "aiProducts": [
+        "Gemini",
+        "Bard",
+        "TensorFlow"
+      ],
+      "macroContext": {
+        "inflationSensitivity": "Low",
+        "interestRateSensitivity": "Low to moderate",
+        "demandCycle": "Digital ad demand and cloud consumption",
+        "supplyChainRisk": "Low",
+        "aiDemand": "High"
+      },
+      "patternSignals": [
+        {
+          "label": "Historical pattern",
+          "description": "Search and advertising platforms often respond to digital ad demand elasticity more than pure AI adoption alone."
+        },
+        {
+          "label": "Macro theory",
+          "description": "When consumer spending slows, ad-driven businesses can experience margin pressure even while AI monetisation improves gradually."
+        }
+      ]
+    },
+    {
+      "_id": "4",
+      "symbol": "AMZN",
+      "name": "Amazon",
+      "founded": 1994,
+      "headquarters": "Seattle, WA",
+      "description": "AI for cloud and retail",
+      "aiProducts": [
+        "AWS AI",
+        "Alexa",
+        "ML Services"
+      ],
+      "macroContext": {
+        "inflationSensitivity": "Moderate",
+        "interestRateSensitivity": "Moderate",
+        "demandCycle": "Consumer demand and cloud efficiency",
+        "supplyChainRisk": "Moderate to high",
+        "aiDemand": "High"
+      },
+      "patternSignals": [
+        {
+          "label": "Historical pattern",
+          "description": "Cloud and logistics-heavy businesses often show delayed benefit from AI productivity gains when retail demand is soft."
+        },
+        {
+          "label": "Macro theory",
+          "description": "Higher rates can pressure net margins for consumer-driven models, while AI can improve efficiency over time."
+        }
+      ]
+    },
+    {
+      "_id": "5",
+      "symbol": "META",
+      "name": "Meta Platforms",
+      "founded": 2004,
+      "headquarters": "Menlo Park, CA",
+      "description": "AI for social media and metaverse",
+      "aiProducts": [
+        "Llama",
+        "Content AI",
+        "Recommendations"
+      ],
+      "macroContext": {
+        "inflationSensitivity": "Low",
+        "interestRateSensitivity": "Low",
+        "demandCycle": "Advertising and engagement demand",
+        "supplyChainRisk": "Low",
+        "aiDemand": "High"
+      },
+      "patternSignals": [
+        {
+          "label": "Historical pattern",
+          "description": "Large digital ad platforms often benefit when engagement and monetisation increase faster than cost inflation."
+        },
+        {
+          "label": "Macro theory",
+          "description": "In lower-rate environments with strong digital spending, high-margin platform businesses can expand operating leverage sharply."
+        }
+      ]
+    },
+    {
+      "_id": "6",
+      "symbol": "TSLA",
+      "name": "Tesla",
+      "founded": 2003,
+      "headquarters": "Austin, TX",
+      "description": "AI for autonomous vehicles",
+      "aiProducts": [
+        "Autopilot",
+        "Dojo",
+        "Neural Networks"
+      ],
+      "macroContext": {
+        "inflationSensitivity": "Moderate",
+        "interestRateSensitivity": "High",
+        "demandCycle": "Vehicle demand and EV adoption",
+        "supplyChainRisk": "High",
+        "aiDemand": "Moderate to high"
+      },
+      "patternSignals": [
+        {
+          "label": "Historical pattern",
+          "description": "Automotive cycles frequently cause large swings in production volumes, demand, and margins even when AI capabilities improve."
+        },
+        {
+          "label": "Macro theory",
+          "description": "Higher financing costs and slower consumer spending can reduce vehicle demand, while AI features may support long-term product differentiation."
+        }
+      ]
+    },
+    {
+      "_id": "7",
+      "symbol": "AMD",
+      "name": "Advanced Micro Devices",
+      "founded": 1969,
+      "headquarters": "Santa Clara, CA",
+      "description": "AI computing and data center processors",
+      "aiProducts": [
+        "MI300",
+        "EPYC",
+        "AI Accelerators"
+      ],
+      "macroContext": {
+        "inflationSensitivity": "Moderate",
+        "interestRateSensitivity": "Moderate",
+        "demandCycle": "Compute demand and server refresh cycles",
+        "supplyChainRisk": "Moderate",
+        "aiDemand": "Very high"
+      },
+      "patternSignals": [
+        {
+          "label": "Historical pattern",
+          "description": "Semiconductor cycles often accelerate when enterprise infrastructure spending broadens after a period of underinvestment."
+        },
+        {
+          "label": "Macro theory",
+          "description": "In technology capex cycles, component suppliers can benefit as digital infrastructure spending expands faster than general GDP."
+        }
+      ]
+    },
+    {
+      "_id": "8",
+      "symbol": "CRM",
+      "name": "Salesforce",
+      "founded": 1999,
+      "headquarters": "San Francisco, CA",
+      "description": "AI in customer relationship management",
+      "aiProducts": [
+        "Einstein AI",
+        "Data Cloud",
+        "Analytics"
+      ],
+      "macroContext": {
+        "inflationSensitivity": "Low",
+        "interestRateSensitivity": "Low",
+        "demandCycle": "Enterprise software spend and digital transformation",
+        "supplyChainRisk": "Low",
+        "aiDemand": "High"
+      },
+      "patternSignals": [
+        {
+          "label": "Historical pattern",
+          "description": "CRM vendors often gain from productivity-enhancing AI features as enterprise buyers look for measurable efficiency gains."
+        },
+        {
+          "label": "Macro theory",
+          "description": "In uncertain macro conditions, software that improves workflow efficiency can still attract spending even when broader IT budgets are constrained."
+        }
+      ]
+    },
+    {
+      "_id": "9",
+      "symbol": "SAP",
+      "name": "SAP SE",
+      "founded": 1972,
+      "headquarters": "Walldorf, Germany",
+      "description": "AI in enterprise software and cloud services",
+      "aiProducts": [
+        "SAP Joule",
+        "Business AI",
+        "Cloud ERP"
+      ],
+      "macroContext": {
+        "inflationSensitivity": "Low",
+        "interestRateSensitivity": "Low",
+        "demandCycle": "ERP modernisation and cloud transitions",
+        "supplyChainRisk": "Low",
+        "aiDemand": "High"
+      },
+      "patternSignals": [
+        {
+          "label": "Historical pattern",
+          "description": "Legacy enterprise suites often show strong durability during periods of slower GDP growth because of essential software demand."
+        },
+        {
+          "label": "Macro theory",
+          "description": "When economic uncertainty rises, companies prefer productivity platforms that improve process efficiency without major demand assumptions."
+        }
+      ]
+    },
+    {
+      "_id": "10",
+      "symbol": "IBM",
+      "name": "IBM",
+      "founded": 1911,
+      "headquarters": "Armonk, NY",
+      "description": "AI in enterprise platforms and infrastructure",
+      "aiProducts": [
+        "Watsonx",
+        "Hybrid Cloud",
+        "Automation"
+      ],
+      "macroContext": {
+        "inflationSensitivity": "Low",
+        "interestRateSensitivity": "Low",
+        "demandCycle": "Enterprise IT spending and hybrid cloud",
+        "supplyChainRisk": "Low",
+        "aiDemand": "Moderate"
+      },
+      "patternSignals": [
+        {
+          "label": "Historical pattern",
+          "description": "Legacy infrastructure vendors often lag during fast AI cycles but maintain balance in defensive enterprise spending environments."
+        },
+        {
+          "label": "Macro theory",
+          "description": "Defensive technology names tend to benefit when broad risk appetite is weak but businesses still need mission-critical infrastructure."
+        }
+      ]
+    },
+    {
+      "_id": "11",
+      "symbol": "JPM",
+      "name": "JPMorgan Chase",
+      "founded": 1799,
+      "headquarters": "New York, NY",
+      "description": "AI for finance",
+      "aiProducts": [
+        "COIN",
+        "ML Platforms"
+      ],
+      "macroContext": {
+        "inflationSensitivity": "Moderate",
+        "interestRateSensitivity": "High",
+        "demandCycle": "Credit demand and interest-rate environment",
+        "supplyChainRisk": "Low",
+        "aiDemand": "Moderate"
+      },
+      "patternSignals": [
+        {
+          "label": "Historical pattern",
+          "description": "Banks often benefit when rates support wider lending spreads, while AI helps improve operating productivity."
+        },
+        {
+          "label": "Macro theory",
+          "description": "Financial institutions are highly sensitive to the shape of the yield curve and credit conditions, which can dominate fundamentals."
+        }
+      ]
+    },
+    {
+      "_id": "12",
+      "symbol": "V",
+      "name": "Visa Inc.",
+      "founded": 1958,
+      "headquarters": "San Mateo, CA",
+      "description": "AI for payment systems",
+      "aiProducts": [
+        "Fraud Detection",
+        "Analytics"
+      ],
+      "macroContext": {
+        "inflationSensitivity": "Low",
+        "interestRateSensitivity": "Low",
+        "demandCycle": "Consumer spend and payment volume",
+        "supplyChainRisk": "Low",
+        "aiDemand": "Moderate"
+      },
+      "patternSignals": [
+        {
+          "label": "Historical pattern",
+          "description": "Payment networks typically perform well when consumer spending remains resilient, even if AI adds incremental operating efficiency."
+        },
+        {
+          "label": "Macro theory",
+          "description": "Network effects and recurring transaction fees can make payments businesses less cyclical than consumer retail itself."
+        }
+      ]
+    },
+    {
+      "_id": "13",
+      "symbol": "PYPL",
+      "name": "PayPal Holdings",
+      "founded": 1998,
+      "headquarters": "San Jose, CA",
+      "description": "AI for fintech",
+      "aiProducts": [
+        "ML Fraud Detection",
+        "Risk Management"
+      ],
+      "macroContext": {
+        "inflationSensitivity": "Moderate",
+        "interestRateSensitivity": "Moderate",
+        "demandCycle": "Consumer and merchant transaction volume",
+        "supplyChainRisk": "Low",
+        "aiDemand": "Moderate"
+      },
+      "patternSignals": [
+        {
+          "label": "Historical pattern",
+          "description": "Payment and fintech names can underperform when consumer spending slows, even if AI helps reduce fraud and improve underwriting."
+        },
+        {
+          "label": "Macro theory",
+          "description": "Higher rates can affect transaction growth and consumer credit availability, which tends to matter more than incremental AI features in the short run."
+        }
+      ]
+    },
+    {
+      "_id": "14",
+      "symbol": "ORCL",
+      "name": "Oracle Corporation",
+      "founded": 1977,
+      "headquarters": "Austin, TX",
+      "description": "AI in enterprise databases",
+      "aiProducts": [
+        "Oracle AI",
+        "ML Cloud"
+      ],
+      "macroContext": {
+        "inflationSensitivity": "Low",
+        "interestRateSensitivity": "Low",
+        "demandCycle": "Enterprise data, security and database spending",
+        "supplyChainRisk": "Low",
+        "aiDemand": "High"
+      },
+      "patternSignals": [
+        {
+          "label": "Historical pattern",
+          "description": "Enterprise database and cloud providers often see more consistent demand than consumer technology during slower economic periods."
+        },
+        {
+          "label": "Macro theory",
+          "description": "When companies prioritise operational resilience and data governance, durable infrastructure vendors may hold up better than fast-growth software names."
+        }
+      ]
+    },
+    {
+      "_id": "15",
+      "symbol": "SHOP",
+      "name": "Shopify",
+      "founded": 2006,
+      "headquarters": "Ottawa, Canada",
+      "description": "AI in commerce and merchant tools",
+      "aiProducts": [
+        "Shopify Magic",
+        "AI Storefront",
+        "Search"
+      ],
+      "macroContext": {
+        "inflationSensitivity": "Moderate",
+        "interestRateSensitivity": "Moderate",
+        "demandCycle": "Small business digital commerce",
+        "supplyChainRisk": "Low to moderate",
+        "aiDemand": "High"
+      },
+      "patternSignals": [
+        {
+          "label": "Historical pattern",
+          "description": "SMB software platforms often benefit from AI features when merchant spending grows and small businesses digitise more operations."
+        },
+        {
+          "label": "Macro theory",
+          "description": "Lower inflation and stable consumer spending can widen adoption, while higher costs can delay investment in new digital tools."
+        }
+      ]
+    }
+  ],
+  "opportunityCompanies": [
+    {
+      "_id": "opp-1",
+      "symbol": "C3AI",
+      "name": "C3.ai",
+      "founded": 2009,
+      "headquarters": "Redwood City, CA",
+      "description": "Enterprise AI software platform for predictive analytics and industrial applications",
+      "aiProducts": [
+        "Enterprise AI Suite",
+        "Predictive Ops",
+        "AI Applications"
+      ],
+      "macroContext": {
+        "inflationSensitivity": "Low",
+        "interestRateSensitivity": "Moderate",
+        "demandCycle": "Enterprise AI deployment and industrial automation",
+        "supplyChainRisk": "Low",
+        "aiDemand": "High"
+      },
+      "patternSignals": [
+        {
+          "label": "Historical pattern",
+          "description": "Enterprise AI software names often benefit when pilots mature into production deployments across operations and analytics teams."
+        },
+        {
+          "label": "Macro theory",
+          "description": "As AI becomes a productivity tool rather than a theoretical concept, adoption tends to follow operational ROI and lower-risk use cases."
+        }
+      ]
+    },
+    {
+      "_id": "opp-2",
+      "symbol": "PATH",
+      "name": "UiPath",
+      "founded": 2005,
+      "headquarters": "New York, NY",
+      "description": "Automation platform using AI to streamline enterprise workflows",
+      "aiProducts": [
+        "Automation Cloud",
+        "AI Copilot",
+        "Document Understanding"
+      ],
+      "macroContext": {
+        "inflationSensitivity": "Low",
+        "interestRateSensitivity": "Moderate",
+        "demandCycle": "Workflow automation and digital operations",
+        "supplyChainRisk": "Low",
+        "aiDemand": "High"
+      },
+      "patternSignals": [
+        {
+          "label": "Historical pattern",
+          "description": "Automation platforms often gain as businesses seek productivity gains without large hiring or restructuring programs."
+        },
+        {
+          "label": "Macro theory",
+          "description": "When labour costs rise and operational complexity grows, workflow automation becomes a scaling lever rather than a discretionary investment."
+        }
+      ]
+    },
+    {
+      "_id": "opp-3",
+      "symbol": "SOUN",
+      "name": "SoundHound AI",
+      "founded": 2005,
+      "headquarters": "Santa Clara, CA",
+      "description": "Voice AI and conversational intelligence platform",
+      "aiProducts": [
+        "Voice AI",
+        "Speech Recognition",
+        "Agentic Commerce"
+      ],
+      "macroContext": {
+        "inflationSensitivity": "Low",
+        "interestRateSensitivity": "Moderate",
+        "demandCycle": "Voice commerce and customer service automation",
+        "supplyChainRisk": "Low",
+        "aiDemand": "Very high"
+      },
+      "patternSignals": [
+        {
+          "label": "Historical pattern",
+          "description": "Voice AI businesses often undergo sharp reratings when the market identifies a large addressable use-case and early commercial traction."
+        },
+        {
+          "label": "Macro theory",
+          "description": "When AI makes customer interaction cheaper and more scalable, early movers in voice and conversational systems can see rapid adoption curves."
+        }
+      ]
+    },
+    {
+      "_id": "opp-4",
+      "symbol": "BBAI",
+      "name": "BigBear.ai",
+      "founded": 2019,
+      "headquarters": "Columbia, MD",
+      "description": "AI analytics and decision-support software for government and enterprise use cases",
+      "aiProducts": [
+        "AI Decision Intelligence",
+        "Data Fusion",
+        "Predictive Analytics"
+      ],
+      "macroContext": {
+        "inflationSensitivity": "Low",
+        "interestRateSensitivity": "Moderate",
+        "demandCycle": "Government AI security and decision support",
+        "supplyChainRisk": "Low",
+        "aiDemand": "Moderate"
+      },
+      "patternSignals": [
+        {
+          "label": "Historical pattern",
+          "description": "Government and defense-linked AI providers can see distinct demand waves when agencies accelerate digital transformation programs."
+        },
+        {
+          "label": "Macro theory",
+          "description": "Public-sector procurement often trails private adoption, but once budgets unlock, the resulting contracts can create sustained demand."
+        }
+      ]
+    },
+    {
+      "_id": "opp-5",
+      "symbol": "APP",
+      "name": "AppLovin",
+      "founded": 2012,
+      "headquarters": "Palo Alto, CA",
+      "description": "AI-driven mobile advertising and software platform",
+      "aiProducts": [
+        "AXON",
+        "AdTech AI",
+        "Consumer Apps"
+      ],
+      "macroContext": {
+        "inflationSensitivity": "Low",
+        "interestRateSensitivity": "Moderate",
+        "demandCycle": "Digital ads and app monetisation",
+        "supplyChainRisk": "Low",
+        "aiDemand": "High"
+      },
+      "patternSignals": [
+        {
+          "label": "Historical pattern",
+          "description": "AI-driven ad-tech businesses often re-rate sharply when their algorithms improve monetisation and monetisable engagement."
+        },
+        {
+          "label": "Macro theory",
+          "description": "The most scalable ad platforms benefit when AI lifts conversion efficiency faster than ad spend expands."
+        }
+      ]
+    },
+    {
+      "_id": "opp-6",
+      "symbol": "PD",
+      "name": "PagerDuty",
+      "founded": 2009,
+      "headquarters": "San Francisco, CA",
+      "description": "AI-enabled incident response and digital operations platform",
+      "aiProducts": [
+        "AIOps",
+        "Ops Cloud",
+        "Incident Intelligence"
+      ],
+      "macroContext": {
+        "inflationSensitivity": "Low",
+        "interestRateSensitivity": "Moderate",
+        "demandCycle": "IT resilience and operational tooling",
+        "supplyChainRisk": "Low",
+        "aiDemand": "Moderate"
+      },
+      "patternSignals": [
+        {
+          "label": "Historical pattern",
+          "description": "Operations software often gains from increased automation and resilience budgets during uncertain macro periods."
+        },
+        {
+          "label": "Macro theory",
+          "description": "The value of digital operations tools tends to rise when organisations focus on uptime and risk reduction instead of pure growth spending."
+        }
+      ]
+    },
+    {
+      "_id": "opp-7",
+      "symbol": "UPST",
+      "name": "Upstart",
+      "founded": 2012,
+      "headquarters": "San Mateo, CA",
+      "description": "AI lending platform for consumer credit decisions",
+      "aiProducts": [
+        "AI Lending Model",
+        "Banking Analytics",
+        "Risk Assessment"
+      ],
+      "macroContext": {
+        "inflationSensitivity": "Moderate",
+        "interestRateSensitivity": "High",
+        "demandCycle": "Consumer credit and AI risk underwriting",
+        "supplyChainRisk": "Moderate",
+        "aiDemand": "High"
+      },
+      "patternSignals": [
+        {
+          "label": "Historical pattern",
+          "description": "Fintech models with AI underwriting can be highly sensitive to rates and credit conditions, but can re-rate when borrowing demand stabilises."
+        },
+        {
+          "label": "Macro theory",
+          "description": "AI improves underwriting precision, but macro credit conditions often remain the dominant driver of near-term performance."
+        }
+      ]
+    },
+    {
+      "_id": "opp-8",
+      "symbol": "S",
+      "name": "SentinelOne",
+      "founded": 2013,
+      "headquarters": "Mountain View, CA",
+      "description": "AI-driven endpoint security and threat detection platform",
+      "aiProducts": [
+        "Singularity",
+        "XDR",
+        "Autonomous Security"
+      ],
+      "macroContext": {
+        "inflationSensitivity": "Low",
+        "interestRateSensitivity": "Moderate",
+        "demandCycle": "Cybersecurity and autonomous protection",
+        "supplyChainRisk": "Low",
+        "aiDemand": "Very high"
+      },
+      "patternSignals": [
+        {
+          "label": "Historical pattern",
+          "description": "Cybersecurity vendors with AI automation often perform strongly when enterprises prioritise breach prevention and operational resilience."
+        },
+        {
+          "label": "Macro theory",
+          "description": "Defensive infrastructure is often more resilient in uncertain markets because the cost of an incident exceeds the cost of prevention."
+        }
+      ]
+    },
+    {
+      "_id": "opp-9",
+      "symbol": "MDB",
+      "name": "MongoDB",
+      "founded": 2007,
+      "headquarters": "New York, NY",
+      "description": "Database platform for modern application workloads",
+      "aiProducts": [
+        "Atlas AI",
+        "Search",
+        "Data Platform"
+      ],
+      "macroContext": {
+        "inflationSensitivity": "Low",
+        "interestRateSensitivity": "Moderate",
+        "demandCycle": "Developer tooling and app modernization",
+        "supplyChainRisk": "Low",
+        "aiDemand": "High"
+      },
+      "patternSignals": [
+        {
+          "label": "Historical pattern",
+          "description": "Developer tooling platforms often benefit when application modernization accelerates under digital transformation programs."
+        },
+        {
+          "label": "Macro theory",
+          "description": "Infrastructure software with recurring usage tends to reward adoption efficiency more than incremental GDP growth."
+        }
+      ]
+    },
+    {
+      "_id": "opp-10",
+      "symbol": "DDOG",
+      "name": "Datadog",
+      "founded": 2010,
+      "headquarters": "New York, NY",
+      "description": "Monitoring and observability for cloud-native systems",
+      "aiProducts": [
+        "AI Observability",
+        "Security",
+        "Monitoring"
+      ],
+      "macroContext": {
+        "inflationSensitivity": "Low",
+        "interestRateSensitivity": "Moderate",
+        "demandCycle": "Cloud operations and reliability spend",
+        "supplyChainRisk": "Low",
+        "aiDemand": "Very high"
+      },
+      "patternSignals": [
+        {
+          "label": "Historical pattern",
+          "description": "Monitoring and observability firms perform well when digital infrastructure complexity rises faster than traditional IT budgets."
+        },
+        {
+          "label": "Macro theory",
+          "description": "As cloud complexity grows, observability becomes a core operational cost rather than discretionary software spend."
+        }
+      ]
+    }
+  ]
+}

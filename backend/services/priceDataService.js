@@ -40,6 +40,19 @@ const normalizeApiKey = (value) => {
 
 const getApiKey = () => normalizeApiKey(process.env.FINNHUB_API_KEY) || normalizeApiKey(process.env.TWELVE_DATA_API_KEY);
 
+// A daily bar is only final once the US market has closed (4 PM ET) on that date.
+const isSessionComplete = (dateString) => {
+  const parts = Object.fromEntries(
+    new Intl.DateTimeFormat('en-US', {
+      timeZone: 'America/New_York', year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', hourCycle: 'h23'
+    }).formatToParts(new Date()).map(part => [part.type, part.value])
+  );
+  const todayET = `${parts.year}-${parts.month}-${parts.day}`;
+  if (dateString < todayET) return true;
+  if (dateString > todayET) return false;
+  return Number(parts.hour) >= 17;
+};
+
 const getLastRefreshInfo = () => ({
   ...lastRefreshInfo,
   lastAttemptAt: lastRefreshInfo.lastAttemptAt ? new Date(lastRefreshInfo.lastAttemptAt).toISOString() : null,
@@ -222,13 +235,13 @@ const fetchLatestPrice = async (symbol) => {
   }
 
   const apiSymbol = API_SYMBOL_ALIASES[symbol] || symbol;
-  const provider = process.env.FINNHUB_API_KEY ? 'finnhub' : 'twelvedata';
+  const provider = normalizeApiKey(process.env.FINNHUB_API_KEY) ? 'finnhub' : 'twelvedata';
   const url = provider === 'finnhub'
     ? `${API_BASE}/quote?symbol=${encodeURIComponent(apiSymbol)}&token=${apiKey}`
-    : `${'https://api.twelvedata.com'}/time_series?symbol=${encodeURIComponent(apiSymbol)}&interval=1day&outputsize=1&apikey=${apiKey}`;
+    : `${'https://api.twelvedata.com'}/time_series?symbol=${encodeURIComponent(apiSymbol)}&interval=1day&outputsize=5&apikey=${apiKey}`;
 
   try {
-    const latest = await fetchWithRetries(async () => {
+    const bars = await fetchWithRetries(async () => {
       const data = await fetchJson(url);
 
       if (provider === 'finnhub') {
@@ -236,30 +249,33 @@ const fetchLatestPrice = async (symbol) => {
           throw new Error(`No current price data returned for ${symbol}`);
         }
         const date = new Date().toISOString().slice(0, 10);
-        return {
+        return [{
           date,
           close: Number(data.c),
           datetime: date,
           volume: Number(data.v || 0),
           timestamp: `${date}T16:00:00Z`
-        };
+        }];
       }
 
       if (data.status !== 'ok' || !data.values || data.values.length === 0) {
         throw new Error(`No current price data returned for ${symbol}`);
       }
 
-      return data.values[0];
+      return data.values;
     }, `latest price ${symbol}`);
 
     delete latestPriceErrors[symbol];
-    return {
-      date: latest.datetime,
-      adjustedClose: Number(latest.close),
-      close: Number(latest.close),
-      timestamp: `${latest.datetime}T16:00:00Z`,
-      volume: latest.volume ? Number(latest.volume) : 0
-    };
+    return bars
+      .filter(bar => isSessionComplete(bar.datetime))
+      .map(bar => ({
+        date: bar.datetime,
+        adjustedClose: Number(bar.close),
+        close: Number(bar.close),
+        timestamp: `${bar.datetime}T16:00:00Z`,
+        volume: bar.volume ? Number(bar.volume) : 0
+      }))
+      .sort((a, b) => a.date.localeCompare(b.date));
   } catch (error) {
     latestPriceErrors[symbol] = error.message;
     lastRefreshInfo.status = 'failed';
@@ -382,20 +398,33 @@ const refreshLatestPrices = async (tickers) => {
       continue;
     }
 
-    const latest = await fetchLatestPrice(symbol);
-    if (!latest) {
+    const latestBars = await fetchLatestPrice(symbol);
+    if (!latestBars) {
       console.log(`   ⚠️  ${symbol}: no new data available`);
       continue;
     }
 
-    const lastDate = pricesMap[symbol][pricesMap[symbol].length - 1]?.date;
-    if (latest.date === lastDate) {
+    // Upsert by date so a bar saved earlier from an unfinished session gets corrected.
+    const series = pricesMap[symbol];
+    let changed = 0;
+    for (const bar of latestBars) {
+      const index = series.findIndex(point => point.date === bar.date);
+      if (index === -1) {
+        series.push(bar);
+        changed += 1;
+      } else if (series[index].close !== bar.close) {
+        series[index] = bar;
+        changed += 1;
+      }
+    }
+    series.sort((a, b) => a.date.localeCompare(b.date));
+
+    if (changed === 0) {
       console.log(`   ✓ ${symbol}: already up to date`);
     } else {
-      pricesMap[symbol].push(latest);
       updated = true;
       lastRefreshInfo.tickersUpdated += 1;
-      console.log(`   ✓ ${symbol}: added ${latest.date}`);
+      console.log(`   ✓ ${symbol}: ${changed} bar(s) added or corrected`);
     }
 
     if (symbol !== tickers[tickers.length - 1]) {

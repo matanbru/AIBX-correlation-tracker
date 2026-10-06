@@ -1,58 +1,34 @@
 @echo off
-REM AI Stock Tracker - Start Script for Windows
-echo.
-echo ========================================
-echo   AI Stock Tracker Platform Startup
-echo ========================================
-echo.
+REM AI Stock Tracker - starts the backend and frontend in separate windows.
+REM Run from anywhere: paths are relative to this script's folder.
 
-REM Check if Node.js is installed
+setlocal
+set "ROOT=%~dp0"
+
 node --version >nul 2>&1
 if %errorlevel% neq 0 (
-    echo [ERROR] Node.js not found! Please install it first.
+    echo [ERROR] Node.js was not found. Install it from https://nodejs.org/
     pause
     exit /b 1
 )
 
-echo [OK] Node.js detected
-echo.
-echo ========================================
-echo   Starting Backend Server...
-echo ========================================
-echo.
-echo Opening new window for backend...
-echo.
+if not exist "%ROOT%backend\node_modules" (
+    echo Installing backend dependencies...
+    pushd "%ROOT%backend" && call npm install && popd
+)
+if not exist "%ROOT%frontend\node_modules" (
+    echo Installing frontend dependencies...
+    pushd "%ROOT%frontend" && call npm install && popd
+)
 
-REM Open new window for backend
-start "AI Stock Tracker - Backend" cmd /k "cd /d c:\Users\student\Desktop\Ideas\ai-stock-tracker\backend && npm run dev"
+echo Starting backend on http://localhost:5000 ...
+start "AI Stock Tracker - Backend" cmd /k "cd /d "%ROOT%backend" && npm run dev"
 
-timeout /t 3 /nobreak
+timeout /t 3 /nobreak >nul
 
-echo.
-echo ========================================
-echo   Starting Frontend Server...
-echo ========================================
-echo.
-echo Opening new window for frontend...
-echo.
-
-REM Open new window for frontend
-start "AI Stock Tracker - Frontend" cmd /k "cd /d c:\Users\student\Desktop\Ideas\ai-stock-tracker\frontend && npm run dev"
-
-timeout /t 3 /nobreak
+echo Starting frontend on http://localhost:5173 ...
+start "AI Stock Tracker - Frontend" cmd /k "cd /d "%ROOT%frontend" && npm run dev"
 
 echo.
-echo ========================================
-echo   Platform is Starting!
-echo ========================================
-echo.
-echo Backend Server:  http://localhost:5000
-echo Frontend App:    http://localhost:5173
-echo.
-echo Frontend will open automatically in your browser.
-echo.
-echo IMPORTANT:
-echo - Make sure MongoDB is running (local or cloud)
-echo - You should see "MongoDB connected" in backend window
-echo.
-pause
+echo The app will open in your browser at http://localhost:5173
+endlocal

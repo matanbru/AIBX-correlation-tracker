@@ -18,6 +18,8 @@ export const YIELD_SERIES = {
 if (!fs.existsSync(DATA_DIR)) fs.mkdirSync(DATA_DIR, { recursive: true });
 
 const getApiKey = () => process.env.FRED_API_KEY;
+const CSV_BASE = 'https://fred.stlouisfed.org/graph/fredgraph.csv';
+const START_DATE = '2020-01-01';
 
 const loadYieldsFromDisk = () => {
   if (!fs.existsSync(YIELDS_FILE)) return {};
@@ -34,15 +36,28 @@ const saveYieldsToDisk = (yields) => {
   console.log(`Yields saved to ${YIELDS_FILE}`);
 };
 
+// FRED publishes the same series as a public CSV, so no API key is required.
+const fetchSeriesCsv = async (seriesId) => {
+  const response = await fetch(`${CSV_BASE}?id=${seriesId}&cosd=${START_DATE}`);
+  if (!response.ok) throw new Error(`FRED CSV HTTP ${response.status} for ${seriesId}`);
+  const lines = (await response.text()).trim().split(/\r?\n/).slice(1);
+  return lines
+    .map((line) => {
+      const [date, value] = line.split(',');
+      return { date, value: value && value.trim() !== '.' ? Number(value) : NaN };
+    })
+    .filter((observation) => observation.date && Number.isFinite(observation.value));
+};
+
 const fetchSeries = async (seriesId) => {
   const apiKey = getApiKey();
-  if (!apiKey) throw new Error('FRED_API_KEY environment variable is not set');
+  if (!apiKey) return fetchSeriesCsv(seriesId);
 
   const params = new URLSearchParams({
     series_id: seriesId,
     api_key: apiKey,
     file_type: 'json',
-    observation_start: '2020-01-01',
+    observation_start: START_DATE,
     sort_order: 'asc'
   });
   const response = await fetch(`${API_BASE}?${params}`);
@@ -52,7 +67,7 @@ const fetchSeries = async (seriesId) => {
   }
 
   return (data.observations || [])
-    .map((observation) => ({ date: observation.date, value: Number(observation.value) }))
+    .map((observation) => ({ date: observation.date, value: observation.value && observation.value !== '.' ? Number(observation.value) : NaN }))
     .filter((observation) => observation.date && Number.isFinite(observation.value));
 };
 

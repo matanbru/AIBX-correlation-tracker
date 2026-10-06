@@ -1,267 +1,159 @@
-# AI Stock Tracker Platform
+# AI Stock Tracker
 
-A full-stack web application that tracks share prices of the top 100 companies in AI development. Features real-time price updates, comprehensive company information, price history charts, and personalized watchlists.
+A full-stack dashboard that tracks 25 publicly listed AI companies using real market, SEC filing and Federal Reserve data, with the analysis done in the app itself.
 
-## 📋 Features
+It combines daily share prices, company fundamentals derived from SEC filings and US real interest rates. It builds its own market-cap-weighted index of the 10 largest AI companies (AIBXL) and measures how each company moves relative to it.
 
-- **Company Directory**: Browse and search 100+ leading AI development companies
-- **Real-Time Prices**: Live stock price updates via WebSocket
-- **Price History Charts**: 30-day price trends with high/low indicators
-- **Top Movers**: View daily top gainers and losers
-- **Watchlist**: Create personalized watchlists with price alerts
-- **User Authentication**: Secure login and registration
-- **Responsive Design**: Works seamlessly on desktop and mobile devices
-
-## 🏗️ Project Structure
-
-```
-ai-stock-tracker/
-├── backend/                 # Node.js/Express backend
-│   ├── models/             # MongoDB schemas
-│   ├── routes/             # API endpoints
-│   ├── scripts/            # Data seeding and fetching
-│   ├── index.js           # Main server file
-│   ├── package.json       # Backend dependencies
-│   └── .env.example       # Environment variables template
-├── frontend/               # React frontend
-│   ├── src/
-│   │   ├── components/    # React components
-│   │   ├── App.jsx       # Main app component
-│   │   ├── App.css       # Styling
-│   │   └── main.jsx      # Entry point
-│   ├── index.html        # HTML template
-│   ├── vite.config.js    # Vite configuration
-│   ├── package.json      # Frontend dependencies
-│   └── .env.example      # Environment variables template
-└── README.md             # This file
-```
-
-## 🚀 Getting Started
-
-### Prerequisites
-
-- **Node.js** (v16 or higher)
-- **MongoDB** (local or Atlas)
-- **npm** or **yarn**
-
-### 1. Setup Backend
-
-```bash
-cd backend
-npm install
-```
-
-Create a `.env` file based on `.env.example`:
-```
-PORT=5000
-MONGODB_URI=mongodb://localhost:27017/ai-stock-tracker
-JWT_SECRET=your-secret-key-change-in-production
-NODE_ENV=development
-CORS_ORIGIN=http://localhost:5173
-```
-
-Seed the database with AI companies:
-```bash
-npm run seed
-```
-
-Fetch initial price data:
-```bash
-npm run fetch-prices
-```
-
-Start the backend server:
-```bash
-npm run dev
-```
-
-The backend will be available at `http://localhost:5000`
-
-### 2. Setup Frontend
-
-```bash
-cd frontend
-npm install
-```
-
-Create a `.env` file based on `.env.example`:
-```
-VITE_API_URL=http://localhost:5000/api
-```
-
-Start the development server:
-```bash
-npm run dev
-```
-
-The frontend will open at `http://localhost:5173`
-
-## 📡 API Endpoints
-
-### Companies
-- `GET /api/companies` - Get all companies (paginated)
-- `GET /api/companies/:id` - Get company by ID
-- `GET /api/companies/symbol/:symbol` - Get company by stock symbol
-- `GET /api/companies/search/:query` - Search companies
-- `POST /api/companies` - Create company (admin)
-- `PUT /api/companies/:id` - Update company (admin)
-
-### Prices
-- `GET /api/prices/current` - Get latest prices for all companies
-- `GET /api/prices/:symbol/latest` - Get latest price for a company
-- `GET /api/prices/:symbol/history?days=30` - Get price history
-- `GET /api/prices/gainers/top?limit=10` - Get top gainers
-- `GET /api/prices/losers/top?limit=10` - Get top losers
-- `POST /api/prices` - Add/update price (backend job)
-
-### Watchlist
-- `GET /api/watchlist/:userId` - Get user's watchlist
-- `POST /api/watchlist/:userId/add` - Add company to watchlist
-- `POST /api/watchlist/:userId/remove` - Remove company from watchlist
-- `PUT /api/watchlist/:userId/notifications` - Update notification settings
-
-### Authentication
-- `POST /api/auth/register` - Register new user
-- `POST /api/auth/login` - Login user
-
-## 🔌 WebSocket Events
-
-Real-time price updates are available via Socket.IO:
-
-```javascript
-// Client-side
-import io from 'socket.io-client';
-
-const socket = io('http://localhost:5000');
-
-// Subscribe to price updates
-socket.emit('subscribe-prices', ['NVDA', 'MSFT', 'GOOGL']);
-
-// Listen for updates
-socket.on('price-update', (data) => {
-  console.log(`${data.symbol}: $${data.price}`);
-});
-```
-
-## 📊 Database Schema
-
-### Company
-```javascript
-{
-  symbol: String (unique),
-  name: String,
-  sector: String,
-  description: String,
-  founded: Number,
-  headquarters: String,
-  website: String,
-  logo: String,
-  rank: Number,
-  aiProducts: [String]
-}
-```
-
-### Price
-```javascript
-{
-  companyId: ObjectId,
-  symbol: String,
-  price: Number,
-  open: Number,
-  high: Number,
-  low: Number,
-  close: Number,
-  volume: Number,
-  changePercent: Number,
-  timestamp: Date
-}
-```
-
-### User
-```javascript
-{
-  username: String (unique),
-  email: String (unique),
-  password: String (hashed),
-  createdAt: Date
-}
-```
-
-### Watchlist
-```javascript
-{
-  userId: ObjectId,
-  companies: [{
-    companyId: ObjectId,
-    symbol: String,
-    addedAt: Date
-  }],
-  notifications: {
-    enabled: Boolean,
-    priceThreshold: Number,
-    emailNotifications: Boolean
-  }
-}
-```
-
-## 🔧 Environment Variables
-
-### Backend (.env)
-```
-PORT=5000
-MONGODB_URI=mongodb://localhost:27017/ai-stock-tracker
-JWT_SECRET=your-secret-key-here
-NODE_ENV=development
-CORS_ORIGIN=http://localhost:5173
-ALPHA_VANTAGE_API_KEY=optional-for-real-data
-IEX_API_KEY=optional-for-real-data
-```
-
-### Frontend (.env)
-```
-VITE_API_URL=http://localhost:5000/api
-```
-
-## 🚀 Deployment
-
-### Frontend Deployment (Vercel, Netlify)
-```bash
-cd frontend
-npm run build
-# Deploy the 'dist' folder
-```
-
-### Backend Deployment (Heroku, Render)
-```bash
-cd backend
-npm install
-# Set environment variables on platform
-# Push to platform
-```
-
-## 📝 Future Enhancements
-
-- [ ] Integration with real stock price APIs (Alpha Vantage, IEX Cloud)
-- [ ] Email and push notifications for price alerts
-- [ ] Advanced filtering and sorting options
-- [ ] Portfolio tracking and performance analytics
-- [ ] Social features (sharing watchlists, comments)
-- [ ] Historical comparison tools
-- [ ] Machine learning price predictions
-- [ ] Mobile app (React Native)
-
-## 🤝 Contributing
-
-Feel free to fork this project and submit pull requests for any improvements.
-
-## 📄 License
-
-MIT License - see LICENSE file for details
-
-## 📧 Support
-
-For issues, questions, or suggestions, please open an issue on GitHub.
+**Stack:** React 18, Vite, Recharts · Node.js, Express, Socket.IO · Twelve Data, SEC EDGAR, FRED, Frankfurter APIs
 
 ---
 
-**Last Updated**: August 2024
+## Features
+
+| Area | What it shows |
+|---|---|
+| **Company overview** | 15 large-cap AI leaders and 10 smaller-cap companies, ranked by live market cap, with price, daily change, P/E and a full company profile |
+| **Price history** | Daily closing prices over 7 to 365 days, with a peer comparison chart |
+| **AIBXL index** | Market-cap-weighted basket of the 10 largest companies, rebased to 100 |
+| **AIBXL correlation** | Rolling correlation and beta of each smaller company against AIBXL (30/60/90-day windows), plus a lead/lag test with significance checks |
+| **Momentum and volatility** | Daily returns and annualised rolling volatility (10/20/30-day windows) |
+| **Fundamentals** | Revenue, margins, free cash flow, capex, debt and EPS from SEC XBRL filings, with quarterly income statement and balance sheet tables |
+| **Real yields** | 10- and 30-year TIPS real yields, nominal yields and breakeven inflation, plus the 30-day rolling correlation between real-yield changes and AIBXL returns |
+| **Currency strength** | Daily USD exchange rates from the European Central Bank |
+
+Data refreshes automatically at startup and every weekday at 4:10 PM US Eastern, just after the market close. It can also be refreshed manually from the header.
+
+---
+
+## How the data works
+
+| Data | Source | Notes |
+|---|---|---|
+| Share prices | [Twelve Data](https://twelvedata.com/) `time_series` | Daily closes, 250 trading days per ticker. Today's bar is only saved after the US close, so an intraday price is never stored as a close. |
+| Fundamentals | [SEC EDGAR Company Facts](https://www.sec.gov/search-filings/edgar-application-programming-interfaces) (XBRL) | Single-quarter figures are derived from cumulative year-to-date filings. TTM values need four consecutive quarters. |
+| Market cap, P/E, rank | Calculated | Market cap = latest close × share count from the latest filing. P/E = price ÷ TTM EPS. Rank is recalculated on every update. |
+| Real yields | [FRED](https://fred.stlouisfed.org/) (St. Louis Fed) | TIPS real yields, nominal yields and breakevens. Missing days (holidays) are skipped, not stored as zero. |
+| Exchange rates | [Frankfurter](https://www.frankfurter.app/) (ECB reference rates) | Fetched on request. |
+
+**Design principle:** when a figure cannot be calculated reliably, the app shows **N/A** rather than an estimate. Examples are a company with multiple share classes, a loss-making company's P/E, and a foreign filer that reports annually in euros. All such cases are listed in [docs/DATA_ACCURACY_NOTES.md](docs/DATA_ACCURACY_NOTES.md).
+
+---
+
+## Architecture
+
+```
+┌────────────────────────┐   REST + WebSocket   ┌────────────────────────────┐
+│  React frontend (Vite) │ ◄──────────────────► │  Express API + Socket.IO   │
+│  Recharts dashboards   │                      │  in-memory store           │
+└────────────────────────┘                      └─────────────┬──────────────┘
+                                                              │ scheduled refresh
+                                    ┌─────────────────────────┼────────────────────────┐
+                                    ▼                         ▼                        ▼
+                              Twelve Data               SEC EDGAR XBRL               FRED
+                              (prices)                  (fundamentals)              (yields)
+                                    └──────────── cached to backend/data/*.json ───────┘
+```
+
+- **Backend** (`backend/`): Express serves the API, and Socket.IO pushes updated prices to connected clients after each refresh. The data services in `backend/services/` fetch and validate each source independently, so one failing source doesn't block the others. Results are cached to JSON in `backend/data/`, so the app starts instantly and keeps working offline with the last good data.
+- **Frontend** (`frontend/`): React single-page app. The analytics (index construction, correlation, beta, volatility and the lead/lag significance tests) run in the browser on the cached price history.
+- **Company profiles** (`backend/data/companyProfiles.json`): descriptive information only (headquarters, products, macro context). Every number shown in the app comes from the live sources above.
+
+```
+ai-stock-tracker/
+├── backend/
+│   ├── index.js              # Server setup, data enrichment, refresh scheduler
+│   ├── routes/               # REST endpoints (companies, prices, yields, currency)
+│   ├── services/             # Twelve Data, SEC EDGAR and FRED data services
+│   ├── scripts/              # One-off backfill scripts
+│   ├── data/                 # Cached data and company profiles
+│   └── test/
+├── frontend/
+│   └── src/
+│       ├── App.jsx           # Layout, tabs and company profiles
+│       └── components/       # Charts and panels
+├── docs/                     # Data accuracy notes, changelog, investigations
+└── start.bat                 # Starts backend and frontend on Windows
+```
+
+---
+
+## Getting started
+
+### Prerequisites
+- Node.js 18 or later
+- A free [Twelve Data API key](https://twelvedata.com/pricing)
+
+### 1. Configure the backend
+
+```bash
+cd backend
+npm install
+cp .env.example .env
+```
+
+Edit `backend/.env`:
+
+```env
+TWELVE_DATA_API_KEY=your_key_here
+SEC_USER_AGENT=AI-Stock-Tracker your.email@example.com
+```
+
+The SEC requires a real contact email in the user agent. FRED and Frankfurter need no key.
+
+### 2. Start the app
+
+On Windows, run `start.bat`. Otherwise, use two terminals:
+
+```bash
+# Terminal 1
+cd backend && npm run dev
+
+# Terminal 2
+cd frontend && npm install && npm run dev
+```
+
+Open **http://localhost:5173**. The API runs on http://localhost:5000.
+
+Cached data in `backend/data/` lets the dashboard load immediately. A full price refresh takes about 3.5 minutes on the free Twelve Data tier, because it is limited to about 8 requests per minute.
+
+### Run the tests
+
+```bash
+cd backend && npm test
+```
+
+---
+
+## API
+
+| Method | Endpoint | Description |
+|---|---|---|
+| GET | `/api/companies` | All companies with live price, metrics and profile |
+| GET | `/api/companies/symbol/:symbol` | A single company |
+| GET | `/api/prices/:symbol/history?days=30` | Daily price history |
+| GET | `/api/prices/:symbol/peers` | Peer price series in the same sector |
+| GET | `/api/prices/gainers/top` | Top daily gainers |
+| GET | `/api/prices/refresh-status` | Status of the last data refresh |
+| POST | `/api/prices/refresh-now` | Trigger a manual refresh |
+| GET | `/api/yields/real` | Real and nominal Treasury yields, breakevens |
+| GET | `/api/yields/correlation` | Rolling correlation of real yields with AIBXL |
+| GET | `/api/currency/strength` | USD exchange rates |
+
+---
+
+## Known limitations
+
+- Prices are **daily closes**, not real-time quotes (a limit of the free data tier).
+- Some figures are N/A because the filings don't support a reliable value. Examples are Visa's market cap and P/E (multiple share classes) and SAP's financials (annual 20-F filed in euros). See [docs/DATA_ACCURACY_NOTES.md](docs/DATA_ACCURACY_NOTES.md) for the full list.
+- Company descriptions and macro context are written by hand, not sourced from data.
+- Data is held in memory and JSON files. There is no database or user accounts.
+
+## Roadmap
+
+- Store daily high, low and volume, and add candlestick charts
+- Unit tests for the SEC quarterly derivation and the correlation statistics
+- Hosted live demo
+
+---
+
+*For research and education only. Nothing in this project is investment advice.*

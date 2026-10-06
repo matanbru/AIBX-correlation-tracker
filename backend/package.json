@@ -7,7 +7,7 @@
   "scripts": {
     "start": "node index.js",
     "dev": "nodemon --ignore data/*.json index.js",
-    "seed": "node scripts/seedCompanies.js",
+    "test": "node --test",
     "backfill-real-prices": "node scripts/backfillRealPrices.js",
     "backfill-real-fundamentals": "node scripts/backfillRealFundamentals.js"
   },

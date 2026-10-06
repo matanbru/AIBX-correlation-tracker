@@ -15,6 +15,8 @@ const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
 
 const RANGE_OPTIONS = [7, 30, 90, 180, 365];
 
+const formatPrice = (value) => (Number.isFinite(Number(value)) && value !== null ? `$${Number(value).toFixed(2)}` : 'N/A');
+
 function PriceChart({ symbol }) {
   const [data, setData] = useState([]);
   const [peerData, setPeerData] = useState([]);
@@ -32,9 +34,7 @@ function PriceChart({ symbol }) {
       const response = await axios.get(`${API_URL}/prices/${symbol}/history?days=${range}`);
       const chartData = response.data.map(price => ({
         date: new Date(price.timestamp).toLocaleDateString(),
-        price: price.price,
-        high: price.high,
-        low: price.low
+        price: price.price
       }));
       setData(chartData);
     } catch (error) {
@@ -86,12 +86,14 @@ function PriceChart({ symbol }) {
           <LineChart data={data}>
             <CartesianGrid strokeDasharray="3 3" />
             <XAxis dataKey="date" minTickGap={20} />
-            <YAxis domain={['dataMin - 10', 'dataMax + 10']} />
-            <Tooltip formatter={(value) => `$${value.toFixed(2)}`} />
+            <YAxis
+              domain={[(min) => Math.floor(min * 0.97), (max) => Math.ceil(max * 1.03)]}
+              tickFormatter={(value) => `$${Number(value).toFixed(0)}`}
+              width={60}
+            />
+            <Tooltip formatter={formatPrice} />
             <Legend />
             <Line type="monotone" dataKey="price" stroke="#0066cc" name={symbol} strokeWidth={2.5} />
-            <Line type="monotone" dataKey="high" stroke="#28a745" name="High" opacity={0.5} />
-            <Line type="monotone" dataKey="low" stroke="#dc3545" name="Low" opacity={0.5} />
           </LineChart>
         </ResponsiveContainer>
       ) : (
@@ -106,7 +108,7 @@ function PriceChart({ symbol }) {
               <CartesianGrid strokeDasharray="3 3" />
               <XAxis dataKey="date" minTickGap={20} />
               <YAxis />
-              <Tooltip formatter={(value) => `$${value.toFixed(2)}`} />
+              <Tooltip formatter={formatPrice} />
               <Legend />
               <Line type="monotone" dataKey="price" stroke="#0066cc" name={symbol} />
               {normalizedPeerData.map(peer => (

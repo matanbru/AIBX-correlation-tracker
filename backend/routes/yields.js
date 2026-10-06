@@ -67,7 +67,7 @@ router.get('/real', (req, res) => {
   if (!query) return;
   const data = yieldsDataService.getSeries(query.series, query.range);
   if (!data.length) {
-    return res.status(503).json({ error: 'Yield cache is empty. Add FRED_API_KEY to backend/.env and restart the backend.' });
+    return res.status(503).json({ error: 'Yield data is not available yet. Check the backend console for FRED download errors.' });
   }
   res.json({ series: query.series, range: query.range, updatedAt: yieldsDataService.loadYieldsFromDisk().updatedAt || null, data });
 });
@@ -77,7 +77,7 @@ router.get('/correlation', (req, res) => {
   if (!query) return;
   const yields = yieldsDataService.getSeries(query.series, query.range);
   if (!yields.length) {
-    return res.status(503).json({ error: 'Yield cache is empty. Add FRED_API_KEY to backend/.env and restart the backend.' });
+    return res.status(503).json({ error: 'Yield data is not available yet. Check the backend console for FRED download errors.' });
   }
 
   const yieldByDate = new Map(yields.map((point) => [point.date, point.value]));

@@ -17,166 +17,7 @@ import './App.css';
 const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
 const SOCKET_URL = import.meta.env.VITE_SOCKET_URL || 'http://localhost:5000';
 
-const clamp = (value, min, max) => Math.min(Math.max(value, min), max);
-
 const formatBillions = (value) => value == null ? 'Unavailable' : `$${Number(value).toFixed(2)}B`;
-
-const patternFormula = {
-  base: 50,
-  revenueGrowth: 0.45,
-  grossMargin: 0.24,
-  operatingMargin: 0.17,
-  freeCashFlow: 0.11,
-  aiDemand: 0.18,
-  rateSensitivity: -0.1,
-  debtToEquity: -0.08,
-  peRatio: -0.09,
-  currentRatio: 0.06,
-  marketCap: 0.04
-};
-
-const calculatePatternScore = (company) => {
-  if (!company) return 0;
-
-  const metrics = company.metrics || {};
-  const macro = company.macroContext || {};
-
-  const revenueGrowth = Number(metrics.revenueGrowth || 0);
-  const grossMargin = Number(metrics.grossMargin || 0);
-  const operatingMargin = Number(metrics.operatingMargin || 0);
-  const freeCashFlow = Number(metrics.freeCashFlow || 0);
-  const debtToEquity = Number(metrics.debtToEquity || 0);
-  const peRatio = Number(metrics.peRatio || 0);
-  const currentRatio = Number(metrics.currentRatio || 0);
-  const marketCap = Number(metrics.marketCap || 0);
-  const aiDemand = String(macro.aiDemand || '').toLowerCase();
-  const rateSensitivity = String(macro.interestRateSensitivity || '').toLowerCase();
-
-  const revenueScore = clamp((revenueGrowth / 2) * patternFormula.revenueGrowth, 0, 18);
-  const grossMarginScore = clamp((grossMargin / 2) * patternFormula.grossMargin, 0, 12);
-  const operatingMarginScore = clamp((operatingMargin / 2) * patternFormula.operatingMargin, 0, 9);
-  const cashFlowScore = clamp((freeCashFlow / 2) * patternFormula.freeCashFlow, 0, 6);
-  const marketCapScore = clamp((marketCap / 10) * patternFormula.marketCap, 0, 4);
-  const liquidityScore = clamp((currentRatio / 2) * patternFormula.currentRatio, 0, 4);
-
-  const aiDemandScore = aiDemand.includes('very high') ? 12 : aiDemand.includes('high') ? 8 : 4;
-  const rateRisk = rateSensitivity.includes('high') ? 8 : rateSensitivity.includes('moderate') ? 4 : 0;
-  const leveragePenalty = debtToEquity > 1 ? 10 : debtToEquity > 0.5 ? 6 : 2;
-  const valuationPenalty = peRatio > 60 ? 11 : peRatio > 45 ? 7 : 2;
-
-  let score = patternFormula.base + revenueScore + grossMarginScore + operatingMarginScore + cashFlowScore + marketCapScore + liquidityScore + aiDemandScore;
-  score -= rateRisk + leveragePenalty + valuationPenalty;
-  score = clamp(Math.round(score), 0, 100);
-
-  return score;
-};
-
-const buildCompanyCommentary = (company) => {
-  if (!company) {
-    return {
-      summary: 'No company profile available.',
-      range: 'Not enough information for a forward view.',
-      insights: [],
-      score: 0,
-      direction: 'N/A',
-      catalysts: [],
-      risks: [],
-      simplePatterns: []
-    };
-  }
-
-  const metrics = company.metrics || {};
-  const macro = company.macroContext || {};
-  const revenueGrowth = Number(metrics.revenueGrowth || 0);
-  const grossMargin = Number(metrics.grossMargin || 0);
-  const operatingMargin = Number(metrics.operatingMargin || 0);
-  const freeCashFlow = Number(metrics.freeCashFlow || 0);
-  const debtToEquity = Number(metrics.debtToEquity || 0);
-  const peRatio = Number(metrics.peRatio || 0);
-  const currentRatio = Number(metrics.currentRatio || 0);
-  const marketCap = Number(metrics.marketCap || 0);
-  const aiDemand = String(macro.aiDemand || '').toLowerCase();
-  const rateSensitivity = String(macro.interestRateSensitivity || '').toLowerCase();
-  const demandCycle = String(macro.demandCycle || '').toLowerCase();
-
-  const score = calculatePatternScore(company);
-
-  const direction = score >= 75 ? 'Bullish' : score >= 60 ? 'Constructive' : score >= 45 ? 'Neutral' : 'Cautious';
-
-  const simplePatterns = [
-    revenueGrowth > 20
-      ? 'Revenue acceleration has historically been a precursor to stronger share-price momentum when the company maintains high gross margin.'
-      : 'Growth is moderate, so the stock is more dependent on operating leverage and execution than on a broad revenue surprise.',
-    grossMargin > 70
-      ? 'High gross margin suggests the company is monetising AI demand efficiently, which often supports premium valuation and better price resilience.'
-      : 'Margin quality is useful but not yet powerful enough to fully offset heavier operating costs or a weaker pricing environment.',
-    aiDemand.includes('very high')
-      ? 'AI demand is unusually strong, which tends to widen the earnings runway when infrastructure and enterprise adoption expand.'
-      : 'The company remains exposed to normal enterprise adoption curves, so price moves may be more dependent on execution and capital allocation.'
-  ];
-
-  const catalysts = [];
-  if (revenueGrowth > 20) catalysts.push('Revenue acceleration pattern: premium software and infrastructure names often rally when growth remains above 20% and AI demand continues to broaden.');
-  if (grossMargin > 70) catalysts.push('Margin expansion cycle: companies with high software-like margins can sustain valuation uplift as AI monetisation scales.');
-  if (demandCycle.includes('enterprise') || demandCycle.includes('cloud') || demandCycle.includes('infrastructure')) catalysts.push('Enterprise AI conversion pattern: as projects move from pilot testing to deployment, proven infrastructure providers often see stronger follow-through pricing.');
-  if (aiDemand.includes('very high')) catalysts.push('Demand-led pricing cycle: the strongest AI names usually benefit from a compound effect where demand growth, usage intensity, and capital expenditure all move together.');
-  if (!catalysts.length) catalysts.push('The company is more dependent on execution and timing than a clean AI demand surge, so price momentum may be less persistent.');
-
-  const risks = [];
-  if (rateSensitivity.includes('high')) risks.push('Higher-rate sensitivity can compress valuation multiples even when revenue growth remains healthy, especially in capital-intensive AI plays.');
-  if (debtToEquity > 1) risks.push('Leverage creates more vulnerability if AI spending slows or if the company needs to fund continued expansion internally.');
-  if (peRatio > 50) risks.push('A premium valuation can limit upside unless revenue and margin expansion materially exceed expectations.');
-  if (currentRatio < 1.5) risks.push('Weaker liquidity can make pricing more fragile when operating costs or capital requirements rise unexpectedly.');
-  if (!risks.length) risks.push('The profile is relatively balanced, but valuation and execution still matter because AI leadership can shift quickly in crowded sectors.');
-
-  const expectedReturn = Math.max(8, Math.min(32, Math.round(score / 3.2)));
-
-  const rangeLow = Math.max(6, Math.min(Math.round(expectedReturn * 0.7), 22));
-  const rangeHigh = Math.max(rangeLow + 4, Math.min(Math.round(expectedReturn * 1.15), 36));
-
-  const summary = `The pattern recognition model suggests ${company.name} is currently ${direction.toLowerCase()} because the company combines ${revenueGrowth}% revenue growth, ${grossMargin}% gross margin, and ${aiDemand.includes('very high') ? 'very strong' : 'meaningful'} AI demand with ${debtToEquity <= 0.5 ? 'a relatively healthy balance sheet' : 'a more levered capital structure'}. In similar AI cycles, names with this mix have often seen price strength when enterprise deployment follows early experimentation.`;
-
-  const insights = [
-    `${company.name} shows the classic revenue-to-price pattern: when growth stays above 20% and margins remain elevated, the market typically rewards sustained customer adoption before earnings fully catch up.`,
-    `The balance of ${operatingMargin}% operating margin and ${freeCashFlow}B free cash flow suggests the firm is more likely to convert AI demand into cash generation rather than simply expanding cost structure.`,
-    `The most advanced pattern in this sector is not just strong revenue; it is the combination of AI demand, margin quality, and rate sensitivity. Companies that can grow without sacrificing operating leverage often outperform during the next phase of AI infrastructure expansion.`,
-    `The key risk is valuation discipline: a company can be fundamentally attractive but still struggle if its price is priced for perfection before the next revenue milestone arrives.`
-  ];
-
-  const currentPrice = Number.isFinite(Number(company.price)) ? Number(company.price) : null;
-  const scenarios = [
-    {
-      label: 'Bull case',
-      returnPct: Math.max(12, Math.min(40, Math.round(score / 2.3))),
-      description: 'Demand broadens quickly, enterprise adoption accelerates, and AI monetisation compounds faster than expected.',
-      price: currentPrice === null ? null : (currentPrice * (1 + Math.max(12, Math.min(40, Math.round(score / 2.3))) / 100)).toFixed(2)
-    },
-    {
-      label: 'Base case',
-      returnPct: Math.max(6, Math.min(22, Math.round(score / 4))),
-      description: 'Revenue momentum remains healthy while the company executes on AI projects without major disruption.',
-      price: currentPrice === null ? null : (currentPrice * (1 + Math.max(6, Math.min(22, Math.round(score / 4))) / 100)).toFixed(2)
-    },
-    {
-      label: 'Bear case',
-      returnPct: Math.max(-18, Math.min(-4, -Math.round(score / 7))),
-      description: 'AI demand stays uneven, valuations compress, or enterprise deployment slows before revenue converts to cash.',
-      price: currentPrice === null ? null : (currentPrice * (1 + Math.max(-18, Math.min(-4, -Math.round(score / 7))) / 100)).toFixed(2)
-    }
-  ];
-
-  return {
-    summary,
-    range: `${rangeLow}% to ${rangeHigh}% over the next 12 months, with the range widening if AI demand remains strong and funding conditions stay stable`,
-    insights,
-    score,
-    direction,
-    catalysts,
-    risks,
-    simplePatterns,
-    scenarios
-  };
-};
 
 function App() {
   const [companies, setCompanies] = useState([]);
@@ -277,30 +118,12 @@ function App() {
     }
   };
 
-  const sectorUniverse = [...companies, ...opportunityCompanies];
-  const sectorSnapshot = sectorUniverse.length
-    ? {
-        avgRevenueGrowth: sectorUniverse.reduce((sum, company) => sum + Number(company.metrics?.revenueGrowth || 0), 0) / sectorUniverse.length,
-        avgGrossMargin: sectorUniverse.reduce((sum, company) => sum + Number(company.metrics?.grossMargin || 0), 0) / sectorUniverse.length,
-        avgOperatingMargin: sectorUniverse.reduce((sum, company) => sum + Number(company.metrics?.operatingMargin || 0), 0) / sectorUniverse.length,
-        avgPeRatio: sectorUniverse.reduce((sum, company) => sum + Number(company.metrics?.peRatio || 0), 0) / sectorUniverse.length,
-        avgPriceChange: sectorUniverse.reduce((sum, company) => sum + Number(company.change || 0), 0) / sectorUniverse.length,
-        avgMarketCap: sectorUniverse.reduce((sum, company) => sum + Number(company.metrics?.marketCap || 0), 0) / sectorUniverse.length,
-      }
-    : {
-        avgRevenueGrowth: 0,
-        avgGrossMargin: 0,
-        avgOperatingMargin: 0,
-        avgPeRatio: 0,
-        avgPriceChange: 0,
-        avgMarketCap: 0,
-      };
 
   return (
     <div className="App">
       <header className="header">
         <h1>🤖 AI Stock Tracker</h1>
-        <p>Track share prices of the top 100 AI development companies</p>
+        <p>Track share prices of {companies.length + opportunityCompanies.length || ''} AI development companies</p>
         <p style={{ marginTop: '8px', opacity: 0.9 }}>
           Data refresh: {lastRefreshInfo.status === 'success' ? 'Up to date' : lastRefreshInfo.status === 'partial' ? 'Partially refreshed' : lastRefreshInfo.status === 'running' ? 'Refreshing…' : 'Needs attention'}
           {lastRefreshInfo.lastSuccessAt ? ` • Last updated ${new Date(lastRefreshInfo.lastSuccessAt).toLocaleString()}` : ''}
@@ -357,12 +180,6 @@ function App() {
           onClick={() => setCurrentTab('currencyStrength')}
         >
           Currency Strength
-        </button>
-        <button
-          className={`tab ${currentTab === 'watchlist' ? 'active' : ''}`}
-          onClick={() => setCurrentTab('watchlist')}
-        >
-          Watchlist
         </button>
       </nav>
 
@@ -422,7 +239,7 @@ function App() {
                     <div className="metric-card"><span>Free cash flow</span><strong>{selectedCompany.metrics?.freeCashFlow == null ? 'Unavailable' : `$${selectedCompany.metrics.freeCashFlow}B`}</strong></div>
                     <div className="metric-card"><span>Debt-to-equity</span><strong>{selectedCompany.metrics?.debtToEquity == null ? 'Unavailable' : selectedCompany.metrics.debtToEquity}</strong></div>
                     <div className="metric-card"><span>Current ratio</span><strong>{selectedCompany.metrics?.currentRatio == null ? 'Unavailable' : selectedCompany.metrics.currentRatio}</strong></div>
-                    <div className="metric-card"><span>P/E ratio</span><strong>{selectedCompany.metrics?.peRatio == null ? 'Unavailable' : selectedCompany.metrics.peRatio}</strong></div>
+                    <div className="metric-card"><span>P/E ratio</span><strong>{selectedCompany.metrics?.peRatio == null ? 'Unavailable' : selectedCompany.metrics.peRatio > 200 ? 'N/M (>200)' : selectedCompany.metrics.peRatio}</strong></div>
                     <div className="metric-card"><span>Cash balance</span><strong>{selectedCompany.metrics?.cashBalance == null ? 'Unavailable' : `$${selectedCompany.metrics.cashBalance}B`}</strong></div>
                   </div>
                 </div>
@@ -651,15 +468,10 @@ function App() {
 
         {currentTab === 'currencyStrength' && <CurrencyStrengthChart />}
 
-        {currentTab === 'watchlist' && (
-          <div className="watchlist-placeholder">
-            <p>Sign in to manage your watchlist</p>
-          </div>
-        )}
       </main>
 
       <footer className="footer">
-        <p>&copy; 2024 AI Stock Tracker. Real-time data powered by stock APIs.</p>
+        <p>AI Stock Tracker &middot; Prices: Twelve Data (daily closes) &middot; Fundamentals: SEC EDGAR &middot; Yields: FRED &middot; FX: Frankfurter (ECB). For research and education only; not investment advice.</p>
       </footer>
     </div>
   );
